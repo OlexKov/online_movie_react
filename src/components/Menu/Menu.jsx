@@ -2,27 +2,25 @@ import React from 'react'
 import { HomeOutlined, UnorderedListOutlined } from '@ant-design/icons';
 import { Menu as AntMenu,} from 'antd';
 import { Link } from 'react-router-dom';
+import '../Menu/Menu.css'
 
 export const Menu = () => {
     return (
         <AntMenu
             theme="dark"
             mode="horizontal"
-            defaultSelectedKeys={['2']}
-            style={{
-                flex: 1,
-                minWidth: 0,
-            }}
+            defaultSelectedKeys={['1']}
+           className='menu'
         >
             <AntMenu.Item key="1">
                 <HomeOutlined />
-                <span>Home</span>
+                <span>Домашня сторінка</span>
                 <Link to="/" />
             </AntMenu.Item>
            
-            <AntMenu.Item key="3">
+            <AntMenu.Item key="2">
                 <UnorderedListOutlined />
-                <span>About</span>
+                <span>Про нас</span>
                 <Link to="about" />
             </AntMenu.Item>
         </AntMenu>

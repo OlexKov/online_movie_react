@@ -1,0 +1,10 @@
+AntMenu.Item  > span{
+    font-size: 20px;
+}
+
+.menu{
+    flex: 1;
+    min-width: 0;
+    font-size: 18px;
+}
+
