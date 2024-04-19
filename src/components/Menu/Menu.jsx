@@ -11,11 +11,6 @@ const menuItems = [
         label:<Link className='link' to="/">Домашня сторінка</Link>
     },
     {
-        key: "/about",
-        icon:<UnorderedListOutlined />,
-        label:<Link className='link' to="/about"><span>Про нас</span></Link>
-    },
-    {
         key: "/movietable",
         icon:<TableOutlined />,
         label:<Link  className='link' to="/movietable"><span>Фільми</span></Link>
@@ -24,8 +19,12 @@ const menuItems = [
         key: "/staftable",
         icon:<UserOutlined /> ,
         label:<Link  className='link' to="/staftable"><span>Актори</span></Link>
+    },
+    {
+        key: "/about",
+        icon:<UnorderedListOutlined />,
+        label:<Link className='link' to="/about"><span>Про нас</span></Link>
     }
-
 ]
 
 export const Menu = () => {
