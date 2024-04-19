@@ -9,6 +9,7 @@ import { Login } from './components/Login/Login';
 import { Account } from './components/Account/Account';
 import { Favourite } from './components/Favourite/Favourite';
 import { MovieTable } from './components/MovieTable/MovieTable';
+import { StafTable } from './components/StafTable/StafTable';
 
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
            <Route path="account" element={<Account />} />
            <Route path="favourite" element={<Favourite />} />
            <Route path="movietable" element={<MovieTable />} />
+           <Route path="staftable" element={<StafTable />} />
            <Route path="*" element={<NotFound />} />
         </Route>
     </Routes>

@@ -93,7 +93,8 @@ export const MovieTable = () => {
           message.success(`Фільм "${movie.name}" успішно видалено `)
         }
         else
-          message.error(response.error)
+          message.error(`${response.status} ${response.statusText}` )
+        
       })
   }
 

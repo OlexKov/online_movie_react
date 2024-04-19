@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { HomeOutlined, TableOutlined, UnorderedListOutlined } from '@ant-design/icons';
+import { HomeOutlined, TableOutlined, UnorderedListOutlined, UserOutlined } from '@ant-design/icons';
 import { Menu as AntMenu,} from 'antd';
 import { Link, useLocation } from 'react-router-dom';
 import '../Menu/Menu.css'
@@ -19,6 +19,11 @@ const menuItems = [
         key: "/movietable",
         icon:<TableOutlined />,
         label:<Link  className='link' to="/movietable"><span>Фільми</span></Link>
+    },
+    {
+        key: "/staftable",
+        icon:<UserOutlined /> ,
+        label:<Link  className='link' to="/staftable"><span>Актори</span></Link>
     }
 
 ]
