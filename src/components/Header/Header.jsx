@@ -10,7 +10,7 @@ import { Tooltip } from 'antd'
 export const Header = () => {
     return (
         <>
-            <img src={logo} alt='' />
+            <img className='logo' src={logo} alt='' />
             <h3 className='title'>Online movie</h3>
             <Menu />
             <div className='d-flex gap-4'>

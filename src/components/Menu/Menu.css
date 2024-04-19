@@ -1,10 +1,13 @@
-AntMenu.Item  > span{
-    font-size: 20px;
-}
+
 
 .menu{
     flex: 1;
-    min-width: 0;
+    min-width: 100px;
     font-size: 18px;
+}
+
+.link{
+   
+    text-decoration: none;
 }
 
