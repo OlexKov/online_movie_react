@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react'
+import { getAllMovie } from '../../helpers/api_helpers/MovieAPI';
 
 export const Home = () => {
-  const allMovieApi = 'http://localhost:5000/api/Movie/getall'
+ 
   const [movies, setMovies] = useState([]);
   useEffect(() => {
     (async () => {
-      let result = await fetch(allMovieApi);
-      let data = await result.json();
-      setMovies(data);
+      let result = await getAllMovie();
+      setMovies(result);
     })();
   }, []);
 

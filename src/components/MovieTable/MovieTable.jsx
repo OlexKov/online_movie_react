@@ -85,7 +85,8 @@ export const MovieTable = () => {
   useEffect(() => {
     (async () => {
       const result = await getAllMovie();
-      setMovies(await setRating(result));
+      if(result)
+         setMovies(await setRating(result));
     })();
   }, []);
 
