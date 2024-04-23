@@ -1,8 +1,12 @@
-import { DeleteFilled, EditFilled } from '@ant-design/icons';
+import { DeleteFilled, EditFilled, PlusOutlined } from '@ant-design/icons';
 import { Button, Popconfirm, Rate, Space, Table, message } from 'antd';
 import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 import '../MovieTable/MovieTable.css'
-const allMovieApi = 'http://localhost:5000/api/Movie/getall'
+import axios from 'axios';
+import { getAllMovie } from '../../helpers/api_helpers/MovieAPI';
+
+
 const getRatingApi = 'http://localhost:5000/api/Movie/getrating/'
 const deleteApi = 'http://localhost:5000/api/Movie/delete/'
 
@@ -62,7 +66,7 @@ export const MovieTable = () => {
       key: 'action',
       render: (_, record) => (
         <Space size="middle">
-          <Button icon={<EditFilled />} />
+          <Button onClick={()=>navigate(`/create-edit/${record.id}`)}  icon={<EditFilled />} />
           <Popconfirm
             title="Видалення фільму"
             description={`Ви впевненні що бажаєте видалити фільм "${record.name}" ?`}
@@ -77,23 +81,23 @@ export const MovieTable = () => {
     }
   ];
   const [movies, setMovies] = useState([]);
+  const navigate = useNavigate();
   useEffect(() => {
     (async () => {
-      const result = await fetch(allMovieApi);
-      const data = await result.json();
-      setMovies(await setRating(data));
+      const result = await getAllMovie();
+      setMovies(await setRating(result));
     })();
   }, []);
 
   async function deleteMovie(movie) {
-    return await fetch(deleteApi + movie.id, { method: 'DELETE' })
-      .then((response) => {
-        if (response.ok) {
+    return await axios.delete (deleteApi + movie.id)
+      .catch((response) => {
+        if (response.status === 200) {
           setMovies(movies.filter(x => x.id !== movie.id));
           message.success(`Фільм "${movie.name}" успішно видалено `)
         }
         else
-          message.error(`${response.status} ${response.statusText}` )
+          message.error(`${response.status} ${response.error}` )
         
       })
   }
@@ -106,7 +110,11 @@ export const MovieTable = () => {
     return data;
   }
   return (
-    <Table dataSource={movies} rowKey="id" columns={columns} />
+    <>
+      <Button className='add-button' type="primary" onClick={()=>navigate('/create-edit/create')} icon={<PlusOutlined />}>Додати фільм</Button>
+      <Table dataSource={movies} rowKey="id" columns={columns} />
+    </>
+   
   )
 }
 

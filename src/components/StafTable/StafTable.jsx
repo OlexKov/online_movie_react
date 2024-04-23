@@ -1,8 +1,11 @@
-import { CrownFilled, DeleteFilled, EditFilled } from '@ant-design/icons';
-import { Button, Popconfirm, Rate, Space, Table, message } from 'antd';
+import { CrownFilled, DeleteFilled, EditFilled, PlusOutlined } from '@ant-design/icons';
+import { Button, Popconfirm,  Space, Table, message } from 'antd';
 import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 import '../StafTable/StafTable.css'
-const allStafsApi = 'http://localhost:5000/api/Staf/getall'
+import axios from 'axios';
+import { getAllStaf } from '../../helpers/api_helpers/StafAPI';
+
 const deleteApi = 'http://localhost:5000/api/Staf/delete/'
 
 
@@ -58,7 +61,7 @@ export const StafTable = () => {
             key: 'action',
             render: (_, record) => (
                 <Space size="middle">
-                    <Button icon={<EditFilled />} />
+                    <Button onClick={()=>navigate(`/create-edit/${record.id}`)} icon={<EditFilled />} />
                     <Popconfirm
                         title="Видалення актора"
                         description={`Ви впевненні що бажаєте видалити астора "${record.name} ${record.surname}" ?`}
@@ -73,18 +76,18 @@ export const StafTable = () => {
         }
     ];
     const [stafs, setStafs] = useState([]);
+    const navigate = useNavigate();
     useEffect(() => {
         (async () => {
-            const result = await fetch(allStafsApi);
-            const data = await result.json();
-            setStafs(data);
+            const result = await getAllStaf();
+            setStafs(result);
         })();
     }, []);
 
     async function deleteStaf(staf) {
-        return await fetch(deleteApi + staf.id, { method: 'DELETE' })
-            .then((response) => {
-                if (response.ok) {
+        return await axios.delete(deleteApi + staf.id)
+            .catch((response) => {
+                if (response.status === 200) {
                     setStafs(stafs.filter(x => x.id !== staf.id));
                     message.success(`Актор "${staf.name} ${staf.surname}" успішно видалений `)
                 }
@@ -95,6 +98,10 @@ export const StafTable = () => {
 
 
     return (
-        <Table dataSource={stafs} rowKey="id" columns={columns} />
+        <>
+           <Button className='add-button' type="primary" onClick={()=>navigate('/create-edit/create')}  icon={<PlusOutlined />}>Додати актора</Button>
+           <Table dataSource={stafs} rowKey="id" columns={columns} />
+        </>
+       
     )
 }
