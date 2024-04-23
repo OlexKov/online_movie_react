@@ -6,8 +6,9 @@ export const Home = () => {
   const [movies, setMovies] = useState([]);
   useEffect(() => {
     (async () => {
-      let result = await getAllMovie();
-      setMovies(result);
+      const result = await getAllMovie();
+      if(result)
+          setMovies(result);
     })();
   }, []);
 

@@ -24,7 +24,8 @@ axios.interceptors.response.use(
             break; 
   
         default: {
-          window.location = `/error/${status}/${status}/${error.message}`;
+          const location =   window.location.pathname.slice(1);
+          window.location = `/error/${status}/${status}/${error.message}/${location ===''?'main':location}`;
         // message.error(error.message)
           return Promise.reject(error.message);
         }

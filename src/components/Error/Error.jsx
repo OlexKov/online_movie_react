@@ -6,18 +6,21 @@ import { useParams } from 'react-router';
 const Error = ({status,title,subTitle}) => {
     const navigate = useNavigate();
     const params = useParams();
+    const mainPage = params?.location === 'main';
+    console.log(mainPage)
     if(params.title){
        
         status = params.status;
         title = params.title;
         subTitle = params.subTitle;
     }
+   
   return (
     <Result
             status={status}
             title={title}
             subTitle={subTitle}
-            extra={<Button type="primary" onClick={() => navigate('/')}>Повернутися на головну</Button>}
+            extra={!mainPage && <Button type="primary" onClick={() => navigate('/')}>Повернутися на головну</Button>}
           />
   
 )}

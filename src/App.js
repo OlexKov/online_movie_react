@@ -27,7 +27,7 @@ function App() {
         <Route path="movietable" element={<MovieTable />} />
         <Route path="staftable" element={<StafTable />} />
         <Route path="create-edit/:id" element={<CreateEdit />} />
-        <Route path="error/:status/:title/:subTitle" element={<Error />} />
+        <Route path="error/:status/:title/:subTitle/:location" element={<Error />} />
         <Route path="*" element={
           <Error
             status="404"
