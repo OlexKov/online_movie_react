@@ -3,12 +3,8 @@ import { Button, Popconfirm, Rate, Space, Table, message } from 'antd';
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import '../MovieTable/MovieTable.css'
+import { getMovies, getRating } from '../../helpers/api_helpers/MovieAPI';
 import axios from 'axios';
-import { getMovies } from '../../helpers/api_helpers/MovieAPI';
-
-
-const getRatingApi = 'http://localhost:5000/api/Movie/getrating/'
-const deleteApi = 'http://localhost:5000/api/Movie/delete/'
 
 export const MovieTable = () => {
   const columns = [
@@ -66,7 +62,7 @@ export const MovieTable = () => {
       key: 'action',
       render: (_, record) => (
         <Space size="middle">
-          <Button onClick={()=>navigate(`/create-edit/${record.id}`)}  icon={<EditFilled />} />
+          <Button onClick={() => navigate(`/create-edit/${record.id}`)} icon={<EditFilled />} />
           <Popconfirm
             title="Видалення фільму"
             description={`Ви впевненні що бажаєте видалити фільм "${record.name}" ?`}
@@ -84,38 +80,37 @@ export const MovieTable = () => {
   const navigate = useNavigate();
   useEffect(() => {
     (async () => {
-      const result = await getMovies();
-      if(result)
-         setMovies(await setRating(result));
+      const result = (await getMovies()).data;
+      if (result)
+        setMovies(await setRating(result));
     })();
   }, []);
 
   async function deleteMovie(movie) {
-    return await axios.delete (deleteApi + movie.id)
-      .catch((response) => {
+    return await deleteMovie(movie.id)
+      .then((response) => {
         if (response.status === 200) {
           setMovies(movies.filter(x => x.id !== movie.id));
           message.success(`Фільм "${movie.name}" успішно видалено `)
         }
-        else
-          message.error(`${response.status} ${response.error}` )
-        
       })
   }
 
   async function setRating(data) {
-    for (let index = 0; index < data.length; index++) {
-      const res = await fetch(getRatingApi + data[index].id);
-      data[index].rating = await res.json();
-    }
+   await axios.all(data.map(x => getRating(x.id)))
+      .then(axios.spread((...res) => {
+        res.forEach((val, index) => {
+          data[index].rating = val.data;
+        })
+      }));
     return data;
   }
   return (
     <>
-      <Button className='add-button' type="primary" onClick={()=>navigate('/create-edit/create')} icon={<PlusOutlined />}>Додати фільм</Button>
+      <Button className='add-button' type="primary" onClick={() => navigate('/create-edit/create')} icon={<PlusOutlined />}>Додати фільм</Button>
       <Table dataSource={movies} rowKey="id" columns={columns} />
     </>
-   
+
   )
 }
 

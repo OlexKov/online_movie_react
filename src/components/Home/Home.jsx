@@ -6,7 +6,7 @@ export const Home = () => {
   const [movies, setMovies] = useState([]);
   useEffect(() => {
     (async () => {
-      const result = await getMovies();
+      const result = (await getMovies()).data;
       if(result)
           setMovies(result);
     })();

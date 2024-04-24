@@ -3,11 +3,7 @@ import { Button, Popconfirm,  Space, Table, message } from 'antd';
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import '../StafTable/StafTable.css'
-import axios from 'axios';
 import { getAllStaf } from '../../helpers/api_helpers/StafAPI';
-
-const deleteApi = 'http://localhost:5000/api/Staf/delete/'
-
 
 export const StafTable = () => {
     const columns = [
@@ -79,23 +75,19 @@ export const StafTable = () => {
     const navigate = useNavigate();
     useEffect(() => {
         (async () => {
-            const result = await getAllStaf();
-            setStafs(result);
+            setStafs((await getAllStaf()).data);
         })();
     }, []);
 
     async function deleteStaf(staf) {
-        return await axios.delete(deleteApi + staf.id)
-            .catch((response) => {
+        return  await deleteStaf(staf.id)
+            .then((response) => {
                 if (response.status === 200) {
                     setStafs(stafs.filter(x => x.id !== staf.id));
                     message.success(`Актор "${staf.name} ${staf.surname}" успішно видалений `)
                 }
-                else
-                    message.error(`${response.status} ${response.statusText}`)
             })
     }
-
 
     return (
         <>

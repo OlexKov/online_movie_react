@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Col, DatePicker, Divider, Form, Input, Row, Select, Space, Image, Upload, Checkbox } from 'antd';
+import { Button, Col, DatePicker, Divider, Form, Input, Row, Select, Space, Image, Upload, Checkbox, message } from 'antd';
 import { useParams } from 'react-router-dom';
 import { ArrowLeftOutlined, UploadOutlined } from '@ant-design/icons';
 import { getCountries, getRoles } from '../../helpers/api_helpers/DataAPI';
 import { getMovies } from '../../helpers/api_helpers/MovieAPI';
-import { createStaf, getStaf, getStafMovies, getStafRoles } from '../../helpers/api_helpers/StafAPI';
+import { createStaf, getStaf, getStafMovies, getStafRoles, updateStaf } from '../../helpers/api_helpers/StafAPI';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import dayjs from 'dayjs';
 import defImage from '../../images/nophoto.jpg'
-import TextArea from 'antd/es/input/TextArea';
+import axios from 'axios';
 dayjs.extend(customParseFormat);
 const dateFormat = 'YYYY-MM-DD';
 
@@ -18,7 +18,6 @@ export const CreateEditStaf = () => {
   const [countries, setCountries] = useState([]);
   const [staf, setStaf] = useState([]);
   const [movies, setMovies] = useState([]);
-
   const [previewImage, setPreviewImage] = useState('');
   const [file, setFile] = useState()
 
@@ -42,20 +41,20 @@ export const CreateEditStaf = () => {
 
   useEffect(() => {
     (async () => {
-      const cnts = await getCountries();
-      if (cnts)
-        setCountries(cnts)
-      const rls = await getRoles();
-      if (rls)
-        setRoles(rls);
-      const mvs = await getMovies();
-      if (mvs)
-        setMovies(mvs);
+      await axios.all([getCountries(), getRoles(), getMovies()])
+        .then(axios.spread((...res) => {
+          setCountries(res[0].data);
+          setRoles(res[1].data);
+          setMovies(res[2].data);
+        }));
       if (id !== 'create') {
-        const stf = await getStaf(id)
+        const stf = (await getStaf(id)).data
         if (stf) {
-          stf.movies = await getStafMovies(id)
-          stf.roles = await getStafRoles(id)
+          await axios.all([getStafMovies(id), getStafRoles(id)])
+            .then(axios.spread((...res) => {
+              stf.movies = res[0].data;
+              stf.roles = res[1].data;
+            }));
           setStaf(stf)
           setFormValues(stf, form)
         }
@@ -78,19 +77,41 @@ export const CreateEditStaf = () => {
 
   const [form] = Form.useForm();
 
-  const  onFinish = async() => {
+  const onFinish = async () => {
     let newstaf = form.getFieldsValue();
     newstaf.id = staf.id || 0
+    newstaf.isoscar = newstaf.isoscar ? true : false
     newstaf.birthdate = new Date(Date.parse(newstaf.birthdate)).toLocaleDateString()
     let formData = new FormData();
     Object.keys(newstaf).forEach(function (key) {
-        if(key!=='imageFile')
-           formData.append(key,newstaf[key]);
+      if (key === 'imageFile')
+        formData.append(key, newstaf[key]?.originFileObj)
+      if (key === 'roles' || key === 'movies')
+        newstaf[key].forEach(x => formData.append(key, x))
+      formData.append(key, newstaf[key]);
     });
-    formData.append('imageFile',newstaf.imageFile);
-    if(newstaf.id===0)
-      await createStaf(formData);
-   
+
+    if (newstaf.id === 0) {
+      await createStaf(formData)
+        .then(response => {
+          if (response.status === 200) {
+            message.success('Актора успішно додано до бази даних');
+            window.history.back()
+          }
+        })
+
+    }
+    else {
+      formData.append('imageName', staf.imageName);
+      await updateStaf(formData)
+        .then(response => {
+          if (response.status === 200) {
+            message.success('Інформація успішно змінена');
+            window.history.back()
+          }
+        }).catch(error=>{console.log(error)});
+    }
+
   }
 
   const onReset = () => {
@@ -151,15 +172,15 @@ export const CreateEditStaf = () => {
                     rules={[
                       {
                         pattern: '^[A-Z А-Я].*',
-                        message:"Ім'я актора повинно починатися з великої букви"
+                        message: "Ім'я актора повинно починатися з великої букви"
                       },
                       {
-                        required:true,
-                        message:"Введіть і'мя актора"
+                        required: true,
+                        message: "Введіть і'мя актора"
                       },
                     ]}
                   >
-                    <Input showCount minLength={3} maxLength={100}/>
+                    <Input showCount minLength={3} maxLength={100} />
                   </Form.Item>
                 </Col>
                 <Col span={12}>
@@ -167,15 +188,15 @@ export const CreateEditStaf = () => {
                     rules={[
                       {
                         pattern: '^[A-Z А-Я].*',
-                        message:"Прізвище актора повинно починатися з великої букви"
+                        message: "Прізвище актора повинно починатися з великої букви"
                       },
                       {
                         required: true,
-                        message:'Ведіть прізвище актора'
+                        message: 'Ведіть прізвище актора'
                       },
                     ]}
                   >
-                    <Input showCount minLength={3} maxLength={100}/>
+                    <Input showCount minLength={3} maxLength={100} />
                   </Form.Item>
                 </Col>
               </Row>
@@ -191,7 +212,7 @@ export const CreateEditStaf = () => {
                       },
                     ]}
                   >
-                    <DatePicker className='w-100' maxDate={dayjs(new Date(Date.now), dateFormat)} />
+                    <DatePicker className='w-100' disabledDate={d => !d || d.isAfter(new Date(Date.now()))} />
                   </Form.Item>
                 </Col>
 
@@ -277,13 +298,16 @@ export const CreateEditStaf = () => {
                       required: true,
                       message: 'Введіть інформацію про актора'
                     },
+                    {
+                      min: 10,
+                      message: 'Опис має містити не менше 20 символів'
+                    },
                   ]}
                 >
-                  <TextArea
+                  <Input.TextArea
                     placeholder="Коротка інформація про актора"
                     rows={7}
-                    showCount 
-                    minLength={10}
+                    showCount
                     maxLength={3000}
                   />
                 </Form.Item>
@@ -291,7 +315,7 @@ export const CreateEditStaf = () => {
               <Row>
                 <Col span={24}>
                   <Form.Item name='isoscar' valuePropName="checked">
-                    <Checkbox defaultChecked={false}>Актор отримав оскар</Checkbox>
+                    <Checkbox >Актор отримав оскар</Checkbox>
                   </Form.Item>
                 </Col>
               </Row>
