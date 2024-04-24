@@ -1,14 +1,7 @@
 import axios from "axios";
 import { TryError } from "../ErrorCatch";
+import { allStafAPIUrl, createStafAPIUrl, deleteStafAPIUrl, stafByIdAPIUrl, stafMoviesAPIUrl, stafRolesAPIUrl, updateStafAPIUrl } from "../api_urls";
 
-const apiUrl = 'http://localhost:5000/api/Staf'
-const allStafApi = apiUrl + '/getall'
-const getStafApi = apiUrl + '/get/'
-const stafMovies = apiUrl + '/getmovies/'
-const stafRoles = apiUrl + '/getroles/'
-const stafCreate = apiUrl + '/create'
-const stafDelete = apiUrl + '/delete'
-const stafUpdate = apiUrl + '/update'
 const config = {
     headers: {
         enctype: 'multipart/form-data'
@@ -16,30 +9,30 @@ const config = {
 };
 
 export async function getAllStaf() {
-    return TryError(() => axios.get(allStafApi))
+    return TryError(() => axios.get(allStafAPIUrl))
 }
 
 export const getStaf = (id) => {
-    return TryError(() => axios.get(getStafApi + id))
+    return TryError(() => axios.get(stafByIdAPIUrl + id))
 }
 
 export const getStafRoles = (id) => {
-    return TryError(() => axios.get(stafRoles + id))
+    return TryError(() => axios.get(stafRolesAPIUrl + id))
 }
 
 export const getStafMovies = (id) => {
-    return TryError(() => axios.get(stafMovies + id))
+    return TryError(() => axios.get(stafMoviesAPIUrl + id))
 }
 
 export const deleteStaf = (id) => {
-    return TryError(() => axios.delete(stafDelete + id))
+    return TryError(() => axios.delete(deleteStafAPIUrl + id))
 }
 
 export const createStaf = (staf) => {
-    return TryError(() => axios.post(stafCreate, staf, config));
+    return TryError(() => axios.post(createStafAPIUrl, staf, config));
 }
 
 export const updateStaf = (staf) => {
-    return TryError(() => axios.put(stafUpdate, staf, config))
+    return TryError(() => axios.put(updateStafAPIUrl, staf, config))
 }
 

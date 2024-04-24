@@ -1,17 +1,15 @@
 import axios from "axios";
 import { TryError } from "../ErrorCatch";
-const apiUrl = 'http://localhost:5000/api/Movie'
-const allMovieApi = apiUrl + '/getall'
-const deleteMovie = apiUrl + '/delete/'
-const getMovieRating = apiUrl + '/getrating/'
+import { allMovieAPIUrl, deleteMovieAPIUrl, movieRatingAPIUrl } from "../api_urls";
+
 export const getMovies = () => {
-      return TryError(() => axios.get(allMovieApi));
+      return TryError(() => axios.get(allMovieAPIUrl));
 }
 
 export const deleteMovies = (id) => {
-      return TryError(() => axios.delete(deleteMovie + id));
+      return TryError(() => axios.delete(deleteMovieAPIUrl + id));
 }
 
 export const getRating = (id) => {
-      return TryError(() => axios.get(getMovieRating + id));
+      return TryError(() => axios.get(movieRatingAPIUrl + id));
 }

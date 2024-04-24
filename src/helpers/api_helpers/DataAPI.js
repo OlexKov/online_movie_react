@@ -1,12 +1,11 @@
 import axios from "axios";
 import { TryError } from "../ErrorCatch";
-const apiUrl = 'http://localhost:5000/api/Data'
-const roles = '/getroles'
-const countries = '/getcountries'
+import { countriesDataAPIUrl, rolesDataAPIUrl } from "../api_urls";
+
 export const getRoles = () => {
-      return TryError(() => axios.get(apiUrl + roles));
+      return TryError(() => axios.get(rolesDataAPIUrl));
 }
 
 export const getCountries = () => {
-      return TryError(() => axios.get(apiUrl + countries));
+      return TryError(() => axios.get(countriesDataAPIUrl));
 }
