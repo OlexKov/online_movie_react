@@ -9,7 +9,7 @@ import { Account } from './components/Account/Account';
 import { Favourite } from './components/Favourite/Favourite';
 import { MovieTable } from './components/MovieTable/MovieTable';
 import { StafTable } from './components/StafTable/StafTable';
-import { CreateEdit } from './components/CreateEdit/CreateEdit';
+import { CreateEditStaf } from './components/CreateEditStaf/CreateEditStaf';
 import Error from './components/Error/Error';
 
 function App() {
@@ -26,7 +26,7 @@ function App() {
         <Route path="favourite" element={<Favourite />} />
         <Route path="movietable" element={<MovieTable />} />
         <Route path="staftable" element={<StafTable />} />
-        <Route path="create-edit/:id" element={<CreateEdit />} />
+        <Route path="create-edit/:id" element={<CreateEditStaf />} />
         <Route path="error/:status/:title/:subTitle/:location" element={<Error />} />
         <Route path="*" element={
           <Error

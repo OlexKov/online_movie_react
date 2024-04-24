@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import '../MovieTable/MovieTable.css'
 import axios from 'axios';
-import { getAllMovie } from '../../helpers/api_helpers/MovieAPI';
+import { getMovies } from '../../helpers/api_helpers/MovieAPI';
 
 
 const getRatingApi = 'http://localhost:5000/api/Movie/getrating/'
@@ -84,7 +84,7 @@ export const MovieTable = () => {
   const navigate = useNavigate();
   useEffect(() => {
     (async () => {
-      const result = await getAllMovie();
+      const result = await getMovies();
       if(result)
          setMovies(await setRating(result));
     })();
