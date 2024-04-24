@@ -67,9 +67,9 @@ export const CreateEditStaf = () => {
       name: data.name,
       surname: data.surname,
       countryId: data.countryId,
-      birthdate: dayjs(data.birthdate, dateFormat),
-      movies: data.movies.map(x => x.id),
-      roles: data.roles.map(x => x.id),
+      birthdate: data.birthdate? dayjs(data.birthdate, dateFormat):null ,
+      movies: data.movies?.map(x => x.id),
+      roles: data.roles?.map(x => x.id),
       description: data.description,
       isoscar: data.isOscar
     });
@@ -299,7 +299,7 @@ export const CreateEditStaf = () => {
                       message: 'Введіть інформацію про актора'
                     },
                     {
-                      min: 10,
+                      min: 20,
                       message: 'Опис має містити не менше 20 символів'
                     },
                   ]}
