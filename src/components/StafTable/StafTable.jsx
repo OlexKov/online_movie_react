@@ -57,7 +57,7 @@ export const StafTable = () => {
             key: 'action',
             render: (_, record) => (
                 <Space size="middle">
-                    <Button onClick={()=>navigate(`/create-edit/${record.id}`)} icon={<EditFilled />} />
+                    <Button onClick={()=>navigate(`/create-edit-staf/${record.id}`)} icon={<EditFilled />} />
                     <Popconfirm
                         title="Видалення актора"
                         description={`Ви впевненні що бажаєте видалити астора "${record.name} ${record.surname}" ?`}
@@ -91,7 +91,7 @@ export const StafTable = () => {
 
     return (
         <>
-           <Button className='add-button' type="primary" onClick={()=>navigate('/create-edit/create')}  icon={<PlusOutlined />}>Додати актора</Button>
+           <Button className='add-button' type="primary" onClick={()=>navigate('/create-edit-staf/create')}  icon={<PlusOutlined />}>Додати актора</Button>
            <Table dataSource={stafs} rowKey="id" columns={columns} />
         </>
        

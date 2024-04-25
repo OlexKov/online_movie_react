@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
 import { Button, Col, DatePicker, Divider, Form, Input, Row, Select, Space, Image, Upload, Checkbox, message } from 'antd';
 import { useParams } from 'react-router-dom';
@@ -60,6 +61,7 @@ export const CreateEditStaf = () => {
         }
       }
     })()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const setFormValues = (data, form) => {
@@ -158,6 +160,7 @@ export const CreateEditStaf = () => {
                   listType="text"
                   onChange={handleChange}
                   maxCount={1}
+                  beforeUpload={() => false}
                 >
                   <Button style={{ width: 290, marginTop: 25 }} type="primary" icon={<UploadOutlined />}>
                     Завантажити фото

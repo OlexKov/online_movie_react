@@ -6,11 +6,19 @@ const stafAPIUrl =  host +'/api/Staf'
 // Data APIs
 export const rolesDataAPIUrl = dataAPIUrl + '/getroles'
 export const countriesDataAPIUrl = dataAPIUrl + '/getcountries'
+export const qualitiesDataAPIUrl = dataAPIUrl + '/getqualities'
+export const genresDataAPIUrl = dataAPIUrl + '/getgenres'
+export const premiumsDataAPIUrl = dataAPIUrl + '/getpremiums'
+
 
 //Movie APIs
 export const allMovieAPIUrl = movieAPIUrl + '/getall'
 export const deleteMovieAPIUrl =  movieAPIUrl + '/delete/'
 export const movieRatingAPIUrl = movieAPIUrl + '/getrating/'
+export const movieByIdAPIUrl = movieAPIUrl + '/get/'
+export const movieScreensAPIUrl = movieAPIUrl + '/getscreens/'
+export const movieGenresAPIUrl = movieAPIUrl + '/getgenres/'
+export const movieStafsAPIUrl = movieAPIUrl + '/getstafs/'
 
 //Staf APIs
 export const allStafAPIUrl = stafAPIUrl + '/getall'

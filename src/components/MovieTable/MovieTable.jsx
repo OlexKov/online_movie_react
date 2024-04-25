@@ -62,7 +62,7 @@ export const MovieTable = () => {
       key: 'action',
       render: (_, record) => (
         <Space size="middle">
-          <Button onClick={() => navigate(`/create-edit/${record.id}`)} icon={<EditFilled />} />
+          <Button onClick={() => navigate(`/create-edit-movie/${record.id}`)} icon={<EditFilled />} />
           <Popconfirm
             title="Видалення фільму"
             description={`Ви впевненні що бажаєте видалити фільм "${record.name}" ?`}
@@ -107,7 +107,7 @@ export const MovieTable = () => {
   }
   return (
     <>
-      <Button className='add-button' type="primary" onClick={() => navigate('/create-edit/create')} icon={<PlusOutlined />}>Додати фільм</Button>
+      <Button className='add-button' type="primary" onClick={() => navigate('/create-edit-movie/create')} icon={<PlusOutlined />}>Додати фільм</Button>
       <Table dataSource={movies} rowKey="id" columns={columns} />
     </>
 

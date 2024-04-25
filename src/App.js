@@ -11,6 +11,7 @@ import { MovieTable } from './components/MovieTable/MovieTable';
 import { StafTable } from './components/StafTable/StafTable';
 import { CreateEditStaf } from './components/CreateEditStaf/CreateEditStaf';
 import Error from './components/Error/Error';
+import { CreateEditMovie } from './components/CreateEditMovie/CreateEditMovie';
 
 function App() {
   
@@ -26,7 +27,8 @@ function App() {
         <Route path="favourite" element={<Favourite />} />
         <Route path="movietable" element={<MovieTable />} />
         <Route path="staftable" element={<StafTable />} />
-        <Route path="create-edit/:id" element={<CreateEditStaf />} />
+        <Route path="create-edit-staf/:id" element={<CreateEditStaf />} />
+        <Route path="create-edit-movie/:id" element={<CreateEditMovie/>} />
         <Route path="error/:status/:title/:subTitle/:location" element={<Error />} />
         <Route path="*" element={
           <Error
