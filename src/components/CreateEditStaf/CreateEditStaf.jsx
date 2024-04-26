@@ -3,15 +3,16 @@ import React, { useEffect, useState } from 'react';
 import { Button, Col, DatePicker, Divider, Form, Input, Row, Select, Space, Image, Upload, Checkbox, message } from 'antd';
 import { useParams } from 'react-router-dom';
 import { ArrowLeftOutlined, UploadOutlined } from '@ant-design/icons';
-import { getCountries, getRoles } from '../../helpers/api_helpers/DataAPI';
-import { getMovies } from '../../helpers/api_helpers/MovieAPI';
-import { createStaf, getStaf, getStafMovies, getStafRoles, updateStaf } from '../../helpers/api_helpers/StafAPI';
+import { dataService } from '../../services/DataService';
+import { movieService } from '../../services/MovieService';
+import { stafService } from '../../services/StafService';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import dayjs from 'dayjs';
 import defImage from '../../images/nophoto.jpg'
 import axios from 'axios';
+import { dummyRequest } from '../../helpers/helpers_methods';
+import { dateFormat } from '../../helpers/constants';
 dayjs.extend(customParseFormat);
-const dateFormat = 'YYYY-MM-DD';
 
 export const CreateEditStaf = () => {
   const id = useParams().id;
@@ -42,16 +43,25 @@ export const CreateEditStaf = () => {
 
   useEffect(() => {
     (async () => {
-      await axios.all([getCountries(), getRoles(), getMovies()])
+      await axios.all(
+        [
+          dataService.getCountries(),
+          dataService.getRoles(),
+          movieService.getMovies()
+        ])
         .then(axios.spread((...res) => {
           setCountries(res[0].data);
           setRoles(res[1].data);
           setMovies(res[2].data);
         }));
       if (id !== 'create') {
-        const stf = (await getStaf(id)).data
+        const stf = (await stafService.getStaf(id)).data
         if (stf) {
-          await axios.all([getStafMovies(id), getStafRoles(id)])
+          await axios.all(
+            [
+              stafService.getStafMovies(id),
+              stafService.getStafRoles(id)
+            ])
             .then(axios.spread((...res) => {
               stf.movies = res[0].data;
               stf.roles = res[1].data;
@@ -61,7 +71,7 @@ export const CreateEditStaf = () => {
         }
       }
     })()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const setFormValues = (data, form) => {
@@ -69,7 +79,7 @@ export const CreateEditStaf = () => {
       name: data.name,
       surname: data.surname,
       countryId: data.countryId,
-      birthdate: data.birthdate? dayjs(data.birthdate, dateFormat):null ,
+      birthdate: data.birthdate ? dayjs(data.birthdate, dateFormat) : null,
       movies: data.movies?.map(x => x.id),
       roles: data.roles?.map(x => x.id),
       description: data.description,
@@ -94,10 +104,10 @@ export const CreateEditStaf = () => {
     });
 
     if (newstaf.id === 0) {
-      await createStaf(formData)
+      await stafService.createStaf(formData)
         .then(response => {
           if (response.status === 200) {
-            message.success('Актора успішно додано до бази даних');
+            message.success(`Актор "${newstaf.name} ${newstaf.suname}" успішно доданий до бази даних`);
             window.history.back()
           }
         })
@@ -105,13 +115,13 @@ export const CreateEditStaf = () => {
     }
     else {
       formData.append('imageName', staf.imageName);
-      await updateStaf(formData)
+      await stafService.updateStaf(formData)
         .then(response => {
           if (response.status === 200) {
-            message.success('Інформація успішно змінена');
+            message.success(`Інформація актора "${newstaf.name} ${newstaf.suname}" успішно змінена`);
             window.history.back()
           }
-        }).catch(error=>{console.log(error)});
+        }).catch(error => { console.log(error) });
     }
 
   }
@@ -160,7 +170,7 @@ export const CreateEditStaf = () => {
                   listType="text"
                   onChange={handleChange}
                   maxCount={1}
-                  beforeUpload={() => false}
+                  customRequest={dummyRequest}
                 >
                   <Button style={{ width: 290, marginTop: 25 }} type="primary" icon={<UploadOutlined />}>
                     Завантажити фото

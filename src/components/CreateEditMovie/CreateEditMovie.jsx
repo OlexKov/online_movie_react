@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Col, DatePicker, Divider, Form, Input, Row, Select, Space, Image, Upload, TimePicker } from 'antd';
+import { Button, Col, DatePicker, Divider, Form, Input, Row, Select, Space, Image, Upload, TimePicker, message } from 'antd';
 import { useParams } from 'react-router-dom';
 import { ArrowLeftOutlined, PlusOutlined, UploadOutlined } from '@ant-design/icons';
-import { getCountries, getGenres, getPremiums, getQualities } from '../../helpers/api_helpers/DataAPI';
-import { getMovie, getMovieGenres, getMovieScreens, getMovieStafs } from '../../helpers/api_helpers/MovieAPI';
-import { getAllStaf } from '../../helpers/api_helpers/StafAPI';
+import { dataService } from '../../services/DataService';
+import { movieService } from '../../services/MovieService';
+import { stafService } from '../../services/StafService';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import dayjs from 'dayjs';
 import defImage from '../../images/nophoto.jpg'
 import axios from 'axios';
+import { dummyRequest } from '../../helpers/helpers_methods';
+import { dateFormat, dateTimeFormat, timeFormat } from '../../helpers/constants';
 dayjs.extend(customParseFormat);
-const dateFormat = 'YYYY-MM-DD';
-const timeFormat = 'hh-mm-ss';
 
 export const CreateEditMovie = () => {
     const id = useParams().id;
@@ -46,7 +46,14 @@ export const CreateEditMovie = () => {
 
     useEffect(() => {
         (async () => {
-            await axios.all([getCountries(), getAllStaf(), getGenres(), getPremiums(), getQualities()])
+            await axios.all(
+                [
+                    dataService.getCountries(),
+                    stafService.getAllStaf(),
+                    dataService.getGenres(),
+                    dataService.getPremiums(),
+                    dataService.getQualities()
+                ])
                 .then(axios.spread((...res) => {
                     setCountries(res[0].data);
                     setStafs(res[1].data);
@@ -55,9 +62,14 @@ export const CreateEditMovie = () => {
                     setQualities(res[4].data);
                 }));
             if (id !== 'create') {
-                const movie = (await getMovie(id)).data
+                const movie = (await movieService.getMovie(id)).data
                 if (movie) {
-                    await axios.all([getMovieGenres(id), getMovieScreens(id), getMovieStafs(id)])
+                    await axios.all(
+                        [
+                            movieService.getMovieGenres(id),
+                            movieService.getMovieScreens(id),
+                            movieService.getMovieStafs(id)
+                        ])
                         .then(axios.spread((...res) => {
                             movie.genres = res[0].data;
                             movie.screenShots = res[1].data;
@@ -72,6 +84,8 @@ export const CreateEditMovie = () => {
     }, []);
 
     const setFormValues = (data, form) => {
+        const scrns = data.screenShots?.map(x => { return { uid: x.id, name: x.name, status: 'done', url: x.name } })
+        setScreensFiles(scrns)
         form.setFieldsValue({
             name: data.name,
             originalName: data.originalName,
@@ -85,47 +99,63 @@ export const CreateEditMovie = () => {
             premiumId: data.premiumId,
             poster: data.poster,
             movieUrl: data.movieUrl,
-            trailerUrl: data.trailerUrl
+            trailerUrl: data.trailerUrl,
+            screens: scrns
         });
-        setScreensFiles(data.screenShots?.map(x => { return { uid: x.id, name: x.name, status: 'done', url: x.name } }))
     }
 
     const [form] = Form.useForm();
 
     const onFinish = async () => {
-        console.log(form.getFieldsValue());
-        // let newmovie = form.getFieldsValue();
-        // newmovie.id = movie.id || 0
-        // newmovie.date = new Date(Date.parse(newmovie.date)).toLocaleDateString()
-        // let formData = new FormData();
-        // Object.keys(newmovie).forEach(function (key) {
-        //   if (key === 'posterFile')
-        //     formData.append(key, newmovie[key]?.originFileObj)
-        //   if (key === 'genres' || key === 'stafs')
-        //     newmovie[key].forEach(x => formData.append(key, x))
-        //   formData.append(key, newmovie[key]);
-        // });
+        let newmovie = form.getFieldsValue();
+        newmovie.id = movie.id || 0
+        let formData = new FormData();
 
-        // if (newmovie.id === 0) {
-        //   await createStaf(formData)
-        //     .then(response => {
-        //       if (response.status === 200) {
-        //         message.success('Актора успішно додано до бази даних');
-        //         window.history.back()
-        //       }
-        //     })
+        const durationDate = dayjs(newmovie.date)
+            .set('hour', newmovie.duration.get('hour'))
+            .set('minute', newmovie.duration.get('minute'))
+            .format(dateTimeFormat)
+        formData.append('dateDuration', durationDate)
 
-        // }
-        // else {
-        //   formData.append('imageName', staf.imageName);
-        //   await updateStaf(formData)
-        //     .then(response => {
-        //       if (response.status === 200) {
-        //         message.success('Інформація успішно змінена');
-        //         window.history.back()
-        //       }
-        //     }).catch(error=>{console.log(error)});
-        // }
+        Object.keys(newmovie).forEach(function (key) {
+            if (key !== 'date' && key !== 'duration') {
+                if (key === 'posterFile')
+                    formData.append(key, newmovie[key]?.originFileObj)
+                else if (key === 'genres' || key === 'stafs')
+                    newmovie[key].forEach(x => formData.append(key, x))
+                else if (key === 'screens') {
+                    const scrns = newmovie[key].fileList ? newmovie[key].fileList : newmovie[key]
+                    scrns.forEach(x => {
+                        if (x.originFileObj)
+                            formData.append(key, x.originFileObj)
+                        else
+                            formData.append('screenShots', x.uid)
+                    })
+                }
+                formData.append(key, newmovie[key]);
+            }
+        });
+
+        if (newmovie.id === 0) {
+            await movieService.createMovie(formData)
+                .then(response => {
+                    if (response.status === 200) {
+                        message.success(`Фільм "${newmovie.name}" успішно додано до бази даних`);
+                        window.history.back()
+                    }
+                })
+
+        }
+        else {
+            formData.append('poster', movie.poster);
+            await movieService.updateMovie(formData)
+                .then(response => {
+                    if (response.status === 200) {
+                        message.success(`Інформація про фільм "${newmovie.name}" успішно змінена`);
+                        window.history.back()
+                    }
+                }).catch(error => { console.log(error) });
+        }
 
     }
 
@@ -140,7 +170,9 @@ export const CreateEditMovie = () => {
         setPosterFile(newFile);
     };
 
-    const handleChangeScreens = async ({ fileList: newFileList }) => setScreensFiles(newFileList);
+    const handleChangeScreens = async ({ fileList: newFileList }) => {
+        setScreensFiles(newFileList);
+    }
 
     const getBase64 = (file) =>
         new Promise((resolve, reject) => {
@@ -180,7 +212,7 @@ export const CreateEditMovie = () => {
                                 <Upload
                                     listType="text"
                                     onChange={handleChange}
-                                    beforeUpload={() => false}
+                                    customRequest={dummyRequest}
                                     maxCount={1}
                                 >
                                     <Button style={{ width: 290, marginTop: 25 }} type="primary" icon={<UploadOutlined />}>
@@ -447,7 +479,7 @@ export const CreateEditMovie = () => {
                                 rules={[
                                     () => ({
                                         validator() {
-                                            if (screensFiles.length!==0) {
+                                            if (screensFiles.length !== 0) {
                                                 return Promise.resolve();
                                             }
                                             return Promise.reject(new Error('Завантажте як мінімум один скріншот'));
@@ -462,7 +494,6 @@ export const CreateEditMovie = () => {
                                     onChange={handleChangeScreens}
                                     multiple={true}
                                     beforeUpload={() => false}
-
                                 >
                                     {screensFiles?.length >= 15 ? null : uploadButton}
                                 </Upload>

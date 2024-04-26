@@ -3,7 +3,7 @@ import { Button, Popconfirm, Rate, Space, Table, message } from 'antd';
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import '../MovieTable/MovieTable.css'
-import { getMovies, getRating } from '../../helpers/api_helpers/MovieAPI';
+import {  movieService } from '../../services/MovieService';
 import axios from 'axios';
 
 export const MovieTable = () => {
@@ -66,7 +66,7 @@ export const MovieTable = () => {
           <Popconfirm
             title="Видалення фільму"
             description={`Ви впевненні що бажаєте видалити фільм "${record.name}" ?`}
-            onConfirm={() => deleteMovie(record)}
+            onConfirm={() => movieDelete(record)}
             okText="Так"
             cancelText="Ні"
           >
@@ -80,14 +80,14 @@ export const MovieTable = () => {
   const navigate = useNavigate();
   useEffect(() => {
     (async () => {
-      const result = (await getMovies()).data;
+      const result = (await movieService.getMovies()).data;
       if (result)
         setMovies(await setRating(result));
     })();
   }, []);
 
-  async function deleteMovie(movie) {
-    return await deleteMovie(movie.id)
+  async function movieDelete(movie) {
+    return await movieService.deleteMovie(movie.id)
       .then((response) => {
         if (response.status === 200) {
           setMovies(movies.filter(x => x.id !== movie.id));
@@ -97,7 +97,7 @@ export const MovieTable = () => {
   }
 
   async function setRating(data) {
-   await axios.all(data.map(x => getRating(x.id)))
+   await axios.all(data.map(x => movieService.getRating(x.id)))
       .then(axios.spread((...res) => {
         res.forEach((val, index) => {
           data[index].rating = val.data;

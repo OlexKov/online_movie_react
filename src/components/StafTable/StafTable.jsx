@@ -3,7 +3,7 @@ import { Button, Popconfirm,  Space, Table, message } from 'antd';
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import '../StafTable/StafTable.css'
-import { getAllStaf } from '../../helpers/api_helpers/StafAPI';
+import { stafService} from '../../services/StafService';
 
 export const StafTable = () => {
     const columns = [
@@ -61,7 +61,7 @@ export const StafTable = () => {
                     <Popconfirm
                         title="Видалення актора"
                         description={`Ви впевненні що бажаєте видалити астора "${record.name} ${record.surname}" ?`}
-                        onConfirm={() => deleteStaf(record)}
+                        onConfirm={async() => await stafDelete(record)}
                         okText="Так"
                         cancelText="Ні"
                     >
@@ -75,12 +75,12 @@ export const StafTable = () => {
     const navigate = useNavigate();
     useEffect(() => {
         (async () => {
-            setStafs((await getAllStaf()).data);
+            setStafs((await stafService.getAllStaf()).data);
         })();
     }, []);
 
-    async function deleteStaf(staf) {
-        return  await deleteStaf(staf.id)
+    async function stafDelete(staf) {
+        return  await stafService.deleteStaf(staf.id)
             .then((response) => {
                 if (response.status === 200) {
                     setStafs(stafs.filter(x => x.id !== staf.id));
