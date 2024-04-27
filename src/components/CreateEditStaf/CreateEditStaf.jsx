@@ -13,8 +13,8 @@ import axios from 'axios';
 import { dummyRequest } from '../../helpers/helpers_methods';
 import { dateFormat } from '../../helpers/constants';
 dayjs.extend(customParseFormat);
-
 export const CreateEditStaf = () => {
+  
   const id = useParams().id;
   const [roles, setRoles] = useState([]);
   const [countries, setCountries] = useState([]);
@@ -22,7 +22,7 @@ export const CreateEditStaf = () => {
   const [movies, setMovies] = useState([]);
   const [previewImage, setPreviewImage] = useState('');
   const [file, setFile] = useState()
-
+  
   useEffect(() => {
     if (file) {
       (async () => {
@@ -36,13 +36,19 @@ export const CreateEditStaf = () => {
     else
       setPreviewImage(null);
     form.setFieldsValue({
-      imageFile: file
+      imageFile: file?.originFileObj
     })
   }, [file])
 
-
+  // const normFile = (e) => {
+  //   console.log(e.fileList)
+  //   if (Array.isArray(e)) {
+  //     return e
+  //   }
+  //   return e && e?.fileList
+  // }
   useEffect(() => {
-    (async () => {
+   (async () => {
       await axios.all(
         [
           dataService.getCountries(),
@@ -96,8 +102,6 @@ export const CreateEditStaf = () => {
     newstaf.birthdate = new Date(Date.parse(newstaf.birthdate)).toLocaleDateString()
     let formData = new FormData();
     Object.keys(newstaf).forEach(function (key) {
-      if (key === 'imageFile')
-        formData.append(key, newstaf[key]?.originFileObj)
       if (key === 'roles' || key === 'movies')
         newstaf[key].forEach(x => formData.append(key, x))
       formData.append(key, newstaf[key]);
@@ -155,7 +159,11 @@ export const CreateEditStaf = () => {
         <Form layout='vertical' form={form} name="control-hooks" onFinish={onFinish}
           className='mx-auto d-flex flex-column gap-2'>
           <div className="d-flex gap-5">
-            <Form.Item name="imageFile" label="Фото" >
+            <Form.Item name="imageFile" 
+            label="Фото" 
+           // valuePropName='file'
+          //  getValueFromEvent={normFile}
+             >
               <div style={{ width: 290 }}>
                 <Image
                   style={{ objectFit: 'cover' }}

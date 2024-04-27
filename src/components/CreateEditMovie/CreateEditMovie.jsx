@@ -39,7 +39,7 @@ export const CreateEditMovie = () => {
         else
             setPreviewPoster(null);
         form.setFieldsValue({
-            posterFile: posterFile
+            posterFile: posterFile?.originFileObj
         })
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [posterFile])
@@ -119,9 +119,8 @@ export const CreateEditMovie = () => {
 
         Object.keys(newmovie).forEach(function (key) {
             if (key !== 'date' && key !== 'duration') {
-                if (key === 'posterFile')
-                    formData.append(key, newmovie[key]?.originFileObj)
-                else if (key === 'genres' || key === 'stafs')
+               
+                if (key === 'genres' || key === 'stafs')
                     newmovie[key].forEach(x => formData.append(key, x))
                 else if (key === 'screens') {
                     const scrns = newmovie[key].fileList ? newmovie[key].fileList : newmovie[key]

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { message } from 'antd'
-
+axios.defaults.baseURL = process.env.REACT_APP_SERVER_HOST 
 export const SetupInterceptors = () => {
   axios.interceptors.request.use(
     config => config,

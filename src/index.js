@@ -9,6 +9,7 @@ import { SetupInterceptors } from './Interceptors/SetupInterceptors';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 SetupInterceptors();
+
 root.render(
   <React.StrictMode>
     <BrowserRouter>

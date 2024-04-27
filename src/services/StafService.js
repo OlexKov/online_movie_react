@@ -1,23 +1,21 @@
 import axios from "axios";
 import { TryError } from "../helpers/ErrorCatch";
-import { allStafAPIUrl, createStafAPIUrl, deleteStafAPIUrl, stafByIdAPIUrl, stafMoviesAPIUrl, stafRolesAPIUrl, updateStafAPIUrl } from "../helpers/api_urls";
 import { formPostConfig } from "../helpers/constants";
-
+const stafApiUrl = process.env.REACT_APP_STAF_API_URL;
 export const stafService = {
-    getAllStaf:() =>  TryError(() => axios.get(allStafAPIUrl)),
+    getAllStaf:() =>  TryError(() => axios.get(stafApiUrl + '/getall')),
        
-    getStaf:  (id) => TryError(() => axios.get(stafByIdAPIUrl + id)),
+    getStaf:  (id) => TryError(() => axios.get(stafApiUrl + '/get/' + id)),
        
-    getStafRoles: (id) => TryError(() => axios.get(stafRolesAPIUrl + id)),
+    getStafRoles: (id) => TryError(() => axios.get(stafApiUrl + '/getroles/' + id)),
         
-    getStafMovies: (id) => TryError(() => axios.get(stafMoviesAPIUrl + id)),
+    getStafMovies: (id) => TryError(() => axios.get(stafApiUrl + '/getmovies/' + id)),
        
-    deleteStaf: (id) => TryError(() => axios.delete(deleteStafAPIUrl + id)),
+    deleteStaf: (id) => TryError(() => axios.delete(stafApiUrl + '/delete' + id)),
       
-    createStaf : (staf) => TryError(() => axios.post(createStafAPIUrl, staf,formPostConfig)),
+    createStaf : (staf) => TryError(() => axios.post(stafApiUrl + '/create', staf,formPostConfig)),
         
-    updateStaf : (staf) => TryError(() => axios.put(updateStafAPIUrl, staf,formPostConfig))
-   
+    updateStaf : (staf) => TryError(() => axios.put(stafApiUrl + '/update', staf,formPostConfig))
 }
 
 
