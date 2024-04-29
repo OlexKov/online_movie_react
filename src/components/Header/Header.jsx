@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { Menu } from '../Menu/Menu'
 import '../Header/Header.css'
 import { Link } from 'react-router-dom'
@@ -7,7 +7,11 @@ import logo from '../../logo.png';
 import { Tooltip } from 'antd'
 
 
+
+
+
 export const Header = () => {
+  
     return (
         <>
             <img className='logo' src={logo} alt='' />
@@ -19,11 +23,13 @@ export const Header = () => {
                         <HeartOutlined className="fs-4" />
                     </Link>
                 </Tooltip>
+              
                 <Tooltip placement="bottom" title="Вхід / Реєстрація">
                     <Link to="login">
                         <LoginOutlined className="fs-4" />
                     </Link>
                 </Tooltip>
+               
             </div>
         </>
     )

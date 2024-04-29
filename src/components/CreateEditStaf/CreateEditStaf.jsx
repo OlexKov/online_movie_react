@@ -12,7 +12,9 @@ import defImage from '../../images/nophoto.jpg'
 import axios from 'axios';
 import { dummyRequest } from '../../helpers/helpers_methods';
 import { dateFormat } from '../../helpers/constants';
+import { ComboBoxData } from '../../helpers/ComboBoxData';
 dayjs.extend(customParseFormat);
+
 export const CreateEditStaf = () => {
   
   const id = useParams().id;
@@ -56,9 +58,9 @@ export const CreateEditStaf = () => {
           movieService.getMovies()
         ])
         .then(axios.spread((...res) => {
-          setCountries(res[0].data);
-          setRoles(res[1].data);
-          setMovies(res[2].data);
+          setCountries(res[0].data?.map(item => new ComboBoxData(item.id,item.name)));
+          setRoles(res[1].data?.map(item => new ComboBoxData(item.id,item.name)));
+          setMovies(res[2].data?.map(item => new ComboBoxData(item.id,item.name)));
         }));
       if (id !== 'create') {
         const stf = (await stafService.getStaf(id)).data
@@ -251,10 +253,7 @@ export const CreateEditStaf = () => {
                     <Select
                       placeholder="Оберіть країну де народився актор"
                       allowClear
-                      options={countries.map((item) => ({
-                        value: item.id,
-                        label: item.name,
-                      }))}
+                      options={countries}
                     />
                   </Form.Item>
                 </Col>
@@ -277,10 +276,7 @@ export const CreateEditStaf = () => {
                       allowClear
                       mode="multiple"
                       maxTagCount={'responsive'}
-                      options={roles.map((item) => ({
-                        value: item.id,
-                        label: item.name,
-                      }))}
+                      options={roles}
                     />
                   </Form.Item>
                 </Col>
@@ -301,10 +297,7 @@ export const CreateEditStaf = () => {
                       allowClear
                       mode="multiple"
                       maxTagCount={'responsive'}
-                      options={movies.map((item) => ({
-                        value: item.id,
-                        label: item.name,
-                      }))}
+                      options={movies}
                     />
                   </Form.Item>
                 </Col>

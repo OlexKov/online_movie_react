@@ -11,7 +11,10 @@ import defImage from '../../images/nophoto.jpg'
 import axios from 'axios';
 import { dummyRequest } from '../../helpers/helpers_methods';
 import { dateFormat, dateTimeFormat, timeFormat } from '../../helpers/constants';
+import { ComboBoxData } from '../../helpers/ComboBoxData';
 dayjs.extend(customParseFormat);
+
+
 
 export const CreateEditMovie = () => {
     const id = useParams().id;
@@ -55,11 +58,11 @@ export const CreateEditMovie = () => {
                     dataService.getQualities()
                 ])
                 .then(axios.spread((...res) => {
-                    setCountries(res[0].data);
-                    setStafs(res[1].data);
-                    setGenres(res[2].data);
-                    setPremiums(res[3].data);
-                    setQualities(res[4].data);
+                    setCountries(res[0].data?.map(item => new ComboBoxData(item.id,item.name)));
+                    setStafs(res[1].data?.map(item => new ComboBoxData(item.id,`${item.name} ${item.surname}`)));
+                    setGenres(res[2].data?.map(item => new ComboBoxData(item.id,item.name)));
+                    setPremiums(res[3].data?.map(item => new ComboBoxData(item.id,item.name)));
+                    setQualities(res[4].data?.map(item => new ComboBoxData(item.id,item.name)));
                 }));
             if (id !== 'create') {
                 const movie = (await movieService.getMovie(id)).data
@@ -285,10 +288,7 @@ export const CreateEditMovie = () => {
                                         <Select
                                             placeholder="Оберіть країну"
                                             allowClear
-                                            options={countries.map((item) => ({
-                                                value: item.id,
-                                                label: item.name,
-                                            }))}
+                                            options={countries}
                                         />
                                     </Form.Item>
                                 </Col>
@@ -326,10 +326,7 @@ export const CreateEditMovie = () => {
                                         <Select
                                             placeholder="Оберіть якість відео"
                                             allowClear
-                                            options={qualities.map((item) => ({
-                                                value: item.id,
-                                                label: item.name,
-                                            }))}
+                                            options={qualities}
                                         />
                                     </Form.Item>
                                 </Col>
@@ -347,10 +344,7 @@ export const CreateEditMovie = () => {
                                         <Select
                                             placeholder="Оберіть преміум аккаунт"
                                             allowClear
-                                            options={premiums.map((item) => ({
-                                                value: item.id,
-                                                label: item.name,
-                                            }))}
+                                            options={premiums}
                                         />
                                     </Form.Item>
                                 </Col>
@@ -375,10 +369,7 @@ export const CreateEditMovie = () => {
                                             allowClear
                                             mode="multiple"
                                             maxTagCount={'responsive'}
-                                            options={genres.map((item) => ({
-                                                value: item.id,
-                                                label: item.name,
-                                            }))}
+                                            options={genres}
                                         />
                                     </Form.Item>
                                 </Col>
@@ -399,10 +390,7 @@ export const CreateEditMovie = () => {
                                             allowClear
                                             mode="multiple"
                                             maxTagCount={'responsive'}
-                                            options={stafs.map((item) => ({
-                                                value: item.id,
-                                                label: `${item.name} ${item.surname} `,
-                                            }))}
+                                            options={stafs}
                                         />
                                     </Form.Item>
                                 </Col>

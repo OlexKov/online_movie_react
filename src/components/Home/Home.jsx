@@ -7,14 +7,13 @@ export const Home = () => {
   useEffect(() => {
     (async () => {
       const result = (await movieService.getMovies()).data;
-      if(result)
-          setMovies(result);
+      setMovies(result);
     })();
   }, []);
 
   return (
     <>
-      {movies.map(x => <div key={x.id}>{x.name}</div>)}
+      {movies?.map(x => <div key={x.id}>{x.name}</div>)}
     </>
   )
 }
