@@ -3,9 +3,10 @@
 }
 
 .add-button{
+  width: auto;
   position: fixed;
   top:80px;
-  right: 10px;
+  right: 20px;
   z-index: 10;
   box-shadow: 5px 5px 5px gray;
 }

@@ -49,6 +49,7 @@ export const Menu = () => {
                 setCurrent(location.pathname);
             }
         }
+        console.log('location changet',current)
     }, [location, current]);
 
     useEffect(()=>{
@@ -60,6 +61,7 @@ export const Menu = () => {
        else if(userMethods.isUser(user))
            itemArray = items.filter(x=>x.user==="User" || x.user==="All")
          setMenuItems(itemArray)
+         console.log('menu filtered')
     },[user]);
 
     function handleClick(e) {

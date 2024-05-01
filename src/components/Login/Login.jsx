@@ -7,7 +7,7 @@ import '../Login/Login.css'
 import { accountService } from '../../services/AccountService';
 import { useDispatch } from "react-redux";
 import { setUserData } from '../store/userDataSlice'; 
-import { storangeService } from '../../services/StorangeService';
+import { storageService } from '../../services/StorageService';
 
 
 
@@ -19,8 +19,8 @@ export const Login = () => {
     const responce = await accountService.login(values.email,values.password);
     if(responce.status === 200){
      if(values.remember)
-       storangeService.saveTokens(responce.data.accessToken,responce.data.refreshToken);
-     else storangeService.setTemporalyTokens(responce.data.accessToken,responce.data.refreshToken)
+       storageService.saveTokens(responce.data.accessToken,responce.data.refreshToken);
+     else storageService.setTemporalyTokens(responce.data.accessToken,responce.data.refreshToken)
      dispather(setUserData({token:responce.data.accessToken}))
      navigate('/')
     }
@@ -50,6 +50,10 @@ export const Login = () => {
               {
                 required: true,
                 message: "Будьласка введіть логін!",
+              },
+              {
+                type: 'email',
+                message: "Невірно введена пошта!",
               },
             ]}
           >

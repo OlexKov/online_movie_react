@@ -39,3 +39,9 @@ export const userMethods = {
 
         isUser: (userData) => (userData != null && userData?.roles?.includes('User')) || false,
 }
+
+export const dummyRequest = ({ file, onSuccess }) => {
+    setTimeout(() => {
+      onSuccess("ok");
+    }, 0);
+  };

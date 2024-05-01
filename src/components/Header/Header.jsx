@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux'
 import { useDispatch } from "react-redux";
 import { clearUserData } from '../store/userDataSlice';
 import { accountService } from '../../services/AccountService';
-import { storangeService } from '../../services/StorangeService';
+import { storageService } from '../../services/StorageService';
 
 
 export const Header = () => {
@@ -17,12 +17,11 @@ export const Header = () => {
     const dispather = useDispatch();
     const navigate = useNavigate()
     const logout =  async() => {
-        const responce = await accountService.logout(storangeService.getRefreshToken());
+        console.log('logout')
+        const responce = await accountService.logout(storageService.getRefreshToken());
         if(responce?.status === 200){
+            storageService.removeTokens();
             dispather(clearUserData())
-            storangeService.removeTokens();
-            dispather(clearUserData())
-            storangeService.removeTokens();
             navigate('/')
         }
     }
@@ -65,7 +64,7 @@ export const Header = () => {
                         <UserOutlined className="fs-4 fw-bold text-primary"></UserOutlined>
                     </Dropdown>
                 }
-                <h5 className=' text-white-50'> {user?.name} {user?.surname}</h5>
+                <h6 className=' text-white-50'> {user?.name} {user?.surname}</h6>
             </div>
         </>
     )

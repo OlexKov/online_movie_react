@@ -2,7 +2,7 @@
 const accessKey = process.env.REACT_APP_ACCESS_KEY;
 const refreshKey = process.env.REACT_APP_REFRESH_KEY;
 
-export const storangeService = {
+export const storageService = {
 
 
     saveTokens: (accessToken, refreshToken) => {

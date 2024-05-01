@@ -10,9 +10,9 @@ import customParseFormat from 'dayjs/plugin/customParseFormat';
 import dayjs from 'dayjs';
 import defImage from '../../images/nophoto.jpg'
 import axios from 'axios';
-import { dummyRequest } from '../../helpers/helpers_methods';
 import { dateFormat } from '../../helpers/constants';
 import { ComboBoxData } from '../../helpers/ComboBoxData';
+import { dummyRequest } from '../../helpers/methods';
 dayjs.extend(customParseFormat);
 
 export const CreateEditStaf = () => {

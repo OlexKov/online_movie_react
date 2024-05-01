@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { message } from 'antd'
-import { storangeService } from '../services/StorangeService';
+import { storageService } from '../services/StorageService';
 import { accountService } from '../services/AccountService';
 
 axios.defaults.baseURL = process.env.REACT_APP_SERVER_HOST
@@ -8,7 +8,7 @@ export const SetupInterceptors = () => {
   axios.interceptors.request.use(
     async config => {
       config.headers = {
-        'Authorization': `Bearer ${storangeService.getAccessToken()}`,
+        'Authorization': `Bearer ${storageService.getAccessToken()}`,
       }
       return config
     },
@@ -26,8 +26,8 @@ export const SetupInterceptors = () => {
         case 401:{
           const originalRequest = error.config;
           if (!originalRequest.url?.includes('refreshtokens') && !originalRequest._retry) {
-            const responce = await accountService.refresh(storangeService.getAccessToken(),storangeService.getRefreshToken())
-            storangeService.saveTokens(responce.data.accessToken,responce.data.refreshToken)
+            const responce = await accountService.refresh(storageService.getAccessToken(),storageService.getRefreshToken())
+            storageService.saveTokens(responce.data.accessToken,responce.data.refreshToken)
             originalRequest._retry = true;
             if(originalRequest.url?.includes('logout')){
               originalRequest.data = {token:responce.data.refreshToken}
@@ -39,7 +39,7 @@ export const SetupInterceptors = () => {
             return axios(originalRequest);
           }
           else{
-            storangeService.removeTokens();
+            storageService.removeTokens();
             window.history.push('/login')
           }
         }
