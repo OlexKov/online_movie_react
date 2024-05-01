@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { HomeOutlined, TableOutlined, UnorderedListOutlined, UserOutlined } from '@ant-design/icons';
+import { HomeOutlined,  InfoCircleOutlined,  TableOutlined, UserOutlined } from '@ant-design/icons';
 import { Menu as AntMenu,} from 'antd';
 import { Link, useLocation } from 'react-router-dom';
 import '../Menu/Menu.css'
@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux';
 
 const items = [
     {
-        key: "/home",
+        key: "/",
         icon:<HomeOutlined />,
         label:<Link className='link' to="/">Домашня сторінка</Link>,
         user: 'All'
@@ -28,7 +28,7 @@ const items = [
     },
     {
         key: "/about",
-        icon:<UnorderedListOutlined />,
+        icon:<InfoCircleOutlined/>,
         label:<Link className='link' to="/about"><span>Про нас</span></Link>,
         user: 'All'
     }
@@ -39,8 +39,8 @@ export const Menu = () => {
     const [menuItems,setMenuItems] = useState(items.filter(x=>x.user==='All'))
     const location = useLocation();
     const [current, setCurrent] = useState(
-        location.pathname === "/" || location.pathname === ""
-            ? "/home"
+            location.pathname === ""
+            ? "/"
             : location.pathname,
     );
     useEffect(() => {
@@ -61,7 +61,6 @@ export const Menu = () => {
        else if(userMethods.isUser(user))
            itemArray = items.filter(x=>x.user==="User" || x.user==="All")
          setMenuItems(itemArray)
-         console.log('menu filtered')
     },[user]);
 
     function handleClick(e) {
@@ -72,7 +71,7 @@ export const Menu = () => {
             onClick={handleClick}
             theme="dark"
             mode="horizontal"
-            defaultSelectedKeys={[current]}
+            defaultSelectedKeys={current}
             className='menu'
             items = { menuItems }
         />)

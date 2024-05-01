@@ -2,48 +2,50 @@
 const accessKey = process.env.REACT_APP_ACCESS_KEY;
 const refreshKey = process.env.REACT_APP_REFRESH_KEY;
 
+const clearSessionStorage = () =>{
+    sessionStorage.removeItem(accessKey);
+    sessionStorage.removeItem(refreshKey);
+}
+
+const setSessionStorage = (accessToken, refreshToken) =>{
+    sessionStorage.setItem(accessKey, accessToken);
+    sessionStorage.setItem(refreshKey, refreshToken);
+}
+
+const setLocalStorage = (accessToken, refreshToken) =>{
+    localStorage.setItem(accessKey, accessToken);
+    localStorage.setItem(refreshKey, refreshToken);
+}
+
+const clearLocalStorage = () =>{
+    localStorage.removeItem(accessKey);
+    localStorage.removeItem(refreshKey);
+}
+
+const isSessionStorage =  () => sessionStorage.getItem(accessKey) !== null
+
 export const storageService = {
 
 
     saveTokens: (accessToken, refreshToken) => {
-        const tempAccessToken = sessionStorage.getItem(accessKey);
-        if(tempAccessToken){
-          sessionStorage.setItem(accessKey, accessToken);
-          sessionStorage.setItem(refreshKey, refreshToken);
+        if(isSessionStorage()){
+            setSessionStorage(accessToken, refreshToken)
+            clearLocalStorage();
         }
         else{
-            localStorage.setItem(accessKey, accessToken);
-            localStorage.setItem(refreshKey, refreshToken);
-            sessionStorage.removeItem(accessKey);
-            sessionStorage.removeItem(refreshKey);
+            setLocalStorage(accessToken, refreshToken)
+            clearSessionStorage()
         }
     },
 
-    getAccessToken: () => {
-        const tempAccessToken = sessionStorage.getItem(accessKey);
-        return tempAccessToken
-            ? tempAccessToken
-            : localStorage.getItem(accessKey)
-    },
-
-    getRefreshToken: () => {
-        const tempRefreshToken = sessionStorage.getItem(refreshKey)
-        return tempRefreshToken
-            ? tempRefreshToken
-            : localStorage.getItem(refreshKey)
-    },
-
-    setTemporalyTokens: (accessToken, refreshToken) => {
-        sessionStorage.setItem(accessKey, accessToken);
-        sessionStorage.setItem(refreshKey, refreshToken);
-    },
-
+    getAccessToken: () =>  sessionStorage.getItem(accessKey) || localStorage.getItem(accessKey),
+   
+    getRefreshToken: () => sessionStorage.getItem(refreshKey) || localStorage.getItem(refreshKey),
+   
+    setTemporalyTokens: (accessToken, refreshToken) =>  setSessionStorage(accessToken, refreshToken),
+   
     removeTokens: () => {
-        localStorage.removeItem(accessKey);
-        localStorage.removeItem(refreshKey);
-        sessionStorage.removeItem(accessKey);
-        sessionStorage.removeItem(refreshKey);
+        clearLocalStorage()
+        clearSessionStorage()
     }
-
-
 }

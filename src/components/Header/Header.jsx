@@ -2,24 +2,24 @@
 import { Menu } from '../Menu/Menu'
 import '../Header/Header.css'
 import { Link, useNavigate } from 'react-router-dom'
-import { HeartOutlined, LoginOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons'
+import { AndroidOutlined, HeartOutlined, LoginOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons'
 import logo from '../../logo.png';
-import { Dropdown, Tooltip } from 'antd'
+import { Button, Dropdown, Tooltip } from 'antd'
 import { useSelector } from 'react-redux'
 import { useDispatch } from "react-redux";
 import { clearUserData } from '../store/userDataSlice';
 import { accountService } from '../../services/AccountService';
 import { storageService } from '../../services/StorageService';
+import { userMethods } from '../../helpers/methods';
 
 
 export const Header = () => {
     const user = useSelector(state => state.user.data)
     const dispather = useDispatch();
     const navigate = useNavigate()
-    const logout =  async() => {
-        console.log('logout')
+    const logout = async () => {
         const responce = await accountService.logout(storageService.getRefreshToken());
-        if(responce?.status === 200){
+        if (responce?.status === 200) {
             storageService.removeTokens();
             dispather(clearUserData())
             navigate('/')
@@ -28,13 +28,13 @@ export const Header = () => {
     const items = [
         {
             label: <Link to="">
-                Мій акаунт
+                <Button type="link">Мій акаунт</Button>
             </Link>,
             key: '0',
             icon: <UserOutlined />
         },
         {
-            label: <span onClick={logout}>Вийти</span>,
+            label: <Button onClick={logout} type="link">Вийти</Button>,
             key: '1',
             icon: <LogoutOutlined />
         }
@@ -46,7 +46,7 @@ export const Header = () => {
             <img className='logo' src={logo} alt='' />
             <h3 className='title'>Online movie</h3>
             <Menu />
-            <div className='d-flex gap-4 align-items-center'>
+            <div className='d-flex gap-4 align-items-baseline'>
                 <Tooltip placement="bottom" title="Улюблені">
                     <Link to="favourite">
                         <HeartOutlined className="fs-4 fw-bold" />
@@ -61,10 +61,15 @@ export const Header = () => {
                         menu={{ items }}
                         trigger={['click']}
                     >
-                        <UserOutlined className="fs-4 fw-bold text-primary"></UserOutlined>
+                        <div className='d-flex gap-3 align-items-center'>
+                           {(userMethods.isAdmin(user) && <AndroidOutlined className="fs-4 fw-bold text-primary"/>)
+                             || <UserOutlined className="fs-4 fw-bold text-primary"/> }
+                            <span className=' text-primary fs-6'> {user?.name} {user?.surname}</span>
+                        </div>
+
                     </Dropdown>
                 }
-                <h6 className=' text-white-50'> {user?.name} {user?.surname}</h6>
+
             </div>
         </>
     )
