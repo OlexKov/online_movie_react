@@ -10,3 +10,7 @@
     color: rgb(185, 158, 158);
     align-self: center;
 }
+
+Button{
+    width: 100px;
+}

@@ -6,15 +6,18 @@ import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter } from 'react-router-dom';
 import { SetupInterceptors } from './Interceptors/SetupInterceptors';
-import StorangeService from './services/StorangeService';
+import { Provider } from 'react-redux';
+import {store} from '../src/components/store/store'
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-export const storangeService =  new StorangeService() 
+
 SetupInterceptors();
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <App />
+      <Provider store={store}>
+        <App />
+      </Provider>
     </BrowserRouter>
   </React.StrictMode>
 );

@@ -82,6 +82,7 @@ export const StafTable = () => {
     async function stafDelete(staf) {
         return  await stafService.deleteStaf(staf.id)
             .then((response) => {
+              
                 if (response.status === 200) {
                     setStafs(stafs.filter(x => x.id !== staf.id));
                     message.success(`Актор "${staf.name} ${staf.surname}" успішно видалений `)

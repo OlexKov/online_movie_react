@@ -1,35 +1,71 @@
-import React, { useRef } from 'react'
+
 import { Menu } from '../Menu/Menu'
 import '../Header/Header.css'
-import { Link } from 'react-router-dom'
-import { HeartOutlined, LoginOutlined } from '@ant-design/icons'
+import { Link, useNavigate } from 'react-router-dom'
+import { HeartOutlined, LoginOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons'
 import logo from '../../logo.png';
-import { Tooltip } from 'antd'
-
-
-
+import { Dropdown, Tooltip } from 'antd'
+import { useSelector } from 'react-redux'
+import { useDispatch } from "react-redux";
+import { clearUserData } from '../store/userDataSlice';
+import { accountService } from '../../services/AccountService';
+import { storangeService } from '../../services/StorangeService';
 
 
 export const Header = () => {
-  
+    const user = useSelector(state => state.user.data)
+    const dispather = useDispatch();
+    const navigate = useNavigate()
+    const logout =  async() => {
+        const responce = await accountService.logout(storangeService.getRefreshToken());
+        if(responce?.status === 200){
+            dispather(clearUserData())
+            storangeService.removeTokens();
+            dispather(clearUserData())
+            storangeService.removeTokens();
+            navigate('/')
+        }
+    }
+    const items = [
+        {
+            label: <Link to="">
+                Мій акаунт
+            </Link>,
+            key: '0',
+            icon: <UserOutlined />
+        },
+        {
+            label: <span onClick={logout}>Вийти</span>,
+            key: '1',
+            icon: <LogoutOutlined />
+        }
+    ]
+
+
     return (
         <>
             <img className='logo' src={logo} alt='' />
             <h3 className='title'>Online movie</h3>
             <Menu />
-            <div className='d-flex gap-4'>
+            <div className='d-flex gap-4 align-items-center'>
                 <Tooltip placement="bottom" title="Улюблені">
                     <Link to="favourite">
-                        <HeartOutlined className="fs-4" />
+                        <HeartOutlined className="fs-4 fw-bold" />
                     </Link>
                 </Tooltip>
-              
-                <Tooltip placement="bottom" title="Вхід / Реєстрація">
+                {(!user && <Tooltip placement="bottom" title="Вхід / Реєстрація">
                     <Link to="login">
-                        <LoginOutlined className="fs-4" />
+                        <LoginOutlined className="fs-4 fw-bold" />
                     </Link>
-                </Tooltip>
-               
+                </Tooltip>) ||
+                    <Dropdown
+                        menu={{ items }}
+                        trigger={['click']}
+                    >
+                        <UserOutlined className="fs-4 fw-bold text-primary"></UserOutlined>
+                    </Dropdown>
+                }
+                <h5 className=' text-white-50'> {user?.name} {user?.surname}</h5>
             </div>
         </>
     )

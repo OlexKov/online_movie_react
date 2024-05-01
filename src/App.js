@@ -30,12 +30,12 @@ function App() {
         <Route path="create-edit-staf/:id" element={<CreateEditStaf />} />
         <Route path="create-edit-movie/:id" element={<CreateEditMovie/>} />
         <Route path="error/:status/:title/:subTitle/:location" element={<Error />} />
-        <Route path="*" element={
+        {/* <Route path="*" element={
           <Error
             status="404"
             title="404"
             subTitle="Вибачте, сторінкт на яку ви намагаєтесь перейти не існує."
-          />} />
+          />} /> */}
       </Route>
     </Routes>
   );

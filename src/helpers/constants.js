@@ -6,3 +6,8 @@ export const formPostConfig = {
         enctype: 'multipart/form-data'
     },
 };
+export const postBodyConfig = {
+    headers: {
+        enctype: 'application/json',
+        accept: 'application/json'
+    }}

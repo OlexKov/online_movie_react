@@ -1,27 +1,30 @@
 import React from 'react';
 import { Button, Checkbox, Divider, Form, Input } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
-import { storangeService } from '../../index'
-import { Link } from 'react-router-dom';
+
+import { Link, useNavigate } from 'react-router-dom';
 import '../Login/Login.css'
 import { accountService } from '../../services/AccountService';
+import { useDispatch } from "react-redux";
+import { setUserData } from '../store/userDataSlice'; 
+import { storangeService } from '../../services/StorangeService';
 
-const onFinish = async (values) => {
-   const responce = await accountService.login(values.email,values.password);
-   if(responce.status === 200){
-    if(values.remember)
-      storangeService.saveTokens(responce.data.accessToken,responce.data.refreshToken);
-    else storangeService.setTemporalyTokens(responce.data.accessToken,responce.data.refreshToken)
-   }
-   console.log(accountService.getUserSurname())
-};
 
-// const onFinishFailed = (errorInfo) => {
-//   console.log('Failed:', errorInfo);
-// };
+
 
 export const Login = () => {
-  
+  const dispather = useDispatch();
+  const navigate = useNavigate()
+   const onFinish = async (values) => {
+    const responce = await accountService.login(values.email,values.password);
+    if(responce.status === 200){
+     if(values.remember)
+       storangeService.saveTokens(responce.data.accessToken,responce.data.refreshToken);
+     else storangeService.setTemporalyTokens(responce.data.accessToken,responce.data.refreshToken)
+     dispather(setUserData({token:responce.data.accessToken}))
+     navigate('/')
+    }
+ }
   return (
     <>
       <Button shape="circle" onClick={() => window.history.back()} type="primary" icon={<ArrowLeftOutlined className='fs-4' />} />

@@ -16,7 +16,7 @@ import { ComboBoxData } from '../../helpers/ComboBoxData';
 dayjs.extend(customParseFormat);
 
 export const CreateEditStaf = () => {
-  
+
   const id = useParams().id;
   const [roles, setRoles] = useState([]);
   const [countries, setCountries] = useState([]);
@@ -24,7 +24,7 @@ export const CreateEditStaf = () => {
   const [movies, setMovies] = useState([]);
   const [previewImage, setPreviewImage] = useState('');
   const [file, setFile] = useState()
-  
+
   useEffect(() => {
     if (file) {
       (async () => {
@@ -50,7 +50,7 @@ export const CreateEditStaf = () => {
   //   return e && e?.fileList
   // }
   useEffect(() => {
-   (async () => {
+    (async () => {
       await axios.all(
         [
           dataService.getCountries(),
@@ -58,9 +58,9 @@ export const CreateEditStaf = () => {
           movieService.getMovies()
         ])
         .then(axios.spread((...res) => {
-          setCountries(res[0].data?.map(item => new ComboBoxData(item.id,item.name)));
-          setRoles(res[1].data?.map(item => new ComboBoxData(item.id,item.name)));
-          setMovies(res[2].data?.map(item => new ComboBoxData(item.id,item.name)));
+          setCountries(res[0].data?.map(item => new ComboBoxData(item.id, item.name)));
+          setRoles(res[1].data?.map(item => new ComboBoxData(item.id, item.name)));
+          setMovies(res[2].data?.map(item => new ComboBoxData(item.id, item.name)));
         }));
       if (id !== 'create') {
         const stf = (await stafService.getStaf(id)).data
@@ -110,24 +110,19 @@ export const CreateEditStaf = () => {
     });
 
     if (newstaf.id === 0) {
-      await stafService.createStaf(formData)
-        .then(response => {
-          if (response.status === 200) {
-            message.success(`Актор "${newstaf.name} ${newstaf.suname}" успішно доданий до бази даних`);
-            window.history.back()
-          }
-        })
-
+      const responce = await stafService.createStaf(formData)
+      if (responce?.status === 200) {
+        message.success(`Актор "${newstaf.name} ${newstaf.suname}" успішно доданий до бази даних`);
+        window.history.back()
+      }
     }
     else {
       formData.append('imageName', staf.imageName);
-      await stafService.updateStaf(formData)
-        .then(response => {
-          if (response.status === 200) {
-            message.success(`Інформація актора "${newstaf.name} ${newstaf.suname}" успішно змінена`);
-            window.history.back()
-          }
-        }).catch(error => { console.log(error) });
+      const responce = await stafService.updateStaf(formData)
+      if (responce?.status === 200) {
+        message.success(`Інформація актора "${newstaf.name} ${newstaf.suname}" успішно змінена`);
+        window.history.back()
+      }
     }
 
   }
@@ -161,11 +156,11 @@ export const CreateEditStaf = () => {
         <Form layout='vertical' form={form} name="control-hooks" onFinish={onFinish}
           className='mx-auto d-flex flex-column gap-2'>
           <div className="d-flex gap-5">
-            <Form.Item name="imageFile" 
-            label="Фото" 
-           // valuePropName='file'
-          //  getValueFromEvent={normFile}
-             >
+            <Form.Item name="imageFile"
+              label="Фото"
+            // valuePropName='file'
+            //  getValueFromEvent={normFile}
+            >
               <div style={{ width: 290 }}>
                 <Image
                   style={{ objectFit: 'cover' }}

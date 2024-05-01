@@ -11,7 +11,7 @@ export const stafService = {
         
     getStafMovies: (id) => TryError(() => axios.get(stafApiUrl + '/getmovies/' + id)),
        
-    deleteStaf: (id) => TryError(() => axios.delete(stafApiUrl + '/delete' + id)),
+    deleteStaf: (id) => TryError(() => axios.delete(stafApiUrl + '/delete/' + id)),
       
     createStaf : (staf) => TryError(() => axios.post(stafApiUrl + '/create', staf,formPostConfig)),
         

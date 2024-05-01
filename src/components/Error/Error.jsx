@@ -7,9 +7,7 @@ const Error = ({status,title,subTitle}) => {
     const navigate = useNavigate();
     const params = useParams();
     const mainPage = params?.location === 'main';
-    console.log(mainPage)
     if(params.title){
-       
         status = params.status;
         title = params.title;
         subTitle = params.subTitle;
