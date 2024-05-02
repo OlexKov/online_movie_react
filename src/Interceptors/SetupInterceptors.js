@@ -47,8 +47,8 @@ export const SetupInterceptors = () => {
 
 
         default: {
-         const location = window.location.pathname.slice(1);
-          window.location = `/error?status=${status}&title=${status}&subTitle=${error.message}&location=${location === '' ? 'main' : location}`;
+       //  const location = window.location.pathname.slice(1);
+        //  window.location = `/error?status=${status}&title=${status}&subTitle=${error.message}&location=${location === '' ? 'main' : 'notmain'}`;
           message.error(error.message)
           if (error.response.data) {
             if (error.response.data.message)

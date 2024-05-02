@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import '../MovieTable/MovieTable.css'
 import {  movieService } from '../../services/MovieService';
 import axios from 'axios';
+import { setRating } from '../../helpers/methods';
 
 export const MovieTable = () => {
   const columns = [
@@ -96,15 +97,7 @@ export const MovieTable = () => {
       })
   }
 
-  async function setRating(data) {
-   await axios.all(data.map(x => movieService.getRating(x.id)))
-      .then(axios.spread((...res) => {
-        res.forEach((val, index) => {
-          data[index].rating = val.data;
-        })
-      }));
-    return data;
-  }
+  
   return (
     <>
       <Button className='add-button' type="primary" onClick={() => navigate('/create-edit-movie/create')} icon={<PlusOutlined />}>Додати фільм</Button>

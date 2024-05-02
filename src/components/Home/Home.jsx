@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { movieService } from '../../services/MovieService';
+import { MovieCard } from '../MovieCard/MovieCard';
+import { setRating } from '../../helpers/methods';
 
 export const Home = () => {
  
@@ -7,13 +9,14 @@ export const Home = () => {
   useEffect(() => {
     (async () => {
       const result = (await movieService.getMovies()).data;
-      setMovies(result);
+      if(result)
+         setMovies(await setRating(result));
     })();
   }, []);
-
+  
   return (
-    <>
-      {movies?.map(x => <div key={x.id}>{x.name}</div>)}
-    </>
+    <div className='d-flex flex-column gap-4'>
+      {movies?.map(x => <MovieCard key={x.id} movie={x}/>)}
+    </div>
   )
 }

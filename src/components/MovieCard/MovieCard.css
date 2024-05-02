@@ -1,0 +1,45 @@
+.movie-card{
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    padding: 20px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: lightgray;
+    background-color: rgb(238, 238, 238);
+    width: 60%;
+    margin: auto;
+}
+
+.movie-header{
+    display: flex;
+    justify-content:space-between;
+}
+
+.movie-info{
+    display: flex;
+    flex-direction: column;
+    gap:10px;
+
+}
+
+.info{
+    display: flex;
+    font-weight: bold;
+    
+   
+}
+.title{
+    font-weight: bold;
+    align-self: flex-start;
+}
+
+.value{
+   color: gray;
+   font-weight: bold;
+}
+
+.poster{
+  flex-grow: 0;
+ 
+}
