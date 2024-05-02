@@ -58,7 +58,6 @@ export const SetupInterceptors = () => {
             });
           if(error.response.data.message)
              message.error(error.response.data.message)
-
           }
 
           return Promise.reject(error.message);

@@ -47,11 +47,11 @@ export const Header = () => {
             <h3 className='title'>Online movie</h3>
             <Menu />
             <div className='d-flex gap-4 align-items-baseline'>
-                <Tooltip placement="bottom" title="Улюблені">
+               {!userMethods.isAdmin(user) && <Tooltip placement="bottom" title="Улюблені">
                     <Link to="favourite">
                         <HeartOutlined className="fs-4 fw-bold" />
                     </Link>
-                </Tooltip>
+                </Tooltip>}
                 {(!user && <Tooltip placement="bottom" title="Вхід / Реєстрація">
                     <Link to="login">
                         <LoginOutlined className="fs-4 fw-bold" />
@@ -61,10 +61,10 @@ export const Header = () => {
                         menu={{ items }}
                         trigger={['click']}
                     >
-                        <div className='d-flex gap-3 align-items-center'>
-                           {(userMethods.isAdmin(user) && <AndroidOutlined className="fs-4 fw-bold text-primary"/>)
-                             || <UserOutlined className="fs-4 fw-bold text-primary"/> }
-                            <span className=' text-primary fs-6'> {user?.name} {user?.surname}</span>
+                        <div className='user-view'>
+                           {(userMethods.isAdmin(user) && <AndroidOutlined className=' text-danger'/>)
+                             || <UserOutlined className=' text-success'/> }
+                            <span className='text-white fw-light fs-6 fst-italic'> {user?.name} {user?.surname}</span>
                         </div>
 
                     </Dropdown>

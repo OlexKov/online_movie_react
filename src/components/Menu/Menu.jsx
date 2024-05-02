@@ -12,54 +12,50 @@ const items = [
         key: "/",
         icon:<HomeOutlined />,
         label:<Link className='link' to="/">Домашня сторінка</Link>,
-        user: 'All'
+        users: ['Guest','User','Admin']
     },
+    
     {
         key: "/movietable",
         icon:<TableOutlined />,
         label:<Link  className='link' to="/movietable"><span>Фільми</span></Link>,
-        user: 'Admin'
+        users: ['Admin']
     },
     {
         key: "/staftable",
         icon:<UserOutlined /> ,
         label:<Link  className='link' to="/staftable"><span>Актори</span></Link>,
-        user: 'Admin'
+        users: ['Admin']
     },
     {
         key: "/about",
         icon:<InfoCircleOutlined/>,
         label:<Link className='link' to="/about"><span>Про нас</span></Link>,
-        user: 'All'
+        users: ['Guest','User']
     }
 ]
 
 export const Menu = () => {
     const user = useSelector(state=>state.user.data)
-    const [menuItems,setMenuItems] = useState(items.filter(x=>x.user==='All'))
+    const [menuItems,setMenuItems] = useState(items.filter(x=> x.users.includes('Guest')))
     const location = useLocation();
-    const [current, setCurrent] = useState(
-            location.pathname === ""
-            ? "/"
-            : location.pathname,
-    );
+    const [current, setCurrent] = useState(location.pathname);
     useEffect(() => {
         if (location) {
             if( current !== location.pathname ) {
                 setCurrent(location.pathname);
             }
         }
-        console.log('location changet',current)
     }, [location, current]);
 
     useEffect(()=>{
        let itemArray = null; 
        if(!userMethods.isAuthenticated(user))
-          itemArray = items.filter(x=> x.user==="All");
+          itemArray = items.filter(x=> x.users.includes('Guest'));
        else if(userMethods.isAdmin(user))
-           itemArray = items.filter(x=>x.user==="All"  || x.user==="Admin")
+           itemArray = items.filter(x=>x.users.includes('Admin'))
        else if(userMethods.isUser(user))
-           itemArray = items.filter(x=>x.user==="User" || x.user==="All")
+           itemArray = items.filter(x=>x.users.includes('User'))
          setMenuItems(itemArray)
     },[user]);
 
@@ -71,7 +67,7 @@ export const Menu = () => {
             onClick={handleClick}
             theme="dark"
             mode="horizontal"
-            defaultSelectedKeys={current}
+            selectedKeys={current}
             className='menu'
             items = { menuItems }
         />)

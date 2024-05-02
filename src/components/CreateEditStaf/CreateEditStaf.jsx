@@ -112,7 +112,7 @@ export const CreateEditStaf = () => {
     if (newstaf.id === 0) {
       const responce = await stafService.createStaf(formData)
       if (responce?.status === 200) {
-        message.success(`Актор "${newstaf.name} ${newstaf.suname}" успішно доданий до бази даних`);
+        message.success(`Актор "${newstaf.name} ${newstaf.surname}" успішно доданий до бази даних`);
         window.history.back()
       }
     }
@@ -120,7 +120,7 @@ export const CreateEditStaf = () => {
       formData.append('imageName', staf.imageName);
       const responce = await stafService.updateStaf(formData)
       if (responce?.status === 200) {
-        message.success(`Інформація актора "${newstaf.name} ${newstaf.suname}" успішно змінена`);
+        message.success(`Інформація актора "${newstaf.name} ${newstaf.surname}" успішно змінена`);
         window.history.back()
       }
     }
@@ -158,8 +158,6 @@ export const CreateEditStaf = () => {
           <div className="d-flex gap-5">
             <Form.Item name="imageFile"
               label="Фото"
-            // valuePropName='file'
-            //  getValueFromEvent={normFile}
             >
               <div style={{ width: 290 }}>
                 <Image
@@ -187,6 +185,7 @@ export const CreateEditStaf = () => {
               <Row gutter={15}>
                 <Col span={12}>
                   <Form.Item name="name" label="Ім'я"
+                  hasFeedback
                     rules={[
                       {
                         pattern: '^[A-Z А-Я].*',
@@ -203,6 +202,7 @@ export const CreateEditStaf = () => {
                 </Col>
                 <Col span={12}>
                   <Form.Item name="surname" label="Прізвище"
+                  hasFeedback
                     rules={[
                       {
                         pattern: '^[A-Z А-Я].*',
@@ -221,6 +221,7 @@ export const CreateEditStaf = () => {
               <Row gutter={15}>
                 <Col span={12}>
                   <Form.Item
+                  hasFeedback
                     name="birthdate"
                     label="Дата народження"
                     rules={[
@@ -236,6 +237,7 @@ export const CreateEditStaf = () => {
 
                 <Col span={12}>
                   <Form.Item
+                  hasFeedback
                     name="countryId"
                     label="Країна"
                     rules={[
@@ -257,6 +259,7 @@ export const CreateEditStaf = () => {
               <Row gutter={15}>
                 <Col span={12}>
                   <Form.Item
+                  hasFeedback
                     name="roles"
                     label="Ролі"
                     rules={[
@@ -278,6 +281,7 @@ export const CreateEditStaf = () => {
 
                 <Col span={12}>
                   <Form.Item
+                  hasFeedback
                     name="movies"
                     label="Фільми"
                     rules={[
@@ -300,6 +304,7 @@ export const CreateEditStaf = () => {
               </Row>
               <Col span={24}>
                 <Form.Item
+                hasFeedback
                   name="description"
                   label="Інформація"
                   rules={[
@@ -323,7 +328,7 @@ export const CreateEditStaf = () => {
               </Col>
               <Row>
                 <Col span={24}>
-                  <Form.Item name='isoscar' valuePropName="checked">
+                  <Form.Item name='isoscar' hasFeedback valuePropName="checked">
                     <Checkbox >Актор отримав оскар</Checkbox>
                   </Form.Item>
                 </Col>

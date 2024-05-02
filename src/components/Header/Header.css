@@ -14,3 +14,14 @@
 Button{
     width: 100px;
 }
+
+.user-view{
+    display: flex;
+    gap:15px;
+    align-items: center;
+    color:rgb(97, 97, 234);
+    cursor: pointer;
+    font-size: 23px;
+    font-weight: bolder;
+}
+

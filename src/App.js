@@ -13,6 +13,8 @@ import { CreateEditStaf } from './components/CreateEditStaf/CreateEditStaf';
 import Error from './components/Error/Error';
 import { CreateEditMovie } from './components/CreateEditMovie/CreateEditMovie';
 import FogotPassword from './components/FogotPassword/FogotPassword';
+import { PasswordReset } from './components/PasswordReset/PasswordReset';
+
 
 function App() {
   return (
@@ -27,6 +29,7 @@ function App() {
         <Route path="movietable" element={<MovieTable />} />
         <Route path="staftable" element={<StafTable />} />
         <Route path="fogotpassword" element={<FogotPassword />} />
+        <Route path={process.env.REACT_APP_PASSWORD_RESET_PAGE} element={<PasswordReset />} />
         <Route path="create-edit-staf/:id" element={<CreateEditStaf />} />
         <Route path="create-edit-movie/:id" element={<CreateEditMovie/>} />
         <Route path="error/:status/:title/:subTitle/:location" element={<Error />} />

@@ -228,6 +228,7 @@ export const CreateEditMovie = () => {
                             <Row gutter={15}>
                                 <Col span={12}>
                                     <Form.Item name="name" label="Назва"
+                                    hasFeedback
                                         rules={[
                                             {
                                                 pattern: '^[A-Z А-Я].*',
@@ -244,6 +245,7 @@ export const CreateEditMovie = () => {
                                 </Col>
                                 <Col span={12}>
                                     <Form.Item name="originalName" label="Оригінальна назва"
+                                    hasFeedback
                                         rules={[
                                             {
                                                 pattern: '^[A-Z А-Я].*',
@@ -262,6 +264,7 @@ export const CreateEditMovie = () => {
                             <Row gutter={15}>
                                 <Col span={12}>
                                     <Form.Item
+                                    hasFeedback
                                         name="date"
                                         label="Дата прем'єри"
                                         rules={[
@@ -277,6 +280,7 @@ export const CreateEditMovie = () => {
 
                                 <Col span={12}>
                                     <Form.Item
+                                    hasFeedback
                                         name="countryId"
                                         label="Країна"
                                         rules={[
@@ -300,6 +304,7 @@ export const CreateEditMovie = () => {
                             <Row gutter={15}>
                                 <Col span={8}>
                                     <Form.Item
+                                    hasFeedback
                                         name="duration"
                                         label="Тривалість"
                                         rules={[
@@ -315,6 +320,7 @@ export const CreateEditMovie = () => {
 
                                 <Col span={8}>
                                     <Form.Item
+                                    hasFeedback
                                         name="qualityId"
                                         label="Якість"
                                         rules={[
@@ -333,6 +339,7 @@ export const CreateEditMovie = () => {
                                 </Col>
                                 <Col span={8}>
                                     <Form.Item
+                                    hasFeedback
                                         name="premiumId"
                                         label="Преміум"
                                         rules={[
@@ -356,6 +363,7 @@ export const CreateEditMovie = () => {
                             <Row gutter={15}>
                                 <Col span={12}>
                                     <Form.Item
+                                    hasFeedback
                                         name="genres"
                                         label="Жанри"
                                         rules={[
@@ -377,6 +385,7 @@ export const CreateEditMovie = () => {
 
                                 <Col span={12}>
                                     <Form.Item
+                                    hasFeedback
                                         name="stafs"
                                         label="Актори"
                                         rules={[
@@ -399,6 +408,7 @@ export const CreateEditMovie = () => {
                             <Row>
                                 <Col span={24}>
                                     <Form.Item name="movieUrl" label="Посилання на відео"
+                                    hasFeedback
                                         rules={[
                                             {
                                                 url: true,
@@ -417,6 +427,7 @@ export const CreateEditMovie = () => {
                             <Row>
                                 <Col span={24}>
                                     <Form.Item name="trailerUrl" label="Посилання на трейлер"
+                                    hasFeedback
                                         rules={[
                                             {
                                                 url: true,
@@ -437,6 +448,7 @@ export const CreateEditMovie = () => {
                     <Row>
                         <Col span={24}>
                             <Form.Item
+                            hasFeedback
                                 name="description"
                                 label="Інформація"
                                 rules={[
@@ -462,6 +474,7 @@ export const CreateEditMovie = () => {
                     <Row>
                         <Col span={24}>
                             <Form.Item
+                            hasFeedback
                                 name="screens"
                                 label="Скріншоти фільму "
                                 rules={[
