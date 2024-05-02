@@ -105,7 +105,7 @@ export const CreateEditStaf = () => {
     let formData = new FormData();
     Object.keys(newstaf).forEach(function (key) {
       if (key === 'roles' || key === 'movies')
-        newstaf[key].forEach(x => formData.append(key, x))
+        newstaf[key]?.forEach(x => formData.append(key, x))
       formData.append(key, newstaf[key]);
     });
 

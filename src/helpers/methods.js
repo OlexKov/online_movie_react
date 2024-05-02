@@ -1,4 +1,6 @@
 import { jwtDecode } from 'jwt-decode';
+import React from 'react';
+import { useLocation } from 'react-router-dom';
 export const getDataFromToken = (token)=>{
     if(token){
     const data = jwtDecode(token);
@@ -45,3 +47,9 @@ export const dummyRequest = ({ file, onSuccess }) => {
       onSuccess("ok");
     }, 0);
   };
+
+  export function useQuery() {
+    const { search } = useLocation();
+
+    return React.useMemo(() => new URLSearchParams(search), [search]);
+}

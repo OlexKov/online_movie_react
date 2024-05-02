@@ -1,14 +1,11 @@
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { Button, Divider, Form, Input, message } from 'antd';
 import React from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { accountService } from '../../services/AccountService';
+import { useQuery } from '../../helpers/methods';
 
-function useQuery() {
-    const { search } = useLocation();
 
-    return React.useMemo(() => new URLSearchParams(search), [search]);
-}
 
 
 export const PasswordReset = () => {

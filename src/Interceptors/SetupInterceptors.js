@@ -21,43 +21,44 @@ export const SetupInterceptors = () => {
   axios.interceptors.response.use(
     async response => response,
     async (error) => {
-      const status = error.response?.status ;
+      const status = error.response?.status || 500;
       switch (status) {
-        case 401:{
+        case 401: {
           const originalRequest = error.config;
           if (!originalRequest.url?.includes('refreshtokens') && !originalRequest._retry) {
-            const responce = await accountService.refresh(storageService.getAccessToken(),storageService.getRefreshToken())
-            storageService.saveTokens(responce.data.accessToken,responce.data.refreshToken)
+            const responce = await accountService.refresh(storageService.getAccessToken(), storageService.getRefreshToken())
+            storageService.saveTokens(responce.data.accessToken, responce.data.refreshToken)
             originalRequest._retry = true;
-            if(originalRequest.url?.includes('logout')){
-              originalRequest.data = {token:responce.data.refreshToken}
+            if (originalRequest.url?.includes('logout')) {
+              originalRequest.data = { token: responce.data.refreshToken }
             }
             originalRequest.headers = {
               'Authorization': `Bearer ${responce.data.accessToken}`,
-              'Content-type':'application/json'
+              'Content-type': 'application/json'
             }
             return axios(originalRequest);
           }
-          else{
+          else {
             storageService.removeTokens();
             window.history.push('/login')
           }
         }
-        break;
-            
+          break;
+
 
         default: {
-          //   const location =   window.location.pathname.slice(1);
-          //   window.location = `/error/${status}/${status}/${error.message}/${location ===''?'main':location}`;
-          //  console.log(error)
-          //   console.log(error.response.data.length)
+         const location = window.location.pathname.slice(1);
+          window.location = `/error?status=${status}&title=${status}&subTitle=${error.message}&location=${location === '' ? 'main' : location}`;
           message.error(error.message)
-          if (error.response.data.length > 0) {
-            error.response.data.forEach(element => {
-              message.error(element.ErrorMessage)
-            });
-          if(error.response.data.message)
-             message.error(error.response.data.message)
+          if (error.response.data) {
+            if (error.response.data.message)
+              message.error(error.response.data.message)
+            else if (error.response.data.length > 0) {
+              error.response.data.forEach(element => {
+                message.error(element.ErrorMessage)
+              });
+
+            }
           }
 
           return Promise.reject(error.message);

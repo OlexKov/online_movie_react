@@ -1,26 +1,31 @@
-import { Button, Result } from 'antd'
-import React from 'react'
-import { useNavigate } from 'react-router-dom';
-import { useParams } from 'react-router';
+import { Button, Result } from "antd";
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { useQuery } from "../../helpers/methods";
 
-const Error = ({status,title,subTitle}) => {
-    const navigate = useNavigate();
-    const params = useParams();
-    const mainPage = params?.location === 'main';
-    if(params.title){
-        status = params.status;
-        title = params.title;
-        subTitle = params.subTitle;
-    }
-   
+const Error = ({ status, title, subTitle }) => {
+  const params = useQuery();
+  const navigate = useNavigate();
+  if (params.size > 0) {
+    status = params.get("status");
+    title = params.get("title");
+    subTitle = params.get("subTitle");
+  }
+  const mainPage = params.get("location") === "main";
   return (
     <Result
-            status={status}
-            title={title}
-            subTitle={subTitle}
-            extra={!mainPage && <Button type="primary" onClick={() => navigate('/')}>Повернутися на головну</Button>}
-          />
-  
-)}
+      status={status}
+      title={title}
+      subTitle={subTitle}
+      extra={
+        !mainPage && (
+          <Button className=" w-auto" type="primary" onClick={() => navigate("/")}>
+            Повернутися на головну
+          </Button>
+        )
+      }
+    />
+  );
+};
 
-export default Error
+export default Error;
