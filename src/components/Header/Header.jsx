@@ -44,7 +44,7 @@ export const Header = () => {
     return (
         <>
             <img className='logo' src={logo} alt='' />
-            <h3 className='title'>Online movie</h3>
+            <h3 className='header-title'>Online movie</h3>
             <Menu />
             <div className='d-flex gap-4 align-items-baseline'>
                {!userMethods.isAdmin(user) && <Tooltip placement="bottom" title="Улюблені">
