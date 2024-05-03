@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { movieService } from '../../services/MovieService';
 import { MovieCard } from '../MovieCard/MovieCard';
 import { setRating } from '../../helpers/methods';
+import './Home.css'
 
 export const Home = () => {
  
@@ -16,7 +17,7 @@ export const Home = () => {
   
   return (
     <div className='d-flex flex-column gap-4'>
-      {movies?.map(x => <MovieCard key={x.id} movie={x}/>)}
+      {movies?.map(x => <MovieCard className='movie-card' key={x.id} movie={x}/>)}
     </div>
   )
 }
