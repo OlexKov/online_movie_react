@@ -14,10 +14,16 @@ import Error from './components/Error/Error';
 import { CreateEditMovie } from './components/CreateEditMovie/CreateEditMovie';
 import FogotPassword from './components/FogotPassword/FogotPassword';
 import { PasswordReset } from './components/PasswordReset/PasswordReset';
+import { ConfigProvider, theme} from 'antd';
+import { useSelector } from 'react-redux';
+
 
 
 function App() {
+  const darkTheme = useSelector(store=>store.userTheme.userTheme)
+ 
   return (
+    <ConfigProvider theme={{ algorithm: darkTheme ? theme.darkAlgorithm: theme.defaultAlgorithm  }}>
     <Routes>
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
@@ -41,6 +47,7 @@ function App() {
           />} />
       </Route>
     </Routes>
+    </ConfigProvider>
   );
 }
 

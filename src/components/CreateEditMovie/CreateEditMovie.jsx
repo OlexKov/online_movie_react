@@ -13,6 +13,7 @@ import axios from 'axios';
 import { dateFormat, dateTimeFormat, timeFormat } from '../../helpers/constants';
 import { ComboBoxData } from '../../helpers/ComboBoxData';
 import { dummyRequest } from '../../helpers/methods';
+import useToken from 'antd/es/theme/useToken';
 dayjs.extend(customParseFormat);
 
 
@@ -28,6 +29,7 @@ export const CreateEditMovie = () => {
     const [previewPoster, setPreviewPoster] = useState('');
     const [posterFile, setPosterFile] = useState()
     const [screensFiles, setScreensFiles] = useState()
+    const themeToken = useToken()[1]
 
 
     useEffect(() => {
@@ -186,7 +188,7 @@ export const CreateEditMovie = () => {
         });
 
     const uploadButton = (
-        <button style={{ border: 0, background: 'none' }} type="button">
+        <button style={{ border: 0, background: 'none', color:themeToken.colorText }} type="button">
             <PlusOutlined />
             <div style={{ marginTop: 8 }}>Завантажити</div>
         </button>
@@ -197,7 +199,7 @@ export const CreateEditMovie = () => {
             <Button shape="circle" onClick={() => window.history.back()} type="primary" icon={<ArrowLeftOutlined className='fs-4' />} />
 
             <div className='w-75 mx-auto'>
-                <Divider className='fs-3  mb-5 text-black-50' orientation="left">{id === 'create' ? 'Новий фільм' : 'Редагування'}</Divider>
+                <Divider className='fs-3  mb-5' orientation="left">{id === 'create' ? 'Новий фільм' : 'Редагування'}</Divider>
                 <Form layout='vertical' form={form} name="control-hooks" onFinish={onFinish}
                     className='mx-auto d-flex flex-column gap-2'>
                     <div className="d-flex gap-5">

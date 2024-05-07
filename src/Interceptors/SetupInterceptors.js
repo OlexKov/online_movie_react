@@ -4,7 +4,7 @@ import { storageService } from '../services/StorageService';
 import { accountService } from '../services/AccountService';
 
 axios.defaults.baseURL = process.env.REACT_APP_SERVER_HOST
-export const SetupInterceptors = () => {
+export const SetupInterceptors = (clearStore) => {
   axios.interceptors.request.use(
     async config => {
       config.headers = {
@@ -40,10 +40,11 @@ export const SetupInterceptors = () => {
           }
           else {
             storageService.removeTokens();
-            window.history.push('/login')
+            clearStore();
+            window.location = '/login'
           }
         }
-          break;
+        break;
 
 
         default: {

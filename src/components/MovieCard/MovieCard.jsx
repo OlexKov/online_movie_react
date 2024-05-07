@@ -1,15 +1,25 @@
 import React from 'react'
 import './MovieCard.css'
-import { Image, Rate } from 'antd'
+import { Badge, Image, Rate } from 'antd'
+import useToken from 'antd/es/theme/useToken'
+
+
 export const MovieCard = ({ movie }) => {
+  const themeToken = useToken()[1]
+  console.log(themeToken)
   return (
-    <div className='movie-card'>
+     <div style={{
+       backgroundColor:themeToken.colorFillContent,
+       borderColor:themeToken.colorFillContent}} 
+        className='movie-card'>
+     
       <div className='movie-header'>
         <h5>{movie.name}</h5>
         <Rate disabled allowHalf count={6} defaultValue={movie.rating} />
       </div>
       <hr />
       <div className='d-flex gap-3'>
+      <Badge.Ribbon text={movie.qualityName} color="cyan-3">
         <div className='poster'>
         <Image
           width={250}
@@ -18,8 +28,9 @@ export const MovieCard = ({ movie }) => {
           
         />
         </div>
-        
+        </Badge.Ribbon>
         <div className='movie-info'>
+        <span className='value mb-3 fs-6'>{movie.description.slice(0,650)}...</span>
              <div className='info'>
                  <span className='title'>Oригінальна назва:</span>
                  <span className='value'>{movie.originalName}</span>
@@ -36,17 +47,12 @@ export const MovieCard = ({ movie }) => {
                  <span className='title'>Kраїна:</span>
                  <span className='value'>{movie.countryName}</span>
              </div>
-             <div className='info'>
-                 <span className='title'>Якість:</span>
-                 <span className='value'>{movie.qualityName}</span>
-             </div>
-             <div className='d-flex flex-column'>
-                 <span className='title'>Опис:</span>
-                 <span className='value mx-3'>{movie.description.slice(0,650)}...</span>
-             </div>
-             
+        
         </div>
       </div>
+    
     </div>
+  
+    
   )
 }

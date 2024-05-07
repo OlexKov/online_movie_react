@@ -1,6 +1,6 @@
 .movie-card{
     transition: transform 0.3s ease-in;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+   
 }
 
 .movie-card:hover {

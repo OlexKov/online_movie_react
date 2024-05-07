@@ -8,10 +8,12 @@ import { BrowserRouter } from 'react-router-dom';
 import { SetupInterceptors } from './Interceptors/SetupInterceptors';
 import { Provider } from 'react-redux';
 import {store} from '../src/components/store/store'
+import { clearUserData } from './components/store/userDataSlice';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
-SetupInterceptors();
+
+SetupInterceptors(clearUserData);
 root.render(
   <React.StrictMode>
     <BrowserRouter>

@@ -1,4 +1,4 @@
-
+import { theme } from 'antd';
 const accessKey = process.env.REACT_APP_ACCESS_KEY;
 const refreshKey = process.env.REACT_APP_REFRESH_KEY;
 
@@ -24,6 +24,8 @@ const clearLocalStorage = () =>{
 
 const isSessionStorage =  () => sessionStorage.getItem(accessKey) !== null
 
+
+
 export const storageService = {
 
 
@@ -47,5 +49,13 @@ export const storageService = {
     removeTokens: () => {
         clearLocalStorage()
         clearSessionStorage()
-    }
+    },
+
+    isDarkTheme:() => {
+        return localStorage.getItem('online_movie_theme') ? true : false
+    },
+    enableDarkTheme:()=>{
+        localStorage.setItem('online_movie_theme','dark')
+    },
+    disableDarkTheme:()=>localStorage.removeItem('online_movie_theme')
 }

@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import '../StafTable/StafTable.css'
 import { stafService} from '../../services/StafService';
 
+
 export const StafTable = () => {
     const columns = [
         {
@@ -35,7 +36,9 @@ export const StafTable = () => {
             title: "Дата народження",
             dataIndex: 'birthdate',
             key: 'birthdate',
-            sorter: (a, b) => a.birthdate > b.birthdate ? 1 : -1
+            sorter: (a, b) => a.birthdate > b.birthdate ? 1 : -1,
+            render:(text) => new Date(text).toLocaleDateString()
+            
         },
 
         {

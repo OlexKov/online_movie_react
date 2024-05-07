@@ -152,11 +152,11 @@ export const CreateEditStaf = () => {
       <Button shape="circle" onClick={() => window.history.back()} type="primary" icon={<ArrowLeftOutlined className='fs-4' />} />
 
       <div className='w-75 mx-auto'>
-        <Divider className='fs-3  mb-5 text-black-50' orientation="left">{id === 'create' ? 'Новий актор' : 'Редагування'}</Divider>
+        <Divider className='fs-3  mb-5 ' orientation="left">{id === 'create' ? 'Новий актор' : 'Редагування'}</Divider>
         <Form layout='vertical' form={form} name="control-hooks" onFinish={onFinish}
           className='mx-auto d-flex flex-column gap-2'>
           <div className="d-flex gap-5">
-            <Form.Item name="imageFile"
+            <Form.Item  name="imageFile"
               label="Фото"
             >
               <div style={{ width: 290 }}>
