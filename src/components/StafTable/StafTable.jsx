@@ -75,12 +75,26 @@ export const StafTable = () => {
         }
     ];
     const [stafs, setStafs] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [tableParams, setTableParams] = useState({
+        pagination: {
+          defaultPageSize:5,
+          defaultCurrent:1,
+          pageSizeOptions:[5,10,15,20],
+          showSizeChanger: true
+        },
+      });
     const navigate = useNavigate();
+   
     useEffect(() => {
-        (async () => {
-            setStafs((await stafService.getAllStaf()).data);
-        })();
-    }, []);
+        (async () => { await setData(tableParams.pagination?.defaultPageSize,tableParams.pagination?.defaultCurrent) })();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+      }, []);
+    
+      useEffect(() => {
+        (async () => { await setData(tableParams.pagination?.pageSize,tableParams.pagination?.current) })();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+      }, [tableParams.pagination?.current, tableParams.pagination?.pageSize]);
 
     async function stafDelete(staf) {
         return  await stafService.deleteStaf(staf.id)
@@ -93,10 +107,42 @@ export const StafTable = () => {
             })
     }
 
+    const setData = async (pageSize,pageIndex) => {
+        setLoading(true)
+        const result = (await stafService.getStafsWithPagination(pageSize,pageIndex)).data;
+        if (result.stafs)
+          setStafs(result.stafs);
+        setLoading(false)
+        setTableParams({
+          ...tableParams,
+          pagination: {
+            ...tableParams.pagination,
+            total: result.totalCount,
+            showTotal:(total) => <span className=' fw-bold'>Кількість:  <span className=' fw-light'>{total}</span></span>
+          },
+        });
+      }
+    
+
+    const handleTableChange = async (pagination, filters, sorter) => {
+        setTableParams({
+          pagination,
+          filters,
+          ...sorter,
+        });
+      };
+
     return (
         <>
            <Button className='add-button' type="primary" onClick={()=>navigate('/create-edit-staf/create')}  icon={<PlusOutlined />}>Додати актора</Button>
-           <Table dataSource={stafs} rowKey="id" columns={columns} />
+           <Table
+            pagination={tableParams.pagination}
+           dataSource={stafs} 
+           rowKey={(record) => record.id} 
+           columns={columns}
+           loading={loading}
+           onChange={handleTableChange} />
+
         </>
        
     )

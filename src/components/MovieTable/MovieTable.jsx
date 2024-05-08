@@ -82,6 +82,7 @@ export const MovieTable = () => {
       defaultPageSize:2,
       defaultCurrent:1,
       pageSizeOptions:[2,5,10,15,20],
+      showSizeChanger: true
     },
   });
   const [loading, setLoading] = useState(false);
@@ -124,9 +125,7 @@ export const MovieTable = () => {
       pagination: {
         ...tableParams.pagination,
         total: result.totalCount,
-        showTotal:(total) => `Знайдено фільмів - ${total}`
-        // 200 is mock data, you should read it from server
-        // total: data.totalCount,
+        showTotal:(total) => <span className=' fw-bold'>Кількість: <span className=' fw-light'>{total}</span></span>
       },
     });
   }

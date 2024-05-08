@@ -15,7 +15,9 @@ export const stafService = {
       
     createStaf : (staf) => TryError(() => axios.post(stafApiUrl + '/create', staf,formPostConfig)),
         
-    updateStaf : (staf) => TryError(() => axios.put(stafApiUrl + '/update', staf,formPostConfig))
+    updateStaf : (staf) => TryError(() => axios.put(stafApiUrl + '/update', staf,formPostConfig)),
+
+    getStafsWithPagination: (pageSize,pageIndex) => TryError(() => axios.get(stafApiUrl + `/take?skip=${pageSize*(pageIndex-1)}&count=${pageSize}`))
 }
 
 
