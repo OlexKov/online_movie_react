@@ -19,7 +19,8 @@ export const movieService = {
 
       getMovieScreens: (id) => TryError(() => axios.get(movieApiUrl + '/getscreens/' + id)),
 
-      getMovieGenres: (id) => TryError(() => axios.get(movieApiUrl + '/getgenres/' + id))
+      getMovieGenres: (id) => TryError(() => axios.get(movieApiUrl + '/getgenres/' + id)),
 
+      getMoviesWithPagination: (pageSize,pageIndex) => TryError(() => axios.get(movieApiUrl + `/take?skip=${pageSize*(pageIndex-1)}&count=${pageSize}`))
 }
 

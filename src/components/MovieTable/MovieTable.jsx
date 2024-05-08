@@ -3,8 +3,7 @@ import { Button, Popconfirm, Rate, Space, Table, message } from 'antd';
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import '../MovieTable/MovieTable.css'
-import {  movieService } from '../../services/MovieService';
-import axios from 'axios';
+import { movieService } from '../../services/MovieService';
 import { setRating } from '../../helpers/methods';
 
 export const MovieTable = () => {
@@ -78,14 +77,24 @@ export const MovieTable = () => {
     }
   ];
   const [movies, setMovies] = useState([]);
+  const [tableParams, setTableParams] = useState({
+    pagination: {
+      defaultPageSize:2,
+      defaultCurrent:1,
+      pageSizeOptions:[2,5,10,15,20],
+    },
+  });
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
-    (async () => {
-      const result = (await movieService.getMovies()).data;
-      if (result)
-        setMovies(await setRating(result));
-    })();
+    (async () => { await setData(tableParams.pagination?.defaultPageSize,tableParams.pagination?.defaultCurrent) })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    (async () => { await setData(tableParams.pagination?.pageSize,tableParams.pagination?.current) })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tableParams.pagination?.current, tableParams.pagination?.pageSize]);
 
   async function movieDelete(movie) {
     return await movieService.deleteMovie(movie.id)
@@ -96,12 +105,43 @@ export const MovieTable = () => {
         }
       })
   }
+  const handleTableChange = async (pagination, filters, sorter) => {
+    setTableParams({
+      pagination,
+      filters,
+      ...sorter,
+    });
+  };
 
-  
+  const setData = async (pageSize,pageIndex) => {
+    setLoading(true)
+    const result = (await movieService.getMoviesWithPagination(pageSize,pageIndex)).data;
+    if (result.movies)
+      setMovies(await setRating(result.movies));
+    setLoading(false)
+    setTableParams({
+      ...tableParams,
+      pagination: {
+        ...tableParams.pagination,
+        total: result.totalCount,
+        showTotal:(total) => `Знайдено фільмів - ${total}`
+        // 200 is mock data, you should read it from server
+        // total: data.totalCount,
+      },
+    });
+  }
+
   return (
     <>
       <Button className='add-button' type="primary" onClick={() => navigate('/create-edit-movie/create')} icon={<PlusOutlined />}>Додати фільм</Button>
-      <Table dataSource={movies} rowKey="id" columns={columns} />
+      <Table
+        pagination={tableParams.pagination}
+        dataSource={movies}
+        rowKey={(record) => record.id}
+        columns={columns}
+        loading={loading}
+        onChange={handleTableChange} 
+        />
     </>
 
   )

@@ -6,7 +6,6 @@ import useToken from 'antd/es/theme/useToken'
 
 export const MovieCard = ({ movie }) => {
   const themeToken = useToken()[1]
-  console.log(themeToken)
   return (
      <div style={{
        backgroundColor:themeToken.colorFillContent,
