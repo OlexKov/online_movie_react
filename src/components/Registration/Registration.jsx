@@ -19,7 +19,7 @@ export const Registration = () => {
     <>
       <Button shape="circle" onClick={() => window.history.back()} type="primary" icon={<ArrowLeftOutlined className='fs-4' />} />
       <div className='w-75 mx-auto'>
-        <Divider className='fs-3  mb-5 text-black-50' orientation="left">Реєстрація</Divider>
+        <Divider className='fs-3  mb-5' orientation="left">Реєстрація</Divider>
         <Form
           layout='vertical'
           style={{
@@ -29,8 +29,6 @@ export const Registration = () => {
             remember: true,
           }}
           onFinish={onFinish}
-          //  onFinishFailed={onFinishFailed}
-          autoComplete="off"
           className=' mx-auto'
         >
           <Form.Item 

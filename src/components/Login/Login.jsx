@@ -29,7 +29,7 @@ export const Login = () => {
     <>
       <Button shape="circle" onClick={() => window.history.back()} type="primary" icon={<ArrowLeftOutlined className='fs-4' />} />
       <div className='w-75 mx-auto'>
-        <Divider className='fs-3  mb-5 text-black-50' orientation="left">Логін</Divider>
+        <Divider className='fs-3  mb-5' orientation="left">Логін</Divider>
         <Form
           layout='vertical'
           style={{
@@ -39,9 +39,7 @@ export const Login = () => {
             remember: true,
           }}
           onFinish={onFinish}
-        //  onFinishFailed={onFinishFailed}
-          autoComplete="off"
-          className=' mx-auto'
+          className='mx-auto'
         >
           <Form.Item
             label="Електронна пошта"
@@ -76,7 +74,6 @@ export const Login = () => {
           <Form.Item
             name="remember"
             valuePropName="checked"
-
           >
             <Checkbox>Запам'ятати мене</Checkbox>
           </Form.Item>

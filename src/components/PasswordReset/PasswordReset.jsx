@@ -24,7 +24,7 @@ export const PasswordReset = () => {
         <>
             <Button shape="circle" onClick={() => window.history.back()} type="primary" icon={<ArrowLeftOutlined className='fs-4' />} />
             <div className='w-75 mx-auto'>
-                <Divider className='fs-3  mb-5 text-black-50' orientation="left">Зміна раролю</Divider>
+                <Divider className='fs-3  mb-5' orientation="left">Зміна раролю</Divider>
                 <Form
                     layout='vertical'
                     style={{

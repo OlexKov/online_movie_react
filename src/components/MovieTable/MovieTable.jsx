@@ -79,9 +79,9 @@ export const MovieTable = () => {
   const [movies, setMovies] = useState([]);
   const [tableParams, setTableParams] = useState({
     pagination: {
-      defaultPageSize:2,
+      defaultPageSize:5,
       defaultCurrent:1,
-      pageSizeOptions:[2,5,10,15,20],
+      pageSizeOptions:[5,10,15,20],
       showSizeChanger: true
     },
   });

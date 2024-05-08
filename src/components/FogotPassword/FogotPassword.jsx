@@ -19,7 +19,7 @@ const FogotPassword = () => {
         <div className='w-75 mx-auto text-center'> 
        {(!sendSuccess && 
        <>
-        <Divider className='fs-3  mb-5 text-black-50' orientation="left">Забули пароль</Divider>
+        <Divider className='fs-3  mb-5' orientation="left">Забули пароль</Divider>
         <Form
           layout='vertical'
           style={{

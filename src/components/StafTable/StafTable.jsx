@@ -1,9 +1,9 @@
 import { CrownFilled, DeleteFilled, EditFilled, PlusOutlined } from '@ant-design/icons';
-import { Button, Popconfirm,  Space, Table, message } from 'antd';
+import { Button, Popconfirm, Space, Table, message } from 'antd';
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import '../StafTable/StafTable.css'
-import { stafService} from '../../services/StafService';
+import { stafService } from '../../services/StafService';
 
 
 export const StafTable = () => {
@@ -37,8 +37,8 @@ export const StafTable = () => {
             dataIndex: 'birthdate',
             key: 'birthdate',
             sorter: (a, b) => a.birthdate > b.birthdate ? 1 : -1,
-            render:(text) => new Date(text).toLocaleDateString()
-            
+            render: (text) => new Date(text).toLocaleDateString()
+
         },
 
         {
@@ -60,11 +60,11 @@ export const StafTable = () => {
             key: 'action',
             render: (_, record) => (
                 <Space size="middle">
-                    <Button onClick={()=>navigate(`/create-edit-staf/${record.id}`)} icon={<EditFilled />} />
+                    <Button onClick={() => navigate(`/create-edit-staf/${record.id}`)} icon={<EditFilled />} />
                     <Popconfirm
                         title="Видалення актора"
                         description={`Ви впевненні що бажаєте видалити астора "${record.name} ${record.surname}" ?`}
-                        onConfirm={async() => await stafDelete(record)}
+                        onConfirm={async () => await stafDelete(record)}
                         okText="Так"
                         cancelText="Ні"
                     >
@@ -78,28 +78,28 @@ export const StafTable = () => {
     const [loading, setLoading] = useState(false);
     const [tableParams, setTableParams] = useState({
         pagination: {
-          defaultPageSize:5,
-          defaultCurrent:1,
-          pageSizeOptions:[5,10,15,20],
-          showSizeChanger: true
+            defaultPageSize: 5,
+            defaultCurrent: 1,
+            pageSizeOptions: [5, 10, 15, 20],
+            showSizeChanger: true
         },
-      });
+    });
     const navigate = useNavigate();
-   
+
     useEffect(() => {
-        (async () => { await setData(tableParams.pagination?.defaultPageSize,tableParams.pagination?.defaultCurrent) })();
+        (async () => {await setData(tableParams.pagination?.defaultPageSize, tableParams.pagination?.defaultCurrent) })();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-      }, []);
-    
-      useEffect(() => {
-        (async () => { await setData(tableParams.pagination?.pageSize,tableParams.pagination?.current) })();
+    }, []);
+
+    useEffect(() => {
+        (async () => { await setData(tableParams.pagination?.pageSize, tableParams.pagination?.current) })();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-      }, [tableParams.pagination?.current, tableParams.pagination?.pageSize]);
+    }, [tableParams.pagination?.current, tableParams.pagination?.pageSize]);
 
     async function stafDelete(staf) {
-        return  await stafService.deleteStaf(staf.id)
+        return await stafService.deleteStaf(staf.id)
             .then((response) => {
-              
+
                 if (response.status === 200) {
                     setStafs(stafs.filter(x => x.id !== staf.id));
                     message.success(`Актор "${staf.name} ${staf.surname}" успішно видалений `)
@@ -107,43 +107,45 @@ export const StafTable = () => {
             })
     }
 
-    const setData = async (pageSize,pageIndex) => {
+    const setData = async (pageSize, pageIndex) => {
         setLoading(true)
-        const result = (await stafService.getStafsWithPagination(pageSize,pageIndex)).data;
+        const result = (await stafService.getStafsWithPagination(pageSize, pageIndex)).data;
+        console.log(pageSize, pageIndex)
+        console.log(result)
         if (result.stafs)
-          setStafs(result.stafs);
+            setStafs(result.stafs);
         setLoading(false)
         setTableParams({
-          ...tableParams,
-          pagination: {
-            ...tableParams.pagination,
-            total: result.totalCount,
-            showTotal:(total) => <span className=' fw-bold'>Кількість:  <span className=' fw-light'>{total}</span></span>
-          },
+            ...tableParams,
+            pagination: {
+                ...tableParams.pagination,
+                total: result.totalCount,
+                showTotal: (total) => <span className=' fw-bold'>Кількість:  <span className=' fw-light'>{total}</span></span>
+            },
         });
-      }
-    
+    }
+
 
     const handleTableChange = async (pagination, filters, sorter) => {
         setTableParams({
-          pagination,
-          filters,
-          ...sorter,
+            pagination,
+            filters,
+            ...sorter,
         });
-      };
+    };
 
     return (
         <>
-           <Button className='add-button' type="primary" onClick={()=>navigate('/create-edit-staf/create')}  icon={<PlusOutlined />}>Додати актора</Button>
-           <Table
-            pagination={tableParams.pagination}
-           dataSource={stafs} 
-           rowKey={(record) => record.id} 
-           columns={columns}
-           loading={loading}
-           onChange={handleTableChange} />
+            <Button className='add-button' type="primary" onClick={() => navigate('/create-edit-staf/create')} icon={<PlusOutlined />}>Додати актора</Button>
+            <Table
+                pagination={tableParams.pagination}
+                dataSource={stafs}
+                rowKey={(record) => record.id}
+                columns={columns}
+                loading={loading}
+                onChange={handleTableChange} />
 
         </>
-       
+
     )
 }
