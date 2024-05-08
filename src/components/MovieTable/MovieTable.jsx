@@ -76,26 +76,36 @@ export const MovieTable = () => {
       ),
     }
   ];
+  const startPage = 1;
+  const startPageSize = 2;
   const [movies, setMovies] = useState([]);
+  const [total, setTotal] = useState(0);
   const [tableParams, setTableParams] = useState({
     pagination: {
-      defaultPageSize:5,
-      defaultCurrent:1,
-      pageSizeOptions:[5,10,15,20],
-      showSizeChanger: true
+      defaultPageSize:startPageSize,
+      defaultCurrent:startPage,
+      pageSizeOptions:[2,5,10,15,20],
+      showSizeChanger: true,
+      showTotal: (total, range) => `${range[0]} - ${range[1]}  з  ${total} `
     },
   });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
-    (async () => { await setData(tableParams.pagination?.defaultPageSize,tableParams.pagination?.defaultCurrent) })();
+    (async () => { await setData(startPageSize,startPage) })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    (async () => { await setData(tableParams.pagination?.pageSize,tableParams.pagination?.current) })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tableParams.pagination?.current, tableParams.pagination?.pageSize]);
+    setTableParams({
+      ...tableParams,
+      pagination: {
+        ...tableParams.pagination,
+        total: total,
+      },
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [total]);
 
   async function movieDelete(movie) {
     return await movieService.deleteMovie(movie.id)
@@ -103,15 +113,12 @@ export const MovieTable = () => {
         if (response.status === 200) {
           setMovies(movies.filter(x => x.id !== movie.id));
           message.success(`Фільм "${movie.name}" успішно видалено `)
+          setTotal(total-1)
         }
       })
   }
-  const handleTableChange = async (pagination, filters, sorter) => {
-    setTableParams({
-      pagination,
-      filters,
-      ...sorter,
-    });
+  const handleTableChange = async (pagination) => {
+    await setData(pagination.pageSize, pagination.current) 
   };
 
   const setData = async (pageSize,pageIndex) => {
@@ -120,14 +127,7 @@ export const MovieTable = () => {
     if (result.movies)
       setMovies(await setRating(result.movies));
     setLoading(false)
-    setTableParams({
-      ...tableParams,
-      pagination: {
-        ...tableParams.pagination,
-        total: result.totalCount,
-        showTotal:(total) => <span className=' fw-bold'>Кількість: <span className=' fw-light'>{total}</span></span>
-      },
-    });
+    setTotal(result.totalCount)
   }
 
   return (

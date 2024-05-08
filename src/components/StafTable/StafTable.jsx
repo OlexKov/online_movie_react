@@ -76,25 +76,35 @@ export const StafTable = () => {
     ];
     const [stafs, setStafs] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [total, setTotal] = useState(0);
+    const startPage = 1;
+    const startPageSize = 5;
     const [tableParams, setTableParams] = useState({
         pagination: {
-            defaultPageSize: 5,
-            defaultCurrent: 1,
+            defaultPageSize: startPageSize,
+            defaultCurrent: startPage,
             pageSizeOptions: [5, 10, 15, 20],
-            showSizeChanger: true
+            showSizeChanger: true,
+            showTotal: (total, range) => `${range[0]} - ${range[1]}  з  ${total} `
         },
     });
     const navigate = useNavigate();
 
     useEffect(() => {
-        (async () => {await setData(tableParams.pagination?.defaultPageSize, tableParams.pagination?.defaultCurrent) })();
+        (async () => {await setData(startPageSize, startPage) })();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
-        (async () => { await setData(tableParams.pagination?.pageSize, tableParams.pagination?.current) })();
+        setTableParams({
+            ...tableParams,
+            pagination: {
+                ...tableParams.pagination,
+                total: total,
+            },
+        });
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [tableParams.pagination?.current, tableParams.pagination?.pageSize]);
+    }, [total]);
 
     async function stafDelete(staf) {
         return await stafService.deleteStaf(staf.id)
@@ -103,6 +113,7 @@ export const StafTable = () => {
                 if (response.status === 200) {
                     setStafs(stafs.filter(x => x.id !== staf.id));
                     message.success(`Актор "${staf.name} ${staf.surname}" успішно видалений `)
+                    setTotal(total-1)
                 }
             })
     }
@@ -110,28 +121,14 @@ export const StafTable = () => {
     const setData = async (pageSize, pageIndex) => {
         setLoading(true)
         const result = (await stafService.getStafsWithPagination(pageSize, pageIndex)).data;
-        console.log(pageSize, pageIndex)
-        console.log(result)
         if (result.stafs)
             setStafs(result.stafs);
         setLoading(false)
-        setTableParams({
-            ...tableParams,
-            pagination: {
-                ...tableParams.pagination,
-                total: result.totalCount,
-                showTotal: (total) => <span className=' fw-bold'>Кількість:  <span className=' fw-light'>{total}</span></span>
-            },
-        });
+        setTotal(result.totalCount)
     }
 
-
-    const handleTableChange = async (pagination, filters, sorter) => {
-        setTableParams({
-            pagination,
-            filters,
-            ...sorter,
-        });
+    const handleTableChange = async (pagination) => {
+        await setData(pagination.pageSize, pagination.current)
     };
 
     return (
