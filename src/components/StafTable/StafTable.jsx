@@ -1,10 +1,10 @@
 import { CrownFilled, DeleteFilled, EditFilled, PlusOutlined } from '@ant-design/icons';
-import { Button, Popconfirm, Space, Table, message } from 'antd';
+import { Button, Popconfirm, Popover, Space, Table, message } from 'antd';
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import '../StafTable/StafTable.css'
 import { stafService } from '../../services/StafService';
-
+import { paginatorConfig } from '../../helpers/constants';
 
 export const StafTable = () => {
     const columns = [
@@ -18,7 +18,7 @@ export const StafTable = () => {
             title: 'Фото',
             dataIndex: 'imageName',
             key: 'imageName',
-            render: (text) => <img src={text} alt='Staf' />
+            render: (text) => <Popover placement="right" content={<img style={{width:120}} src={text} alt='Staf' />}><img src={text} alt='Staf' /></Popover>
         },
         {
             title: "Ім'я",
@@ -77,21 +77,12 @@ export const StafTable = () => {
     const [stafs, setStafs] = useState([]);
     const [loading, setLoading] = useState(false);
     const [total, setTotal] = useState(0);
-    const startPage = 1;
-    const startPageSize = 5;
-    const [tableParams, setTableParams] = useState({
-        pagination: {
-            defaultPageSize: startPageSize,
-            defaultCurrent: startPage,
-            pageSizeOptions: [5, 10, 15, 20],
-            showSizeChanger: true,
-            showTotal: (total, range) => `${range[0]} - ${range[1]}  з  ${total} `
-        },
-    });
+   
+    const [tableParams, setTableParams] = useState(paginatorConfig);
     const navigate = useNavigate();
 
     useEffect(() => {
-        (async () => {await setData(startPageSize, startPage) })();
+        (async () => {await setData(paginatorConfig.pagination.defaultPageSize, paginatorConfig.pagination.defaultCurrent) })();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -140,7 +131,7 @@ export const StafTable = () => {
                 rowKey={(record) => record.id}
                 columns={columns}
                 loading={loading}
-                onChange={handleTableChange} />
+                onChange={handleTableChange}/>
 
         </>
 

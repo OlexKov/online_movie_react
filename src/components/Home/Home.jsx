@@ -4,6 +4,7 @@ import { MovieCard } from '../MovieCard/MovieCard';
 import { setRating } from '../../helpers/methods';
 import './Home.css'
 import { Empty, Pagination, Spin} from 'antd';
+import { paginatorConfig } from '../../helpers/constants';
 
 export const Home = () => {
   const startPage = 1;
@@ -27,7 +28,6 @@ export const Home = () => {
     if (result.movies)
       setMovies(await setRating(result.movies));
     setMoviesCount(result.totalCount)
-    
   }
 
   return (
@@ -37,15 +37,16 @@ export const Home = () => {
             <>
               {movies?.map(x => <MovieCard className='movie-card' key={x.id} movie={x} />)}
               <Pagination
-                defaultCurrent={startPage}
-                defaultPageSize={StartPageSize}
+                defaultCurrent={paginatorConfig.pagination.defaultCurrent}
+                defaultPageSize={paginatorConfig.pagination.defaultPageSize}
                 total={moviesCount}
-                showTotal={(total, range) => `${range[0]} - ${range[1]}  з  ${total} `}
+                showTotal={paginatorConfig.pagination.showTotal}
                 showSizeChanger
                 showQuickJumper
                 className=' align-self-center'
-                pageSizeOptions={[ 2,5, 10, 15, 20]}
+                pageSizeOptions={paginatorConfig.pagination.pageSizeOptions}
                 onChange={handleTableChange}
+                locale={paginatorConfig.pagination.locale}
               />
             </>
        :<Empty />}

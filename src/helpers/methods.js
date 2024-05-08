@@ -65,3 +65,4 @@ export const setRating = async (data) => {
         }));
     return data;
 }
+

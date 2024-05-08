@@ -1,10 +1,11 @@
 import { DeleteFilled, EditFilled, PlusOutlined } from '@ant-design/icons';
-import { Button, Popconfirm, Rate, Space, Table, message } from 'antd';
+import { Button, Popconfirm, Popover, Rate, Space, Table, message } from 'antd';
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import '../MovieTable/MovieTable.css'
 import { movieService } from '../../services/MovieService';
 import { setRating } from '../../helpers/methods';
+import { paginatorConfig } from '../../helpers/constants';
 
 export const MovieTable = () => {
   const columns = [
@@ -18,7 +19,7 @@ export const MovieTable = () => {
       title: 'Постер',
       dataIndex: 'poster',
       key: 'poster',
-      render: (text) => <img src={text} alt='Movie poster' />
+      render: (text) => <Popover placement="right" content={<img style={{width:120}} src={text} alt='Movie poster' />}><img src={text} alt='Movie poster' /></Popover>
     },
     {
       title: 'Назва',
@@ -76,23 +77,14 @@ export const MovieTable = () => {
       ),
     }
   ];
-  const startPage = 1;
-  const startPageSize = 2;
+  
   const [movies, setMovies] = useState([]);
   const [total, setTotal] = useState(0);
-  const [tableParams, setTableParams] = useState({
-    pagination: {
-      defaultPageSize:startPageSize,
-      defaultCurrent:startPage,
-      pageSizeOptions:[2,5,10,15,20],
-      showSizeChanger: true,
-      showTotal: (total, range) => `${range[0]} - ${range[1]}  з  ${total} `
-    },
-  });
+  const [tableParams, setTableParams] = useState(paginatorConfig);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
-    (async () => { await setData(startPageSize,startPage) })();
+    (async () => { await setData(paginatorConfig.pagination.defaultPageSize,paginatorConfig.pagination.defaultCurrent) })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
