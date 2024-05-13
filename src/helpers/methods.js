@@ -1,8 +1,6 @@
-import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import { movieService } from '../services/MovieService';
 export const getDataFromToken = (token) => {
     if (token) {
         const data = jwtDecode(token);
@@ -56,13 +54,6 @@ export function useQuery() {
     return React.useMemo(() => new URLSearchParams(search), [search]);
 }
 
-export const setRating = async (data) => {
-    await axios.all(data.map(x => movieService.getRating(x.id)))
-        .then(axios.spread((...res) => {
-            res.forEach((val, index) => {
-                data[index].rating = val.data;
-            })
-        }));
-    return data;
-}
+export const uniqByKey = (array,key) => [...new Map(array.map(x=>[key(x),x])).values()]
+
 

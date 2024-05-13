@@ -17,7 +17,17 @@ export const stafService = {
         
     updateStaf : (staf) => TryError(() => axios.put(stafApiUrl + '/update', staf,formPostConfig)),
 
-    getStafsWithPagination: (pageSize,pageIndex) => TryError(() => axios.get(stafApiUrl + `/take?skip=${pageSize*(pageIndex-1)}&count=${pageSize}`))
+    getStafsWithPagination: (pageSize,pageIndex) => TryError(() => axios.get(stafApiUrl + `/take?skip=${pageSize*(pageIndex-1)}&count=${pageSize}`)),
+
+    setRoles: async(stafs)=>{
+        await axios.all(stafs.map(x => stafService.getStafRoles(x.id)))
+                .then(axios.spread((...res) => {
+                    res.forEach((val, index) => {
+                        stafs[index].roles = val.data;
+                    })
+                }));
+            return stafs;
+    }
 }
 
 

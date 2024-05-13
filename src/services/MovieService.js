@@ -21,6 +21,16 @@ export const movieService = {
 
       getMovieGenres: (id) => TryError(() => axios.get(movieApiUrl + '/getgenres/' + id)),
 
-      getMoviesWithPagination: (pageSize,pageIndex) => TryError(() => axios.get(movieApiUrl + `/take?skip=${pageSize*(pageIndex-1)}&count=${pageSize}`))
+      getMoviesWithPagination: (pageSize,pageIndex) => TryError(() => axios.get(movieApiUrl + `/take?skip=${pageSize*(pageIndex-1)}&count=${pageSize}`)),
+
+      setRating: async (data) => {
+            await axios.all(data.map(x => movieService.getRating(x.id)))
+                .then(axios.spread((...res) => {
+                    res.forEach((val, index) => {
+                        data[index].rating = val.data;
+                    })
+                }));
+            return data;
+        }
 }
 

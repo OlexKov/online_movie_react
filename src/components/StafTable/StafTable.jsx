@@ -112,10 +112,11 @@ export const StafTable = () => {
     const setData = async (pageSize, pageIndex) => {
         setLoading(true)
         const result = (await stafService.getStafsWithPagination(pageSize, pageIndex)).data;
-        if (result.stafs)
-            setStafs(result.stafs);
         setLoading(false)
-        setTotal(result.totalCount)
+        if (result?.stafs){
+            setStafs(result.stafs);
+            setTotal(result.totalCount)
+        }
     }
 
     const handleTableChange = async (pagination) => {

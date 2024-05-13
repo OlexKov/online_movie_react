@@ -45,22 +45,22 @@ export const SetupInterceptors = (clearStore) => {
           }
         }
         break;
-
+        
 
         default: {
-         const location = window.location.pathname.slice(1);
-          window.location = `/error?status=${status}&title=${status}&subTitle=${error.message}&location=${location === '' ? 'main' : 'notmain'}`;
-          // message.error(error.message)
-          // if (error.response.data) {
-          //   if (error.response.data.message)
-          //     message.error(error.response.data.message)
-          //   else if (error.response.data.length > 0) {
-          //     error.response.data.forEach(element => {
-          //       message.error(element.ErrorMessage)
-          //     });
+       //  const location = window.location.pathname.slice(1);
+        //  window.location = `/error?status=${status}&title=${status}&subTitle=${error.message}&location=${location === '' ? 'main' : 'notmain'}`;
+          message.error(error.message)
+          if (error.response.data) {
+            if (error.response.data.message)
+              message.error(error.response.data.message)
+            else if (error.response.data.length > 0) {
+              error.response.data.forEach(element => {
+                message.error(element.ErrorMessage)
+              });
 
-          //   }
-          // }
+            }
+          }
 
           return Promise.reject(error.message);
         }

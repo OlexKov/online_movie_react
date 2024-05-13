@@ -2,6 +2,7 @@ import React from 'react'
 import './MovieCard.css'
 import { Badge, Image, Rate } from 'antd'
 import useToken from 'antd/es/theme/useToken'
+import { Link } from 'react-router-dom'
 
 
 export const MovieCard = ({ movie }) => {
@@ -10,10 +11,9 @@ export const MovieCard = ({ movie }) => {
      <div style={{
        backgroundColor:themeToken.colorFillContent,
        borderColor:themeToken.colorFillContent}} 
-        className='movie-card'>
-     
-      <div className='movie-header'>
-        <h5>{movie.name}</h5>
+       className='movie-card'>
+       <div className='movie-header'>
+        <Link style={{color:themeToken.colorTextDescription}} to={`/movie/${movie.id}`}>{movie.name}</Link>
         <Rate disabled allowHalf count={6} defaultValue={movie.rating} />
       </div>
       <hr />

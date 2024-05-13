@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import '../MovieTable/MovieTable.css'
 import { movieService } from '../../services/MovieService';
-import { setRating } from '../../helpers/methods';
 import { paginatorConfig } from '../../helpers/constants';
 
 export const MovieTable = () => {
@@ -116,10 +115,11 @@ export const MovieTable = () => {
   const setData = async (pageSize,pageIndex) => {
     setLoading(true)
     const result = (await movieService.getMoviesWithPagination(pageSize,pageIndex)).data;
-    if (result.movies)
-      setMovies(await setRating(result.movies));
     setLoading(false)
-    setTotal(result.totalCount)
+    if (result?.movies){
+      setMovies(await movieService.setRating(result.movies));
+      setTotal(result.totalCount)
+    }
   }
 
   return (

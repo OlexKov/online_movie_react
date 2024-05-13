@@ -16,6 +16,7 @@ import FogotPassword from './components/FogotPassword/FogotPassword';
 import { PasswordReset } from './components/PasswordReset/PasswordReset';
 import { ConfigProvider, theme} from 'antd';
 import { useSelector } from 'react-redux';
+import { Movie } from './components/Movie/Movie';
 
 
 
@@ -34,6 +35,7 @@ function App() {
         <Route path="favourite" element={<Favourite />} />
         <Route path="movietable" element={<MovieTable />} />
         <Route path="staftable" element={<StafTable />} />
+        <Route path="movie/:id" element={<Movie />} />
         <Route path="fogotpassword" element={<FogotPassword />} />
         <Route path={process.env.REACT_APP_PASSWORD_RESET_PAGE} element={<PasswordReset />} />
         <Route path="create-edit-staf/:id" element={<CreateEditStaf />} />

@@ -30,7 +30,7 @@ export const Header = () => {
     const items = [
         {
             label: <Link to="">
-                <Button type="link">Мій акаунт</Button>
+                <Button  type="link">Мій акаунт</Button>
             </Link>,
             key: '0',
             icon: <UserOutlined />
@@ -50,12 +50,12 @@ export const Header = () => {
             <img className='logo' src={logo} alt='' />
             <h3 className='header-title'>Online movie</h3>
             <Menu />
-            <div className='d-flex gap-4 align-items-baseline'>
-               {!userMethods.isAdmin(user) && <Tooltip placement="bottom" title="Улюблені">
+            <div className='d-flex gap-4  align-items-center'>
+               {/* {!userMethods.isAdmin(user) && <Tooltip placement="bottom" title="Улюблені">
                     <Link to="favourite">
                         <HeartOutlined className="fs-4 fw-bold" />
                     </Link>
-                </Tooltip>}
+                </Tooltip>} */}
                 {(!user && <Tooltip placement="bottom" title="Вхід / Реєстрація">
                     <Link to="login">
                         <LoginOutlined className="fs-4 fw-bold" />
@@ -78,7 +78,7 @@ export const Header = () => {
                    onChange={onThemeChange}
                    checkedChildren={<SunFilled/>}
                    unCheckedChildren={<MoonFilled/>}
-                   className=' align-self-center'
+                   
                    checked={storageService.isDarkTheme()}/>
                   
             </div>
