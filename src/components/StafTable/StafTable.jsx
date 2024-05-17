@@ -18,7 +18,7 @@ export const StafTable = () => {
             title: 'Фото',
             dataIndex: 'imageName',
             key: 'imageName',
-            render: (text) => <Popover placement="right" content={<img style={{width:120}} src={text} alt='Staf' />}><img src={text} alt='Staf' /></Popover>
+            render: (text) => <Popover placement="right" content={<img style={{width:120}} src={text} alt='Staf' />}><img src={text} alt='Staf' /></Popover>,
         },
         {
             title: "Ім'я",
@@ -94,6 +94,8 @@ export const StafTable = () => {
                 total: total,
             },
         });
+        if(total!==0 && stafs.length === 0 )
+            (async () => { await setData(paginatorConfig.pagination.defaultPageSize,paginatorConfig.pagination.defaultCurrent) })();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [total]);
 
@@ -113,6 +115,7 @@ export const StafTable = () => {
         setLoading(true)
         const result = (await stafService.getStafsWithPagination(pageSize, pageIndex)).data;
         setLoading(false)
+        console.log(result.stafs)
         if (result?.stafs){
             setStafs(result.stafs);
             setTotal(result.totalCount)

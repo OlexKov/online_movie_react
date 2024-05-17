@@ -23,6 +23,8 @@ export const movieService = {
 
       getMoviesWithPagination: (pageSize,pageIndex) => TryError(() => axios.get(movieApiUrl + `/take?skip=${pageSize*(pageIndex-1)}&count=${pageSize}`)),
 
+      getMovieFeedbacks:(id) => TryError(() => axios.get(movieApiUrl + '/getfeedbacks/' + id)),
+
       setRating: async (data) => {
             await axios.all(data.map(x => movieService.getRating(x.id)))
                 .then(axios.spread((...res) => {

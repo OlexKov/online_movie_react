@@ -21,7 +21,6 @@ export const CreateEditStaf = () => {
   const [roles, setRoles] = useState([]);
   const [countries, setCountries] = useState([]);
   const [staf, setStaf] = useState([]);
-  const [movies, setMovies] = useState([]);
   const [previewImage, setPreviewImage] = useState('');
   const [file, setFile] = useState()
 
@@ -42,25 +41,16 @@ export const CreateEditStaf = () => {
     })
   }, [file])
 
-  // const normFile = (e) => {
-  //   console.log(e.fileList)
-  //   if (Array.isArray(e)) {
-  //     return e
-  //   }
-  //   return e && e?.fileList
-  // }
   useEffect(() => {
     (async () => {
       await axios.all(
         [
           dataService.getCountries(),
-          dataService.getRoles(),
-          movieService.getMovies()
+          dataService.getRoles()
         ])
         .then(axios.spread((...res) => {
           setCountries(res[0].data?.map(item => new ComboBoxData(item.id, item.name)));
           setRoles(res[1].data?.map(item => new ComboBoxData(item.id, item.name)));
-          setMovies(res[2].data?.map(item => new ComboBoxData(item.id, item.name)));
         }));
       if (id !== 'create') {
         const stf = (await stafService.getStaf(id)).data
@@ -88,7 +78,6 @@ export const CreateEditStaf = () => {
       surname: data.surname,
       countryId: data.countryId,
       birthdate: data.birthdate ? dayjs(data.birthdate, dateFormat) : null,
-      movies: data.movies?.map(x => x.id),
       roles: data.roles?.map(x => x.id),
       description: data.description,
       isoscar: data.isOscar
@@ -104,7 +93,7 @@ export const CreateEditStaf = () => {
     newstaf.birthdate = new Date(Date.parse(newstaf.birthdate)).toLocaleDateString()
     let formData = new FormData();
     Object.keys(newstaf).forEach(function (key) {
-      if (key === 'roles' || key === 'movies')
+      if (key === 'roles')
         newstaf[key]?.forEach(x => formData.append(key, x))
       formData.append(key, newstaf[key]);
     });
@@ -257,7 +246,7 @@ export const CreateEditStaf = () => {
 
               </Row>
               <Row gutter={15}>
-                <Col span={12}>
+                <Col span={24}>
                   <Form.Item
                   hasFeedback
                     name="roles"
@@ -278,29 +267,6 @@ export const CreateEditStaf = () => {
                     />
                   </Form.Item>
                 </Col>
-
-                <Col span={12}>
-                  <Form.Item
-                  hasFeedback
-                    name="movies"
-                    label="Фільми"
-                    rules={[
-                      {
-                        required: true,
-                        message: 'Оберіть фільми'
-                      },
-                    ]}
-                  >
-                    <Select
-                      placeholder="Оберіть фільми в яких приймав участь актор"
-                      allowClear
-                      mode="multiple"
-                      maxTagCount={'responsive'}
-                      options={movies}
-                    />
-                  </Form.Item>
-                </Col>
-
               </Row>
               <Col span={24}>
                 <Form.Item

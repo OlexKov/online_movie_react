@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Col, DatePicker, Divider, Form, Input, Row, Select, Space, Image, Upload, TimePicker, message } from 'antd';
+import { Button, Col, DatePicker, Divider, Form, Input, Row, Select, Space, Image, Upload, TimePicker, message, Transfer, Table, Tag, Popover } from 'antd';
 import { useParams } from 'react-router-dom';
-import { ArrowLeftOutlined, PlusOutlined, UploadOutlined } from '@ant-design/icons';
+import { ArrowLeftOutlined, DeleteFilled, PlusOutlined, UploadOutlined } from '@ant-design/icons';
 import { dataService } from '../../services/DataService';
 import { movieService } from '../../services/MovieService';
 import { stafService } from '../../services/StafService';
@@ -9,7 +9,6 @@ import customParseFormat from 'dayjs/plugin/customParseFormat';
 import dayjs from 'dayjs';
 import defImage from '../../images/nophoto.jpg'
 import axios from 'axios';
-
 import { dateFormat, dateTimeFormat, timeFormat } from '../../helpers/constants';
 import { ComboBoxData } from '../../helpers/ComboBoxData';
 import { dummyRequest } from '../../helpers/methods';
@@ -22,7 +21,9 @@ export const CreateEditMovie = () => {
     const id = useParams().id;
     const [countries, setCountries] = useState([]);
     const [stafs, setStafs] = useState([]);
+    const [movieStafs, setMovieStafs] = useState([]);
     const [genres, setGenres] = useState([]);
+    const [roles, setRoles] = useState([]);
     const [movie, setMovie] = useState([]);
     const [premiums, setPremiums] = useState([]);
     const [qualities, setQualities] = useState([]);
@@ -58,14 +59,17 @@ export const CreateEditMovie = () => {
                     stafService.getAllStaf(),
                     dataService.getGenres(),
                     dataService.getPremiums(),
-                    dataService.getQualities()
+                    dataService.getQualities(),
+                    dataService.getRoles()
                 ])
-                .then(axios.spread((...res) => {
-                    setCountries(res[0].data?.map(item => new ComboBoxData(item.id,item.name)));
-                    setStafs(res[1].data?.map(item => new ComboBoxData(item.id,`${item.name} ${item.surname}`)));
-                    setGenres(res[2].data?.map(item => new ComboBoxData(item.id,item.name)));
-                    setPremiums(res[3].data?.map(item => new ComboBoxData(item.id,item.name)));
-                    setQualities(res[4].data?.map(item => new ComboBoxData(item.id,item.name)));
+                .then(axios.spread(async (...res) => {
+                    setCountries(res[0].data?.map(item => new ComboBoxData(item.id, item.name)));
+                    await stafService.setRoles(res[1].data);
+                    setStafs(res[1].data);
+                    setGenres(res[2].data?.map(item => new ComboBoxData(item.id, item.name)));
+                    setPremiums(res[3].data?.map(item => new ComboBoxData(item.id, item.name)));
+                    setQualities(res[4].data?.map(item => new ComboBoxData(item.id, item.name)));
+                    setRoles(res[5].data);
                 }));
             if (id !== 'create') {
                 const movie = (await movieService.getMovie(id)).data
@@ -76,10 +80,14 @@ export const CreateEditMovie = () => {
                             movieService.getMovieScreens(id),
                             movieService.getMovieStafs(id)
                         ])
-                        .then(axios.spread((...res) => {
+                        .then(axios.spread(async (...res) => {
                             movie.genres = res[0].data;
                             movie.screenShots = res[1].data;
-                            movie.stafs = res[2].data;
+                            await stafService.setMovieRoles(res[2].data, movie.id);
+                            const tempMovieStafs = res[2].data.map(x => ({ stafId: x.id, movieRoles: x.movieRoles.map(z => z.id) }));
+                            movie.stafs = tempMovieStafs;
+                            setMovieStafs(tempMovieStafs)
+                            setTargetKeys(tempMovieStafs.map(x => x.stafId))
                         }));
                     setMovie(movie)
                     setFormValues(movie, form)
@@ -88,6 +96,8 @@ export const CreateEditMovie = () => {
         })()
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+
 
     const setFormValues = (data, form) => {
         const scrns = data.screenShots?.map(x => { return { uid: x.id, name: x.name, status: 'done', url: x.name } })
@@ -100,7 +110,6 @@ export const CreateEditMovie = () => {
             qualityId: data.qualityId,
             countryId: data.countryId,
             genres: data.genres?.map(x => x.id),
-            stafs: data.stafs?.map(x => x.id),
             description: data.description,
             premiumId: data.premiumId,
             poster: data.poster,
@@ -121,12 +130,13 @@ export const CreateEditMovie = () => {
             .set('hour', newmovie.duration.get('hour'))
             .set('minute', newmovie.duration.get('minute'))
             .format(dateTimeFormat)
+        console.log(durationDate)    
         formData.append('dateDuration', durationDate)
-
+        movieStafs.map(x=>({stafId:x.stafId,movieRoles:x.movieRoles.length?[...x.movieRoles] : [x.movieRoles]}))
+                  .forEach(x => formData.append('stafs', JSON.stringify(x)))
         Object.keys(newmovie).forEach(function (key) {
-            if (key !== 'date' && key !== 'duration') {
-               
-                if (key === 'genres' || key === 'stafs')
+            if (key !== 'date' && key !== 'duration' && key!=='stafs') {
+                if (key === 'genres')
                     newmovie[key].forEach(x => formData.append(key, x))
                 else if (key === 'screens') {
                     const scrns = newmovie[key].fileList ? newmovie[key].fileList : newmovie[key]
@@ -137,10 +147,11 @@ export const CreateEditMovie = () => {
                             formData.append('screenShots', x.uid)
                     })
                 }
-                formData.append(key, newmovie[key]);
+                else
+                   formData.append(key, newmovie[key]);
             }
         });
-
+       
         if (newmovie.id === 0) {
             await movieService.createMovie(formData)
                 .then(response => {
@@ -167,6 +178,8 @@ export const CreateEditMovie = () => {
     const onReset = () => {
         setFormValues(movie, form);
         setPosterFile(null);
+        setMovieStafs(movie.stafs)
+        setTargetKeys(movie.stafs.map(x => x.id))
     }
 
     const handleChange = async ({ file: newFile }) => {
@@ -188,12 +201,145 @@ export const CreateEditMovie = () => {
         });
 
     const uploadButton = (
-        <button style={{ border: 0, background: 'none', color:themeToken.colorText }} type="button">
+        <button style={{ border: 0, background: 'none', color: themeToken.colorText }} type="button">
             <PlusOutlined />
             <div style={{ marginTop: 8 }}>Завантажити</div>
         </button>
     );
 
+    //---------------------------------------------------------------------------------------------------------
+    const TableTransfer = ({ leftColumns, rightColumns, ...restProps }) => (
+        <Transfer {...restProps}>
+            {({
+                direction,
+                filteredItems,
+                onItemSelect,
+                onItemSelectAll,
+                selectedKeys: listSelectedKeys,
+
+            }) => {
+                const columns = direction === 'left' ? leftColumns : rightColumns;
+                const rowSelection = {
+
+                    onChange(selectedRowKeys) {
+                        onItemSelectAll(selectedRowKeys, 'replace');
+                    },
+                    selectedRowKeys: listSelectedKeys,
+                    selections: [Table.SELECTION_ALL, Table.SELECTION_INVERT, Table.SELECTION_NONE],
+                };
+                return (
+                    <Table
+                        pagination={pagination}
+                        rowSelection={direction === 'left' && rowSelection}
+                        columns={columns}
+                        dataSource={filteredItems}
+                        size="small"
+
+                        onRow={({ key, disabled: itemDisabled }) => ({
+                            onClick: () => {
+                                if (itemDisabled || direction !== 'left') {
+                                    return;
+                                }
+                                onItemSelect(key, !listSelectedKeys.includes(key));
+                            },
+                        })}
+                    />
+                );
+            }}
+        </Transfer>
+    );
+
+
+    const leftColumns = [
+        {
+            title: 'Фото',
+            dataIndex: 'imageName',
+            key: 'imageName',
+            render: (text) => <Popover placement="right" content={<img style={{ width: 120 }} src={text} alt='Staf' />}><img style={{ width: 30 }} src={text} alt='Staf' /></Popover>,
+            filters:roles.map(x=>({text:x.name,value:x.id})),
+            onFilter: (value, record) => record.roles.some(x=>x.id===value),
+        },
+        {
+            title: "Ім'я",
+            dataIndex: 'name',
+            key: 'name',
+            sorter: (a, b) => a.name > b.name ? 1 : -1
+        },
+        {
+            title: 'Прізвище',
+            dataIndex: 'surname',
+            key: 'surname',
+            sorter: (a, b) => a.surname > b.surname ? 1 : -1
+        },
+
+    ];
+    const rightColumns = [
+        {
+            title: 'Фото',
+            dataIndex: 'imageName',
+            render: (text) => <Popover placement="right" content={<img style={{ width: 120 }} src={text} alt='Staf' />}><img style={{ width: 30 }} src={text} alt='Staf' /></Popover>,
+            width: '15%',
+            filters:roles.map(x=>({text:x.name,value:x.id})),
+            onFilter: (value, record) => record.roles.some(x=>x.id===value),
+            align:'center'
+        },
+        {
+            title: "Ім'я",
+            dataIndex: 'name',
+            sorter: (a, b) => a.name > b.name ? 1 : -1,
+            render: (_, record) => (<span>{record.name} {record.surname}</span>),
+            width: '20%'
+        },
+
+        {
+            title: 'Ролі',
+            dataIndex: 'roles',
+            render: (data, record) => <Select
+                placeholder="Оберіть ролі"
+                mode="multiple"
+                maxTagCount={'responsive'}
+                defaultValue={movieStafs.find(x => x.stafId === record.id)?.movieRoles || stafs.find(x => x.id === record.id).roles[0].id}
+                options={data?.map(item => new ComboBoxData(item.id, item.name))}
+                onChange={(e) => onSelectedChange(e, record.id)}
+                
+            />
+        },
+        {
+            key: 'action',
+            render: (_, record) => <Button onClick={() => deleteSelectedStaf(record.id)} type="primary" danger icon={<DeleteFilled />} />,
+            width: '10%'
+        },
+    ];
+    const [targetKeys, setTargetKeys] = useState([]);
+    const onChange = (nextTargetKeys) => {
+        const stafsId = nextTargetKeys.filter(x=>!movieStafs.map(z=>z.stafId).includes(x))
+        if(stafsId){
+            const newStafs = stafsId.map((id)=>{
+                const defaultRoleId = stafs.find(x => x.id === id)?.roles[0].id;
+                return {stafId:id,movieRoles:defaultRoleId}
+            })
+            setMovieStafs(movieStafs=>[...movieStafs,...newStafs])
+        }
+        setTargetKeys(nextTargetKeys);
+    };
+
+    const deleteSelectedStaf = (id) => {
+        setTargetKeys(targetKeys.filter(x => x !== id))
+        setMovieStafs(movieStafs.filter(x => x.stafId !== id))
+    }
+
+    const onSelectedChange = (e, stafId) => {
+       const stafIndex = movieStafs.indexOf(movieStafs.find(x=>x.stafId === stafId))
+       const tempMovieStafs = [...movieStafs];
+       tempMovieStafs[stafIndex].movieRoles = e.length > 0 ? e : stafs.find(x => x.id === stafId).roles[0].id;
+       setMovieStafs(tempMovieStafs)
+    }
+
+    const pagination = {
+        defaultPageSize: 5,
+        defaultCurrent: 1
+    }
+    //---------------------------------------------------------------------------------------------------------
     return (
         <>
             <Button shape="circle" onClick={() => window.history.back()} type="primary" icon={<ArrowLeftOutlined className='fs-4' />} />
@@ -230,7 +376,7 @@ export const CreateEditMovie = () => {
                             <Row gutter={15}>
                                 <Col span={12}>
                                     <Form.Item name="name" label="Назва"
-                                    hasFeedback
+                                        hasFeedback
                                         rules={[
                                             {
                                                 pattern: '^[A-Z А-Я].*',
@@ -247,7 +393,7 @@ export const CreateEditMovie = () => {
                                 </Col>
                                 <Col span={12}>
                                     <Form.Item name="originalName" label="Оригінальна назва"
-                                    hasFeedback
+                                        hasFeedback
                                         rules={[
                                             {
                                                 pattern: '^[A-Z А-Я].*',
@@ -266,7 +412,7 @@ export const CreateEditMovie = () => {
                             <Row gutter={15}>
                                 <Col span={12}>
                                     <Form.Item
-                                    hasFeedback
+                                        hasFeedback
                                         name="date"
                                         label="Дата прем'єри"
                                         rules={[
@@ -282,7 +428,7 @@ export const CreateEditMovie = () => {
 
                                 <Col span={12}>
                                     <Form.Item
-                                    hasFeedback
+                                        hasFeedback
                                         name="countryId"
                                         label="Країна"
                                         rules={[
@@ -306,7 +452,7 @@ export const CreateEditMovie = () => {
                             <Row gutter={15}>
                                 <Col span={8}>
                                     <Form.Item
-                                    hasFeedback
+                                        hasFeedback
                                         name="duration"
                                         label="Тривалість"
                                         rules={[
@@ -322,7 +468,7 @@ export const CreateEditMovie = () => {
 
                                 <Col span={8}>
                                     <Form.Item
-                                    hasFeedback
+                                        hasFeedback
                                         name="qualityId"
                                         label="Якість"
                                         rules={[
@@ -341,7 +487,7 @@ export const CreateEditMovie = () => {
                                 </Col>
                                 <Col span={8}>
                                     <Form.Item
-                                    hasFeedback
+                                        hasFeedback
                                         name="premiumId"
                                         label="Преміум"
                                         rules={[
@@ -363,9 +509,9 @@ export const CreateEditMovie = () => {
 
 
                             <Row gutter={15}>
-                                <Col span={12}>
+                                <Col span={24}>
                                     <Form.Item
-                                    hasFeedback
+                                        hasFeedback
                                         name="genres"
                                         label="Жанри"
                                         rules={[
@@ -384,33 +530,11 @@ export const CreateEditMovie = () => {
                                         />
                                     </Form.Item>
                                 </Col>
-
-                                <Col span={12}>
-                                    <Form.Item
-                                    hasFeedback
-                                        name="stafs"
-                                        label="Актори"
-                                        rules={[
-                                            {
-                                                required: true,
-                                                message: 'Оберіть акторів'
-                                            },
-                                        ]}
-                                    >
-                                        <Select
-                                            placeholder="Оберіть акторів які приймав участь у фільмі"
-                                            allowClear
-                                            mode="multiple"
-                                            maxTagCount={'responsive'}
-                                            options={stafs}
-                                        />
-                                    </Form.Item>
-                                </Col>
                             </Row>
                             <Row>
                                 <Col span={24}>
                                     <Form.Item name="movieUrl" label="Посилання на відео"
-                                    hasFeedback
+                                        hasFeedback
                                         rules={[
                                             {
                                                 url: true,
@@ -429,7 +553,7 @@ export const CreateEditMovie = () => {
                             <Row>
                                 <Col span={24}>
                                     <Form.Item name="trailerUrl" label="Посилання на трейлер"
-                                    hasFeedback
+                                        hasFeedback
                                         rules={[
                                             {
                                                 url: true,
@@ -450,7 +574,53 @@ export const CreateEditMovie = () => {
                     <Row>
                         <Col span={24}>
                             <Form.Item
-                            hasFeedback
+                                hasFeedback
+                                label="Актори"
+                                name="stafs"
+                                rules={[
+                                    () => ({
+                                        validator() {
+                                            if (targetKeys.length !== 0) {
+                                                return Promise.resolve();
+                                            }
+                                            return Promise.reject(new Error('Оберіть як мінімум одиного актора'));
+                                        },
+                                    })
+                                ]}
+                            >
+                                <TableTransfer
+                                    dataSource={stafs}
+                                    targetKeys={targetKeys}
+                                    showSearch
+                                    onChange={onChange}
+                                    oneWay
+                                    rowKey={(record) => record.id}
+                                    filterOption={(inputValue, item) =>
+                                        item.name.indexOf(inputValue) !== -1 || item.surname.indexOf(inputValue) !== -1
+                                    }
+                                    leftColumns={leftColumns}
+                                    rightColumns={rightColumns}
+                                    selectAllLabels={[
+                                        ({ selectedCount, totalCount }) => (
+                                          <div className='d-flex gap-3'>
+                                           <span> {selectedCount} із {totalCount}</span>
+                                            <span>Всі</span>
+                                          </div>
+                                        ), ({ selectedCount, totalCount }) => (
+                                            <div className='d-flex gap-3'>
+                                            <span>{totalCount}</span>
+                                             <span>Приймали участь у фільмі</span>
+                                           </div>
+                                        )
+                                      ]}
+                                />
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span={24}>
+                            <Form.Item
+                                hasFeedback
                                 name="description"
                                 label="Інформація"
                                 rules={[
@@ -473,10 +643,12 @@ export const CreateEditMovie = () => {
                             </Form.Item>
                         </Col>
                     </Row>
+
+
                     <Row>
                         <Col span={24}>
                             <Form.Item
-                            hasFeedback
+                                hasFeedback
                                 name="screens"
                                 label="Скріншоти фільму "
                                 rules={[

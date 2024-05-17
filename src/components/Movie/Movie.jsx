@@ -4,7 +4,7 @@ import { movieService } from '../../services/MovieService'
 import ReactPlayer from 'react-player'
 import '../Movie/Movie.css'
 import { Button, ConfigProvider, Divider, Rate, Result, Space, Tabs, Tag } from 'antd'
-import { CaretRightFilled, DollarOutlined, HeartFilled, LeftOutlined, MessageOutlined, MutedFilled, PicLeftOutlined, PictureOutlined, SoundFilled, TeamOutlined, YoutubeFilled } from '@ant-design/icons'
+import { CaretRightFilled, DollarOutlined, HeartFilled,  MessageOutlined, MutedFilled, PicLeftOutlined, PictureOutlined, SoundFilled, TeamOutlined, YoutubeFilled } from '@ant-design/icons'
 import { stafService } from '../../services/StafService'
 import useToken from 'antd/es/theme/useToken'
 import { Carousel } from 'antd';
@@ -24,7 +24,7 @@ export const Movie = () => {
     const [stafs, setStafs] = useState([])
     const [genres, setGenres] = useState([])
     const [stafRoles, setStafRoles] = useState([])
-    
+
     const description = (
         <div className='d-flex flex-column gap-3'>
             <div className='fs-5 fw-bold'>
@@ -40,42 +40,35 @@ export const Movie = () => {
             <p className='fs-6'>{movie?.description}</p>
         </div>
 
-    );
-
-  
+    )
 
     const screenshots = (
-        <><ConfigProvider
-        theme={{
-         token:{
-            colorBgContainer:'#ffffff',
-         },
-          components: {
-            Carousel: {
-                dotActiveWidth:45,
-                dotGap:7,
-                dotHeight:4,
-                dotWidth:30,
-                arrowSize:40
-            },
-          },
-        }}
-      >
-         <Carousel
-              arrows
-              autoplay 
-              infinite
-              colorText='white'
-              
-              >
-                {screens.map(x => 
+        <ConfigProvider
+            theme={{
+                token: {
+                    colorBgContainer: '#ffffff',
+                },
+                components: {
+                    Carousel: {
+                        dotActiveWidth: 45,
+                        dotGap: 7,
+                        dotHeight: 4,
+                        dotWidth: 30,
+                        arrowSize: 35
+                    },
+                },
+            }}
+        >
+            <Carousel
+                arrows
+                autoplay
+                infinite
+            >
+                {screens.map(x =>
                     <img src={x.name} alt=''></img>
                 )}
             </Carousel>
-      </ConfigProvider>
-           
-           
-        </>
+        </ConfigProvider>
     );
     const movieStafs = (
         <div className='d-flex flex-column gap-4'>
@@ -85,7 +78,7 @@ export const Movie = () => {
                         <Divider style={{ color: themeToken.colorTextDescription, fontSize: 13 }} orientation="left" >{role.toUpperCase()}И</Divider>
                         <div className='d-flex  flex-wrap  gap-5'>
                             {
-                                stafs.filter(x => x.roles.includes(role)).map(staf =>
+                                stafs.filter(x => x.movieRoles.includes(role)).map(staf =>
                                     <div className='staf-info-container'>
                                         <img className='staf-image' src={staf.imageName} alt='imageName' />
                                         <div className='d-flex flex-column '>
@@ -102,6 +95,12 @@ export const Movie = () => {
             }
         </div>
 
+    );
+
+    const movieFeedbacks = (
+        <>
+           {feedbacks.map(x=><span>{x.name}</span>)}
+        </>
     );
 
     const tabItems = [
@@ -126,7 +125,7 @@ export const Movie = () => {
         {
             label: 'Відгуки',
             key: 'feedbacks',
-            children: `Content of tab feedbacks`,
+            children:movieFeedbacks,
             icon: <MessageOutlined />,
         },
     ]
@@ -134,7 +133,7 @@ export const Movie = () => {
     useEffect(() => {
         let roles = [];
         stafs.forEach(staf => {
-            roles.push(...staf.roles)
+            roles.push(...staf.movieRoles)
         })
         setStafRoles([...new Set(roles)].sort())
     }, [stafs]);
@@ -198,9 +197,9 @@ export const Movie = () => {
                 if (stafs.length === 0) {
                     const result = await movieService.getMovieStafs(id);
                     if (result.status === 200) {
-                        const tempStafs = await stafService.setRoles(result.data);
+                        const tempStafs = await stafService.setMovieRoles(result.data,id);
                         tempStafs.forEach(x => {
-                            x.roles = x.roles.map(z => z.name);
+                            x.movieRoles = x.movieRoles.map(z => z.name);
                         })
                         setStafs(tempStafs)
                     }
@@ -215,6 +214,12 @@ export const Movie = () => {
                 }
                 break;
             case 'feedbacks':
+                if (feedbacks.length === 0) {
+                    const result = await movieService.getMovieFeedbacks(id);
+                    if (result.status === 200) {
+                        setFeedbacks(result.data)
+                    }
+                }
                 break;
             default:
                 break;

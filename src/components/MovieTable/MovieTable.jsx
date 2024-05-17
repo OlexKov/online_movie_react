@@ -58,7 +58,7 @@ export const MovieTable = () => {
       sorter: (a, b) => a.rating - b.rating
     },
     {
-      title: '',
+     
       key: 'action',
       render: (_, record) => (
         <Space size="middle">
@@ -95,6 +95,8 @@ export const MovieTable = () => {
         total: total,
       },
     });
+    if(total!==0 && movies.length === 0 )
+      (async () => { await setData(paginatorConfig.pagination.defaultPageSize,paginatorConfig.pagination.defaultCurrent) })();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [total]);
 
