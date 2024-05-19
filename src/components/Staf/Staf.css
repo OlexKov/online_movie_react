@@ -16,6 +16,7 @@
 
 .about-staf{
     display: flex;
+    justify-content: space-between;
     gap:15px;
     margin-left: 20%;
     border-radius: 20px;
@@ -24,10 +25,12 @@
     animation: fadeIn 1s ease-in-out;
     padding: 2%;
     min-width: 600px;
+    min-height: 300px;
 }
 .main-container{
-    margin:  10% 0 5% 10%;
+    margin:  10% 0 7% 10%;
     position: relative;
+   
 }
 .about-staf-divider{
     margin-bottom: 20px;
@@ -38,7 +41,6 @@
     gap:20px;
     font-weight: bold;
     margin-left: 9vw;
-  
 }
 
 .staf-movie-container{
