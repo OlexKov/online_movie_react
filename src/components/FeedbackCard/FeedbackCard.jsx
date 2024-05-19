@@ -9,10 +9,9 @@ export const FeedbackCard = ({ name, surname, text, date }) => {
     const theme = useToken()[1];
     return (
         <Card
-            style={{ marginTop: 16 }}
+            className=' mt-3 text-start'
             title={
                 <div className='d-flex justify-content-between align-items-center'>
-                    
                     <span><UserOutlined className=' fs-5 text-success'/> {name} {surname}</span>
                     <div style={{color:theme.colorTextDescription}} className='feedback-date-time'>
                         <span><DatabaseOutlined/> {dateTime[0]}</span>

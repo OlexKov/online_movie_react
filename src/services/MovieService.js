@@ -25,7 +25,7 @@ export const movieService = {
 
       getMovieFeedbacks:(id,pageIndex,pageSize) => TryError(() => axios.get(`${movieApiUrl}/getfeedbacks/${id}/${pageIndex}/${pageSize}`)),
 
-      getNotApprovedMovieFeedbacks:(id,pageIndex,pageSize) => TryError(() => axios.get(`${movieApiUrl}/getnafeedbacks/${id}/${pageIndex}/${pageSize}`)),
+      getNotApprovedMovieFeedbacks:(id,pageIndex,pageSize) => TryError(() => axios.get(`${movieApiUrl}getfeedbacks/notapproved/${id}/${pageIndex}/${pageSize}`)),
 
       setRating: async (data) => {
             await axios.all(data.map(x => movieService.getRating(x.id)))

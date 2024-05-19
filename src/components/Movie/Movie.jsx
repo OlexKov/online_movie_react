@@ -117,7 +117,7 @@ export const Movie = () => {
     }
 
     const movieFeedbacks = (
-        <div className=' text-center'>
+        <div className='text-center'>
             <Spin spinning={loading} delay={300} size='large' />
             {feedbacks.length > 0
                 ? <div className='d-flex flex-column'>
