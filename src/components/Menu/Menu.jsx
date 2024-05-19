@@ -3,7 +3,6 @@ import { HomeOutlined,  InfoCircleOutlined,  TableOutlined, UserOutlined } from 
 import { Menu as AntMenu,} from 'antd';
 import { Link, useLocation } from 'react-router-dom';
 import '../Menu/Menu.css'
-import { userMethods } from '../../helpers/methods';
 import { useSelector } from 'react-redux';
 
 
@@ -50,11 +49,11 @@ export const Menu = () => {
 
     useEffect(()=>{
        let itemArray = null; 
-       if(!userMethods.isAuthenticated(user))
+       if(!user)
           itemArray = items.filter(x=> x.users.includes('Guest'));
-       else if(userMethods.isAdmin(user))
+       else if(user.isAdmin)
            itemArray = items.filter(x=>x.users.includes('Admin'))
-       else if(userMethods.isUser(user))
+       else if(user.isUser)
            itemArray = items.filter(x=>x.users.includes('User'))
          setMenuItems(itemArray)
     },[user]);

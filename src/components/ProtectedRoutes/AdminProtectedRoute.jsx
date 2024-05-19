@@ -1,6 +1,4 @@
 import { Navigate } from "react-router-dom";
-import { userMethods } from "../../helpers/methods";
-
 
 export const AdminProtectedRoute = ({
     user,
@@ -8,9 +6,9 @@ export const AdminProtectedRoute = ({
     children,
   }) => {
     
-    if (!userMethods.isAdmin(user)) {
-      if(userMethods.isAuthenticated(user)){
-         redirectPath = '/forbiden'
+    if (!user?.isAdmin) {
+      if(user){
+        redirectPath = '/forbiden'
       }
       return <Navigate to={redirectPath} replace />;
     }

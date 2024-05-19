@@ -28,19 +28,14 @@ export const getDataFromToken = (token) => {
             dateOfBirth:
                 data[
                 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/dateofbirth'
-                ]
+                ],
+            isAdmin:data['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']?.includes('Admin') || false,
+            isUser:data['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']?.includes('User') || false,
         }
     }
     return null
 }
 
-export const userMethods = {
-    isAuthenticated: (userData) => userData != null,
-
-    isAdmin: (userData) => (userData != null && userData?.roles?.includes('Admin')) || false,
-
-    isUser: (userData) => (userData != null && userData?.roles?.includes('User')) || false,
-}
 
 export const dummyRequest = ({ file, onSuccess }) => {
     setTimeout(() => {

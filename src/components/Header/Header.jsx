@@ -2,7 +2,7 @@
 import { Menu } from '../Menu/Menu'
 import '../Header/Header.css'
 import { Link, useNavigate } from 'react-router-dom'
-import { AndroidOutlined, HeartOutlined, LoginOutlined, LogoutOutlined, MoonFilled,  SunFilled, UserOutlined } from '@ant-design/icons'
+import { AndroidOutlined, LoginOutlined, LogoutOutlined, MoonFilled,  SunFilled, UserOutlined } from '@ant-design/icons'
 import logo from '../../logo.png';
 import { Button, Dropdown, Switch, Tooltip } from 'antd'
 import { useSelector } from 'react-redux'
@@ -10,7 +10,6 @@ import { useDispatch } from "react-redux";
 import { clearUserData } from '../store/userDataSlice';
 import { accountService } from '../../services/AccountService';
 import { storageService } from '../../services/StorageService';
-import { userMethods } from '../../helpers/methods';
 import { swithTheme } from '../store/themeSlice';
 
 
@@ -66,7 +65,7 @@ export const Header = () => {
                         trigger={['click']}
                     >
                         <div className='user-view'>
-                           {(userMethods.isAdmin(user) && <AndroidOutlined className=' text-danger'/>)
+                           {(user.isAdmin && <AndroidOutlined className=' text-danger'/>)
                              || <UserOutlined className=' text-success'/> }
                             <span className='text-white fw-light fs-6 fst-italic'> {user?.name} {user?.surname}</span>
                         </div>

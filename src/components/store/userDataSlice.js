@@ -1,12 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { getDataFromToken } from '../../helpers/methods';
+import { getDataFromToken,} from '../../helpers/methods';
 import { storageService } from '../../services/StorageService';
 
 
 const userDataSlice = createSlice({
     name: 'data',
     initialState: {
-        data: getDataFromToken(storageService.getAccessToken())
+        data: getDataFromToken(storageService.getAccessToken()),
+       
     },
     reducers: {
         setUserData: (state, action) => {
@@ -17,5 +18,5 @@ const userDataSlice = createSlice({
         },
     }
 })
-export const { setUserData, clearUserData } = userDataSlice.actions
+export const { setUserData, clearUserData} = userDataSlice.actions
 export default userDataSlice.reducer
