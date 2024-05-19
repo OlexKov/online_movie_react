@@ -3,11 +3,13 @@ import { useParams } from 'react-router-dom'
 import { movieService } from '../../services/MovieService'
 import ReactPlayer from 'react-player'
 import '../Movie/Movie.css'
-import { Button, ConfigProvider, Divider, Rate, Result, Space, Tabs, Tag } from 'antd'
-import { CaretRightFilled, DollarOutlined, HeartFilled,  MessageOutlined, MutedFilled, PicLeftOutlined, PictureOutlined, SoundFilled, TeamOutlined, YoutubeFilled } from '@ant-design/icons'
+import { Button, ConfigProvider, Divider, Pagination, Rate, Result, Space, Spin, Tabs, Tag } from 'antd'
+import { CaretRightFilled, DollarOutlined, HeartFilled, MessageOutlined, MutedFilled, PicLeftOutlined, PictureOutlined, SoundFilled, TeamOutlined, YoutubeFilled } from '@ant-design/icons'
 import { stafService } from '../../services/StafService'
 import useToken from 'antd/es/theme/useToken'
 import { Carousel } from 'antd';
+import { FeedbackCard } from '../FeedbackCard/FeedbackCard'
+import { paginatorConfig } from '../../helpers/constants'
 
 
 
@@ -24,6 +26,8 @@ export const Movie = () => {
     const [stafs, setStafs] = useState([])
     const [genres, setGenres] = useState([])
     const [stafRoles, setStafRoles] = useState([])
+    const [feedbackCount, setFeedbackCount] = useState(0)
+    const [loading, setLoading] = useState(false);
 
     const description = (
         <div className='d-flex flex-column gap-3'>
@@ -97,10 +101,43 @@ export const Movie = () => {
 
     );
 
+
+    const handleTableChange = async (pagination, filters) => {
+        await setData(filters, pagination);
+    };
+
+    const setData = async (pageSize, pageIndex) => {
+        setLoading(true);
+        const result = await movieService.getMovieFeedbacks(id, pageIndex, pageSize);
+        if (result.status === 200 && result.data?.elements?.length > 0) {
+            setFeedbacks(result?.data?.elements);
+            setFeedbackCount(result?.data?.totalCount)
+        }
+        setLoading(false)
+    }
+
     const movieFeedbacks = (
-        <>
-           {feedbacks.map(x=><span>{x.name}</span>)}
-        </>
+        <div className=' text-center'>
+            <Spin spinning={loading} delay={300} size='large' />
+            {feedbacks.length > 0
+                ? <div className='d-flex flex-column'>
+                    {feedbacks.map(x => <FeedbackCard {...x} />)}
+                    <Pagination
+                        defaultCurrent={paginatorConfig.pagination.defaultCurrent}
+                        defaultPageSize={paginatorConfig.pagination.defaultPageSize}
+                        total={feedbackCount}
+                        showTotal={paginatorConfig.pagination.showTotal}
+                        showSizeChanger
+                        showQuickJumper
+                        className='mt-3'
+                        pageSizeOptions={paginatorConfig.pagination.pageSizeOptions}
+                        onChange={handleTableChange}
+                        locale={paginatorConfig.pagination.locale}
+
+                    />
+                </div>
+                : <div className='fs-5'><span >Відгукі відсутні</span></div>}
+        </div>
     );
 
     const tabItems = [
@@ -125,7 +162,7 @@ export const Movie = () => {
         {
             label: 'Відгуки',
             key: 'feedbacks',
-            children:movieFeedbacks,
+            children: movieFeedbacks,
             icon: <MessageOutlined />,
         },
     ]
@@ -197,7 +234,7 @@ export const Movie = () => {
                 if (stafs.length === 0) {
                     const result = await movieService.getMovieStafs(id);
                     if (result.status === 200) {
-                        const tempStafs = await stafService.setMovieRoles(result.data,id);
+                        const tempStafs = await stafService.setMovieRoles(result.data, id);
                         tempStafs.forEach(x => {
                             x.movieRoles = x.movieRoles.map(z => z.name);
                         })
@@ -215,10 +252,7 @@ export const Movie = () => {
                 break;
             case 'feedbacks':
                 if (feedbacks.length === 0) {
-                    const result = await movieService.getMovieFeedbacks(id);
-                    if (result.status === 200) {
-                        setFeedbacks(result.data)
-                    }
+                    setData(paginatorConfig.pagination.defaultPageSize, paginatorConfig.pagination.defaultCurrent)
                 }
                 break;
             default:

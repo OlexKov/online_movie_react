@@ -118,8 +118,8 @@ export const MovieTable = () => {
     setLoading(true)
     const result = (await movieService.getMoviesWithPagination(pageSize,pageIndex)).data;
     setLoading(false)
-    if (result?.movies){
-      setMovies(await movieService.setRating(result.movies));
+    if (result?.elements){
+      setMovies(await movieService.setRating(result.elements));
       setTotal(result.totalCount)
     }
   }

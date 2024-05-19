@@ -21,9 +21,11 @@ export const movieService = {
 
       getMovieGenres: (id) => TryError(() => axios.get(movieApiUrl + '/getgenres/' + id)),
 
-      getMoviesWithPagination: (pageSize,pageIndex) => TryError(() => axios.get(movieApiUrl + `/take?skip=${pageSize*(pageIndex-1)}&count=${pageSize}`)),
+      getMoviesWithPagination: (pageSize,pageIndex) => TryError(() => axios.post(movieApiUrl + `/paginatefilter`,{findModel:null,pageSize,pageIndex})),
 
-      getMovieFeedbacks:(id) => TryError(() => axios.get(movieApiUrl + '/getfeedbacks/' + id)),
+      getMovieFeedbacks:(id,pageIndex,pageSize) => TryError(() => axios.get(`${movieApiUrl}/getfeedbacks/${id}/${pageIndex}/${pageSize}`)),
+
+      getNotApprovedMovieFeedbacks:(id,pageIndex,pageSize) => TryError(() => axios.get(`${movieApiUrl}/getnafeedbacks/${id}/${pageIndex}/${pageSize}`)),
 
       setRating: async (data) => {
             await axios.all(data.map(x => movieService.getRating(x.id)))

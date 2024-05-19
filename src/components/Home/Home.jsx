@@ -7,7 +7,7 @@ import { paginatorConfig } from '../../helpers/constants';
 
 export const Home = () => {
   const [movies, setMovies] = useState([]);
-  const [loading, setLoading] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [moviesCount, setMoviesCount] = useState(0);
 
   useEffect(() => {
@@ -22,8 +22,8 @@ export const Home = () => {
     setLoading(true);
     const result = (await movieService.getMoviesWithPagination(pageSize, pageIndex)).data;
     setLoading(false)
-    if (result?.movies?.length > 0) {
-      setMovies(await movieService.setRating(result.movies));
+    if (result?.elements?.length > 0) {
+      setMovies(await movieService.setRating(result.elements));
       setMoviesCount(result.totalCount)
     }
   }

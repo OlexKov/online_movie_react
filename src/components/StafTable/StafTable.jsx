@@ -115,9 +115,8 @@ export const StafTable = () => {
         setLoading(true)
         const result = (await stafService.getStafsWithPagination(pageSize, pageIndex)).data;
         setLoading(false)
-        console.log(result.stafs)
-        if (result?.stafs){
-            setStafs(result.stafs);
+        if (result?.elements){
+            setStafs(result.elements);
             setTotal(result.totalCount)
         }
     }
