@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { movieService } from '../../services/MovieService'
 import ReactPlayer from 'react-player'
 import '../Movie/Movie.css'
@@ -10,6 +10,9 @@ import useToken from 'antd/es/theme/useToken'
 import { Carousel } from 'antd';
 import { FeedbackCard } from '../FeedbackCard/FeedbackCard'
 import { paginatorConfig } from '../../helpers/constants'
+import { useSelector } from 'react-redux'
+
+
 
 
 
@@ -28,6 +31,8 @@ export const Movie = () => {
     const [stafRoles, setStafRoles] = useState([])
     const [feedbackCount, setFeedbackCount] = useState(0)
     const [loading, setLoading] = useState(false);
+    
+    const user = useSelector(state=>state.user.data);
 
     const description = (
         <div className='d-flex flex-column gap-3'>
@@ -86,7 +91,8 @@ export const Movie = () => {
                                     <div className='staf-info-container'>
                                         <img className='staf-image' src={staf.imageName} alt='imageName' />
                                         <div className='d-flex flex-column '>
-                                            <span className='fs-6 fw-medium'>{staf.name} {staf.surname}</span>
+                                            {user?<Link to={`/staf/${staf.id}`} className='fs-6 fw-medium'>{staf.name} {staf.surname}</Link>
+                                            : <span className='fs-6 fw-medium'>{staf.name} {staf.surname}</span>}
                                             <span style={{ color: themeToken.colorTextDescription }}>{staf.countryName}</span>
                                         </div>
                                     </div>

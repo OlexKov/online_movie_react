@@ -1,0 +1,18 @@
+.small-card-conteiner{
+    display: flex;
+    flex-direction: column;
+    gap:5px;
+    font-size: 15px;
+    font-weight: bold;
+    width: 220px;
+   
+}
+.movie-card-badge:hover{
+    transform: translateY(-5px);
+    cursor: pointer;
+}
+.movie-card-badge{
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(124, 124, 124, 0.8);
+    transition: transform 0.3s ease-in-out;
+}

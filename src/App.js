@@ -20,6 +20,7 @@ import { Movie } from './components/Movie/Movie';
 import { AuthProtectedRoute } from './components/ProtectedRoutes/AuthProtectedRoute';
 import { UserProtectedRoute } from './components/ProtectedRoutes/UserProtectedRoute';
 import { AdminProtectedRoute } from './components/ProtectedRoutes/AdminProtectedRoute';
+import { Staf } from './components/Staf/Staf';
 
 
 
@@ -57,6 +58,7 @@ function App() {
             </AdminProtectedRoute>
           } />
           <Route path="movie/:id" element={<Movie />} />
+          <Route path="staf/:stafId" element={<Staf />} />
           <Route path="fogotpassword" element={<FogotPassword />} />
           <Route path={process.env.REACT_APP_PASSWORD_RESET_PAGE} element={<PasswordReset />} />
           <Route path="create-edit-staf/:id" element={

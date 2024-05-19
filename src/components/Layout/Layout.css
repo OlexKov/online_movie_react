@@ -27,6 +27,8 @@
 .content > div{
     flex-grow: 1;
     padding: 24px;
-    margin-top: 20px
+    margin-top: 20px;
+    overflow-x: auto;
+    
 }
 
