@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { movieService } from '../../services/MovieService'
 import ReactPlayer from 'react-player'
 import '../Movie/Movie.css'
-import { Button, ConfigProvider, Divider, Pagination, Rate, Result, Space, Spin, Tabs, Tag } from 'antd'
-import { CaretRightFilled, DollarOutlined, HeartFilled, MessageOutlined, MutedFilled, PicLeftOutlined, PictureOutlined, SoundFilled, TeamOutlined, YoutubeFilled } from '@ant-design/icons'
+import { Button, ConfigProvider, Divider, Empty, Pagination, Rate, Result, Space, Spin, Tabs, Tag } from 'antd'
+import { CaretRightFilled, CommentOutlined, DollarOutlined, HeartFilled, MutedFilled, PicLeftOutlined, PictureOutlined, SettingOutlined, SoundFilled, TeamOutlined, YoutubeFilled } from '@ant-design/icons'
 import { stafService } from '../../services/StafService'
 import useToken from 'antd/es/theme/useToken'
 import { Carousel } from 'antd';
 import { FeedbackCard } from '../FeedbackCard/FeedbackCard'
 import { paginatorConfig } from '../../helpers/constants'
 import { useSelector } from 'react-redux'
+import { dataService } from '../../services/DataService'
 
 
 
@@ -31,9 +32,12 @@ export const Movie = () => {
     const [stafRoles, setStafRoles] = useState([])
     const [feedbackCount, setFeedbackCount] = useState(0)
     const [loading, setLoading] = useState(false);
-    
-    const user = useSelector(state=>state.user.data);
+    const [hasFeedback, setHasFeedback] = useState(true);
+    const [userPremiumRate, setUserPremiumRate] = useState(0);
 
+
+    const user = useSelector(state => state.user.data);
+    const navigate = useNavigate();
     const description = (
         <div className='d-flex flex-column gap-3'>
             <div className='fs-5 fw-bold'>
@@ -91,8 +95,8 @@ export const Movie = () => {
                                     <div className='staf-info-container'>
                                         <img className='staf-image' src={staf.imageName} alt='imageName' />
                                         <div className='d-flex flex-column '>
-                                            {user?<Link to={`/staf/${staf.id}`} className='fs-6 fw-medium'>{staf.name} {staf.surname}</Link>
-                                            : <span className='fs-6 fw-medium'>{staf.name} {staf.surname}</span>}
+                                            {user ? <Link to={`/staf/${staf.id}`} className='fs-6 fw-medium'>{staf.name} {staf.surname}</Link>
+                                                : <span className='fs-6 fw-medium'>{staf.name} {staf.surname}</span>}
                                             <span style={{ color: themeToken.colorTextDescription }}>{staf.countryName}</span>
                                         </div>
                                     </div>
@@ -124,8 +128,12 @@ export const Movie = () => {
 
     const movieFeedbacks = (
         <div className='text-center'>
+            {(user && !user.isAdmin && userPremiumRate >= movie?.premiumRate && !hasFeedback) &&
+                <div className='feedbackwindow'>
+                    sdf sdf sdf sdf sdf sdf sdf
+                </div>}
             <Spin spinning={loading} delay={300} size='large' />
-            {feedbacks.length > 0
+            {!loading && feedbacks.length > 0
                 ? <div className='d-flex flex-column'>
                     {feedbacks.map(x => <FeedbackCard {...x} />)}
                     <Pagination
@@ -142,7 +150,7 @@ export const Movie = () => {
 
                     />
                 </div>
-                : <div className='fs-5'><span >Відгукі відсутні</span></div>}
+                : <Empty/>}
         </div>
     );
 
@@ -169,7 +177,7 @@ export const Movie = () => {
             label: 'Відгуки',
             key: 'feedbacks',
             children: movieFeedbacks,
-            icon: <MessageOutlined />,
+            icon: <CommentOutlined />,
         },
     ]
 
@@ -193,6 +201,12 @@ export const Movie = () => {
             result = await movieService.getMovieGenres(id)
             if (result.status === 200)
                 setGenres(result.data)
+            if (user && !user.isAdmin) {
+                result = await dataService.getPremium(user.premiumId);
+                if (result.status === 200) {
+                    setUserPremiumRate(result.data.rate)
+                }
+            }
         })();
     }, [id]);
 
@@ -260,6 +274,13 @@ export const Movie = () => {
                 if (feedbacks.length === 0) {
                     setData(paginatorConfig.pagination.defaultPageSize, paginatorConfig.pagination.defaultCurrent)
                 }
+                if (user) {
+                    const result = await movieService.hasFeedback(id, user?.id);
+                    if (result.status === 200) {
+                        setHasFeedback(result.data)
+                    }
+                }
+
                 break;
             default:
                 break;
@@ -268,6 +289,7 @@ export const Movie = () => {
 
     return (
         <div className='movie-page-content'>
+            {user.isAdmin && <Button className='free-button' type="primary" onClick={() => navigate(`/create-edit-movie/${id}`)} icon={<SettingOutlined />}>Редагувати</Button>}
             <div className="player" >
                 {!isPlaying &&
                     <div className='mask'>
@@ -286,8 +308,9 @@ export const Movie = () => {
                                 </div>
                                 <h2>{movie?.name}</h2>
                                 <Space>
-                                    <Button type="primary" onClick={playMovie} danger icon={<CaretRightFilled />} size='large'>Дивитися</Button>
-                                    <Button danger style={{ backgroundColor: 'transparent' }} icon={<HeartFilled />} size='large'>Додати в обране</Button>
+                                    <Button type="primary" onClick={movie?.premiumRate <= userPremiumRate ? playMovie : null} danger icon={<CaretRightFilled />} size='large'>
+                                        {movie?.premiumRate <= userPremiumRate ? "Дивитися" : `Придбати підписку "${movie?.premiumName}"`}</Button>
+                                   {user && <Button danger style={{ backgroundColor: 'transparent' }} icon={<HeartFilled />} size='large'>Додати в обране</Button>} 
                                 </Space>
 
                             </div>

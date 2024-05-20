@@ -127,7 +127,7 @@ export const StafTable = () => {
 
     return (
         <>
-            <Button className='add-button' type="primary" onClick={() => navigate('/create-edit-staf/create')} icon={<PlusOutlined />}>Додати актора</Button>
+            <Button className='free-button' type="primary" onClick={() => navigate('/create-edit-staf/create')} icon={<PlusOutlined />}>Додати актора</Button>
             <Table
                 pagination={tableParams.pagination}
                 dataSource={stafs}

@@ -1,19 +1,22 @@
-import { ArrowLeftOutlined } from '@ant-design/icons';
+import { ArrowLeftOutlined, SettingOutlined } from '@ant-design/icons';
 import { Button, Divider } from 'antd';
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { stafService } from '../../services/StafService';
 import '../Staf/Staf.css'
 import useToken from 'antd/es/theme/useToken';
 import axios from 'axios';
 import oscar from '../../images/oscar.png'
 import { SmallMovieCard } from '../SmallMovieCard/SmallMovieCard';
+import { useSelector } from 'react-redux';
 
 export const Staf = () => {
     const { stafId } = useParams();
     const [staf, setStaf] = useState(null);
     const [movies, setMovies] = useState(null);
     const theme = useToken()[1];
+    const user = useSelector(state=>state.user.data);
+    const navigate  = useNavigate()
     useEffect(() => {
         (async () => {
             await axios.all(
@@ -35,6 +38,7 @@ export const Staf = () => {
 
     return (
         <>
+        {user.isAdmin && <Button className='free-button' type="primary" onClick={() => navigate(`/create-edit-staf/${stafId}`)} icon={<SettingOutlined />}>Редагувати</Button>}
             <Button shape="circle" onClick={() => window.history.back()} type="primary" icon={<ArrowLeftOutlined className='fs-4' />} />
             <div className='w-75 mx-auto'>
                 <Divider className='about-staf-divider fs-3' orientation="left">{staf?.name} {staf?.surname}</Divider>

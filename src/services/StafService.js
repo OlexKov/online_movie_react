@@ -30,8 +30,7 @@ export const stafService = {
                 }));
             return stafs;
     },
-
-    
+   
 
     setMovieRoles: async(stafs,movieId)=>{
         await axios.all(stafs.map(x => stafService.getStafMovieRoles(x.id,movieId)))

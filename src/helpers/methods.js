@@ -31,6 +31,7 @@ export const getDataFromToken = (token) => {
                 ],
             isAdmin:data['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']?.includes('Admin') || false,
             isUser:data['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']?.includes('User') || false,
+            premiumId:data['http://schemas.microsoft.com/ws/2008/06/identity/claims/userdata']
         }
     }
     return null

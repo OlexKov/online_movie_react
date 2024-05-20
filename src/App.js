@@ -23,8 +23,6 @@ import { AdminProtectedRoute } from './components/ProtectedRoutes/AdminProtected
 import { Staf } from './components/Staf/Staf';
 
 
-
-
 function App() {
   const darkTheme = useSelector(store => store.userTheme.userTheme)
   const user = useSelector(state => state.user.data)
@@ -38,38 +36,26 @@ function App() {
           <Route path="registration" element={<Registration />} />
           <Route path="login" element={<Login />} />
           <Route path="account" element={
-            <AuthProtectedRoute user={user}>
-              <Account />
-            </AuthProtectedRoute>
+            <AuthProtectedRoute user={user} children={<Account />}/>
           } />
           <Route path="favourite" element={
-            <UserProtectedRoute user={user}>
-              <Favourite />
-            </UserProtectedRoute>
+            <UserProtectedRoute user={user} children={ <Favourite />}/>
           } />
           <Route path="movietable" element={
-            <AdminProtectedRoute user={user}>
-              <MovieTable />
-            </AdminProtectedRoute>
+            <AdminProtectedRoute user={user} children={<MovieTable/>}/>
           } />
           <Route path="staftable" element={
-            <AdminProtectedRoute user={user}>
-              <StafTable />
-            </AdminProtectedRoute>
+            <AdminProtectedRoute user={user} children={ <StafTable />}/>
           } />
           <Route path="movie/:id" element={<Movie />} />
           <Route path="staf/:stafId" element={<Staf />} />
           <Route path="fogotpassword" element={<FogotPassword />} />
           <Route path={process.env.REACT_APP_PASSWORD_RESET_PAGE} element={<PasswordReset />} />
           <Route path="create-edit-staf/:id" element={
-            <AdminProtectedRoute user={user}>
-              <CreateEditStaf />
-            </AdminProtectedRoute>
+            <AdminProtectedRoute user={user} children={ <CreateEditStaf />}/>
           } />
           <Route path="create-edit-movie/:id" element={
-            <AdminProtectedRoute user={user}>
-              <CreateEditMovie />
-            </AdminProtectedRoute>
+            <AdminProtectedRoute user={user} children={<CreateEditMovie />}/>
           } />
           <Route path="error" element={<Error />} />
           <Route path="*" element={

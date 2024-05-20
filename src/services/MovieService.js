@@ -25,6 +25,8 @@ export const movieService = {
 
       getMovieFeedbacks:(id,pageIndex,pageSize) => TryError(() => axios.get(`${movieApiUrl}/getfeedbacks/${id}/${pageIndex}/${pageSize}`)),
 
+      hasFeedback: async (movieId,userId)=> TryError(() => axios.get(`${movieApiUrl}/hasfeedback?movieId=${movieId}&userId=${userId}`)),
+
       getNotApprovedMovieFeedbacks:(id,pageIndex,pageSize) => TryError(() => axios.get(`${movieApiUrl}getfeedbacks/notapproved/${id}/${pageIndex}/${pageSize}`)),
 
       setRating: async (data) => {
@@ -35,6 +37,7 @@ export const movieService = {
                     })
                 }));
             return data;
-        }
+        },
+      
 }
 

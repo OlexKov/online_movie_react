@@ -10,6 +10,8 @@ export const dataService = {
 
        getPremiums: () => TryError(() => axios.get(dataAPIUrl + '/getpremiums')),
 
+       getPremium: (id) => TryError(() => axios.get(dataAPIUrl + '/getpremium/'+ id)),
+
        getGenres: () => TryError(() => axios.get(dataAPIUrl + '/getgenres')),
 
 }

@@ -126,7 +126,7 @@ export const MovieTable = () => {
 
   return (
     <>
-      <Button className='add-button' type="primary" onClick={() => navigate('/create-edit-movie/create')} icon={<PlusOutlined />}>Додати фільм</Button>
+      <Button className='free-button' type="primary" onClick={() => navigate('/create-edit-movie/create')} icon={<PlusOutlined />}>Додати фільм</Button>
       <Table
         pagination={tableParams.pagination}
         dataSource={movies}
