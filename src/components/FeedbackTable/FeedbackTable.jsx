@@ -37,7 +37,8 @@ export const FeedbackTable = ({onFeedBackChange, dataloader,deletable,approvable
         if(approvable){
             dispatcher(setNotApprovedFeedbackCount(notApprovedFeedbacksCount-1))
         }
-        await onFeedBackChange(feedbackMovieId,feedbacksList.length)
+        if(onFeedBackChange)
+           await onFeedBackChange(feedbackMovieId,feedbacksList.length)
     }
 
     const onDelete = async(id) => {
