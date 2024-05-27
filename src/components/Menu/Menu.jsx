@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { HomeOutlined,  InfoCircleOutlined,  TableOutlined, UserOutlined } from '@ant-design/icons';
+import { CommentOutlined,  HomeOutlined,  InfoCircleOutlined,  TableOutlined, UserOutlined } from '@ant-design/icons';
 import { Menu as AntMenu,} from 'antd';
 import { Link, useLocation } from 'react-router-dom';
 import '../Menu/Menu.css'
@@ -31,6 +31,12 @@ const items = [
         icon:<InfoCircleOutlined/>,
         label:<Link className='link' to="/about"><span>Про нас</span></Link>,
         users: ['Guest','User']
+    },
+    {
+        key: "/feedbacks",
+        icon:<CommentOutlined/>,
+        label:<Link className='link' to="/feedbacks"><span>Відгуки користувачів</span></Link>,
+        users: ['Admin']
     }
 ]
 

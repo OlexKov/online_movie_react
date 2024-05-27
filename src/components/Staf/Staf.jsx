@@ -38,7 +38,7 @@ export const Staf = () => {
 
     return (
         <>
-        {user.isAdmin && <Button className='free-button' type="primary" onClick={() => navigate(`/create-edit-staf/${stafId}`)} icon={<SettingOutlined />}>Редагувати</Button>}
+        {user?.isAdmin && <Button className='free-button' type="primary" onClick={() => navigate(`/create-edit-staf/${stafId}`)} icon={<SettingOutlined />}>Редагувати</Button>}
             <Button shape="circle" onClick={() => window.history.back()} type="primary" icon={<ArrowLeftOutlined className='fs-4' />} />
             <div className='w-75 mx-auto'>
                 <Divider className='about-staf-divider fs-3' orientation="left">{staf?.name} {staf?.surname}</Divider>

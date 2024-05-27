@@ -14,4 +14,8 @@ export const dataService = {
 
        getGenres: () => TryError(() => axios.get(dataAPIUrl + '/getgenres')),
 
+       getFeedbacks: () => TryError(() => axios.get(dataAPIUrl + '/getfeedbacks')),
+
+      
+
 }

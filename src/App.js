@@ -21,6 +21,7 @@ import { AuthProtectedRoute } from './components/ProtectedRoutes/AuthProtectedRo
 import { UserProtectedRoute } from './components/ProtectedRoutes/UserProtectedRoute';
 import { AdminProtectedRoute } from './components/ProtectedRoutes/AdminProtectedRoute';
 import { Staf } from './components/Staf/Staf';
+import { AdminFeedbacks } from './components/AdminFeedbacks/AdminFeedbacks';
 
 
 function App() {
@@ -46,6 +47,9 @@ function App() {
           } />
           <Route path="staftable" element={
             <AdminProtectedRoute user={user} children={ <StafTable />}/>
+          } />
+          <Route path="feedbacks" element={
+            <AdminProtectedRoute user={user} children={ <AdminFeedbacks />}/>
           } />
           <Route path="movie/:id" element={<Movie />} />
           <Route path="staf/:stafId" element={<Staf />} />

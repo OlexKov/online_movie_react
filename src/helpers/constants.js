@@ -9,8 +9,10 @@ export const formPostConfig = {
 };
 export const postBodyConfig = {
     headers: {
-        enctype: 'application/json',
-        accept: 'application/json'
+       'Content-type': 'application/json'
+       // enctype: 'application/json',
+       // accept: 'application/json'
+       
     }
 }
 

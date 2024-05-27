@@ -3,6 +3,7 @@ import { message } from 'antd'
 import { storageService } from '../services/StorageService';
 import { accountService } from '../services/AccountService';
 
+
 axios.defaults.baseURL = process.env.REACT_APP_SERVER_HOST
 export const SetupInterceptors = (clearStore) => {
   axios.interceptors.request.use(
@@ -33,8 +34,9 @@ export const SetupInterceptors = (clearStore) => {
               originalRequest.data = { token: responce.data.refreshToken }
             }
             originalRequest.headers = {
+              ...originalRequest.headers,
               'Authorization': `Bearer ${responce.data.accessToken}`,
-              'Content-type': 'application/json'
+              //'Content-type': 'application/json',
             }
             return axios(originalRequest);
           }
@@ -48,7 +50,7 @@ export const SetupInterceptors = (clearStore) => {
         
 
         default: {
-       //  const location = window.location.pathname.slice(1);
+        //  const location = window.location.pathname.slice(1);
         //  window.location = `/error?status=${status}&title=${status}&subTitle=${error.message}&location=${location === '' ? 'main' : 'notmain'}`;
           message.error(error.message)
           if (error.response.data) {
@@ -62,7 +64,7 @@ export const SetupInterceptors = (clearStore) => {
             }
           }
 
-          return Promise.reject(error.message);
+          return Promise.reject(error);
         }
       }
     }

@@ -3,18 +3,15 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { movieService } from '../../services/MovieService'
 import ReactPlayer from 'react-player'
 import '../Movie/Movie.css'
-import { Button, ConfigProvider, Divider, Empty, Pagination, Rate, Result, Space, Spin, Tabs, Tag } from 'antd'
+import { Button, ConfigProvider, Divider, Form,  Rate, Result, Space,Tabs, Tag, message } from 'antd'
 import { CaretRightFilled, CommentOutlined, DollarOutlined, HeartFilled, MutedFilled, PicLeftOutlined, PictureOutlined, SettingOutlined, SoundFilled, TeamOutlined, YoutubeFilled } from '@ant-design/icons'
 import { stafService } from '../../services/StafService'
 import useToken from 'antd/es/theme/useToken'
 import { Carousel } from 'antd';
-import { FeedbackCard } from '../FeedbackCard/FeedbackCard'
-import { paginatorConfig } from '../../helpers/constants'
 import { useSelector } from 'react-redux'
 import { dataService } from '../../services/DataService'
-
-
-
+import TextArea from 'antd/es/input/TextArea'
+import { FeedbackTable } from '../FeedbackTable/FeedbackTable'
 
 
 export const Movie = () => {
@@ -25,13 +22,10 @@ export const Movie = () => {
     const [playUrl, setPlayUrl] = useState('')
     const [isPlaying, setIsPlaying] = useState(false)
     const [error, setError] = useState(null)
-    const [feedbacks, setFeedbacks] = useState([])
     const [screens, setScreens] = useState([])
     const [stafs, setStafs] = useState([])
     const [genres, setGenres] = useState([])
     const [stafRoles, setStafRoles] = useState([])
-    const [feedbackCount, setFeedbackCount] = useState(0)
-    const [loading, setLoading] = useState(false);
     const [hasFeedback, setHasFeedback] = useState(true);
     const [userPremiumRate, setUserPremiumRate] = useState(0);
 
@@ -49,7 +43,6 @@ export const Movie = () => {
                 <Tag className='fs-5 fit-height' icon={<YoutubeFilled />} color="green">{movie?.qualityName}</Tag>
                 <span>{movie?.duration}</span>
             </div>
-
             <p className='fs-6'>{movie?.description}</p>
         </div>
 
@@ -95,7 +88,7 @@ export const Movie = () => {
                                     <div className='staf-info-container'>
                                         <img className='staf-image' src={staf.imageName} alt='imageName' />
                                         <div className='d-flex flex-column '>
-                                            {user ? <Link to={`/staf/${staf.id}`} className='fs-6 fw-medium'>{staf.name} {staf.surname}</Link>
+                                            {(user && (user?.isAdmin || user?.premiumId > 1)) ? <Link to={`/staf/${staf.id}`} className='fs-6 fw-medium'>{staf.name} {staf.surname}</Link>
                                                 : <span className='fs-6 fw-medium'>{staf.name} {staf.surname}</span>}
                                             <span style={{ color: themeToken.colorTextDescription }}>{staf.countryName}</span>
                                         </div>
@@ -104,53 +97,79 @@ export const Movie = () => {
                             }
                         </div>
                     </>
-
                 )
             }
         </div>
-
     );
+    
 
-
-    const handleTableChange = async (pagination, filters) => {
-        await setData(filters, pagination);
-    };
-
-    const setData = async (pageSize, pageIndex) => {
-        setLoading(true);
+    const setData = async (pageIndex,pageSize) => {
         const result = await movieService.getMovieFeedbacks(id, pageIndex, pageSize);
         if (result.status === 200 && result.data?.elements?.length > 0) {
-            setFeedbacks(result?.data?.elements);
-            setFeedbackCount(result?.data?.totalCount)
+            return {elements:result?.data?.elements,totalCount:result?.data?.totalCount}
         }
-        setLoading(false)
+        return {elements:0,totalCount:0};
+    }
+
+    const sendFeedback = async (e) => {
+        const formData = new FormData()
+        formData.set('userId', user.id)
+        formData.set('text', e.feedback)
+        formData.set('rating', e.movierate)
+        formData.set('movieId', id)
+        formData.set('date', new Date().toLocaleTimeString())
+        const result = await movieService.addFeedback(formData);
+        if (result.status === 200) {
+            message.success('Відгук буде додано після модерації ...')
+            setHasFeedback(true)
+        }
     }
 
     const movieFeedbacks = (
         <div className='text-center'>
-            {(user && !user.isAdmin && userPremiumRate >= movie?.premiumRate && !hasFeedback) &&
-                <div className='feedbackwindow'>
-                    sdf sdf sdf sdf sdf sdf sdf
-                </div>}
-            <Spin spinning={loading} delay={300} size='large' />
-            {!loading && feedbacks.length > 0
-                ? <div className='d-flex flex-column'>
-                    {feedbacks.map(x => <FeedbackCard {...x} />)}
-                    <Pagination
-                        defaultCurrent={paginatorConfig.pagination.defaultCurrent}
-                        defaultPageSize={paginatorConfig.pagination.defaultPageSize}
-                        total={feedbackCount}
-                        showTotal={paginatorConfig.pagination.showTotal}
-                        showSizeChanger
-                        showQuickJumper
-                        className='mt-3'
-                        pageSizeOptions={paginatorConfig.pagination.pageSizeOptions}
-                        onChange={handleTableChange}
-                        locale={paginatorConfig.pagination.locale}
-
-                    />
-                </div>
-                : <Empty/>}
+            {(user && !user?.isAdmin && userPremiumRate >= movie?.premiumRate && !hasFeedback) &&
+                <Form onFinish={sendFeedback} className='feedbackwindow'>
+                    <div className='d-flex justify-content-between align-items-center'>
+                        <h6 style={{ color: themeToken.colorTextDescription, fontWeight: 'normal' }}>Залиште свій відгук </h6>
+                        <Form.Item
+                            name="movierate"
+                            style={{ padding: '0', margin: '0' }}
+                        >
+                            <Rate count={6} allowHalf={true} allowClear></Rate>
+                        </Form.Item>
+                    </div>
+                    <Form.Item
+                        name="feedback"
+                        style={{ padding: '0', margin: '0' }}
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Введіть текст відгуку...'
+                            },
+                            {
+                                min: 20,
+                                message: 'Відгук має містити не менше 20 символів'
+                            },
+                            {
+                                max: 1000,
+                                message: 'Відгук має містити не більше 1000 символів'
+                            },
+                        ]}
+                    >
+                        <TextArea
+                            showCount
+                            maxLength={1000}
+                            minLength={20}
+                            autoSize={{
+                                minRows: 8,
+                                maxRows: 8,
+                            }}
+                            placeholder='Ваш відгук....' allowHalf>
+                        </TextArea>
+                    </Form.Item>
+                    <Button type="primary" htmlType="submit" className=' mt-3 align-self-end'>Відправити</Button>
+                </Form>}
+                <FeedbackTable deletable={user?.isAdmin} dataloader={setData}/>
         </div>
     );
 
@@ -208,6 +227,7 @@ export const Movie = () => {
                 }
             }
         })();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [id]);
 
     const config = {
@@ -271,9 +291,9 @@ export const Movie = () => {
                 }
                 break;
             case 'feedbacks':
-                if (feedbacks.length === 0) {
-                    setData(paginatorConfig.pagination.defaultPageSize, paginatorConfig.pagination.defaultCurrent)
-                }
+                //if (feedbacks.length === 0) {
+                  //  setData(paginatorConfig.pagination.defaultPageSize, paginatorConfig.pagination.defaultCurrent)
+               // }
                 if (user) {
                     const result = await movieService.hasFeedback(id, user?.id);
                     if (result.status === 200) {
@@ -289,7 +309,7 @@ export const Movie = () => {
 
     return (
         <div className='movie-page-content'>
-            {user.isAdmin && <Button className='free-button' type="primary" onClick={() => navigate(`/create-edit-movie/${id}`)} icon={<SettingOutlined />}>Редагувати</Button>}
+            {user?.isAdmin && <Button className='free-button' type="primary" onClick={() => navigate(`/create-edit-movie/${id}`)} icon={<SettingOutlined />}>Редагувати</Button>}
             <div className="player" >
                 {!isPlaying &&
                     <div className='mask'>
@@ -308,9 +328,9 @@ export const Movie = () => {
                                 </div>
                                 <h2>{movie?.name}</h2>
                                 <Space>
-                                    <Button type="primary" onClick={movie?.premiumRate <= userPremiumRate ? playMovie : null} danger icon={<CaretRightFilled />} size='large'>
-                                        {movie?.premiumRate <= userPremiumRate ? "Дивитися" : `Придбати підписку "${movie?.premiumName}"`}</Button>
-                                   {user && <Button danger style={{ backgroundColor: 'transparent' }} icon={<HeartFilled />} size='large'>Додати в обране</Button>} 
+                                    <Button type="primary" onClick={user?.isAdmin || movie?.premiumRate <= userPremiumRate ? playMovie : null} danger icon={<CaretRightFilled />} size='large'>
+                                        {user?.isAdmin || movie?.premiumRate <= userPremiumRate ? "Дивитися" : `Придбати підписку "${movie?.premiumName}"`}</Button>
+                                    {user && !user?.isAdmin && <Button danger style={{ backgroundColor: 'transparent' }} icon={<HeartFilled />} size='large'>Додати в обране</Button>}
                                 </Space>
 
                             </div>

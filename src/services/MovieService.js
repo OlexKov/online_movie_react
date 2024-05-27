@@ -27,7 +27,7 @@ export const movieService = {
 
       hasFeedback: async (movieId,userId)=> TryError(() => axios.get(`${movieApiUrl}/hasfeedback?movieId=${movieId}&userId=${userId}`)),
 
-      getNotApprovedMovieFeedbacks:(id,pageIndex,pageSize) => TryError(() => axios.get(`${movieApiUrl}getfeedbacks/notapproved/${id}/${pageIndex}/${pageSize}`)),
+      getNotApprovedMovieFeedbacks:(id,pageIndex,pageSize) => TryError(() => axios.get(`${movieApiUrl}/getfeedbacks/notapproved/${id}/${pageIndex}/${pageSize}`)),
 
       setRating: async (data) => {
             await axios.all(data.map(x => movieService.getRating(x.id)))
@@ -38,6 +38,14 @@ export const movieService = {
                 }));
             return data;
         },
-      
+     deleteFeedback:(feedbackId)=>TryError(() => axios.delete(`${movieApiUrl}/deletefeedback/${feedbackId}`)), 
+
+     addFeedback:(feedback)=>TryError(() => axios.post(`${movieApiUrl}/addfeedback`,feedback,formPostConfig)), 
+     
+     approveFeedback:(feedbackId)=>TryError(() => axios.put(`${movieApiUrl}/approvefeedback/`+ feedbackId)),  
+
+     getMoviesWithNotApprovedFeedbacks: (pageSize,pageIndex) => TryError(() => axios.get(movieApiUrl + `/getmovies/withnotapproved/${pageIndex}/${pageSize}`)),
+
+     getNotApprovedFeedbacksCount: () => TryError(() => axios.get(movieApiUrl + `/get/notapproved/count`)),
 }
 
