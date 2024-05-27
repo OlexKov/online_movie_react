@@ -69,7 +69,7 @@ export const FeedbackTable = ({onFeedBackChange, dataloader,deletable,approvable
                         showTotal={paginatorConfig.pagination.showTotal}
                         showSizeChanger
                         showQuickJumper
-                        className='mt-3'
+                        className='mt-3 align-self-end'
                         pageSizeOptions={paginatorConfig.pagination.pageSizeOptions}
                         onChange={ onChange}
                         locale={paginatorConfig.pagination.locale}

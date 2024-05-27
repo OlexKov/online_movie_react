@@ -1,4 +1,4 @@
-import { Button, Card, Rate } from 'antd'
+import { Button, Card, Popconfirm, Rate } from 'antd'
 import React from 'react'
 import '../FeedbackCard/FeedbackCard.css'
 import { CheckOutlined, ClockCircleOutlined, DatabaseOutlined, DeleteOutlined, UserOutlined } from '@ant-design/icons'
@@ -23,8 +23,26 @@ export const FeedbackCard = ({ id, name, surname, rating, text, date, onDelete, 
                             <span><ClockCircleOutlined /> {dateTime[1]?.slice(0, 5)}</span>
                         </div>
                         <div className='d-flex gap-3'>
-                            {onDelete && <Button danger type="link" onClick={() => onDelete(id)} icon={<DeleteOutlined className=' fs-4' />} />}
-                            {onApprove && <Button type="link" onClick={() => onApprove(id)} icon={<CheckOutlined className=' fs-4' />} />}
+                            {onDelete &&
+                                <Popconfirm
+                                    title="Видалення"
+                                    description={`Ви впевненні що бажаєте видалити цей відгук" ?`}
+                                    onConfirm={() => onDelete(id)}
+                                    okText="Так"
+                                    cancelText="Ні"
+                                    >
+                                    <Button danger type="link" icon={<DeleteOutlined className=' fs-4' />} />
+                                </Popconfirm>
+                            }
+                            {onApprove &&
+                                <Popconfirm
+                                    title="Одобрення"
+                                    description={`Ви впевненні що бажаєте опублікувати цей відгук" ?`}
+                                    onConfirm={() => onApprove(id)}
+                                    okText="Так"
+                                    cancelText="Ні">
+                                    <Button type="link" icon={<CheckOutlined className=' fs-4' />} />
+                                </Popconfirm>}
                         </div>
                     </div>
 

@@ -29,7 +29,6 @@ export const Staf = () => {
                     res[0].data.roles = res[1].data;
                     setStaf(res[0].data);
                     setMovies(res[2].data)
-                    console.log(res[2].data)
                 }));
         })()
 

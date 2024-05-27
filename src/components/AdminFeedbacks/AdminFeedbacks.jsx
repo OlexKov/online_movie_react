@@ -100,7 +100,6 @@ export const AdminFeedbacks = () => {
                 items[curentTabIndex].children = allFeedbacks;
                 break;
             case 'notapproved':
-                console.log(items[curentTabIndex])
                 items[curentTabIndex].children = NAFeedbacks;
                 break;
             default:
