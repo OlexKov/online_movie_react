@@ -1,7 +1,8 @@
-import { Collapse, Empty, Pagination, Spin } from 'antd'
+import { Collapse, Empty, Spin } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { paginatorConfig } from '../../helpers/constants'
 import { FeedbackTable } from '../FeedbackTable/FeedbackTable'
+import { AppPagination } from '../AppPagination/AppPagination'
 
 const CollapseFeedbacks = ({ setFeedbacksData, getFeedbacksMovies, deletable, approvable, hideEmpty }) => {
     const [elements, setElements] = useState([])
@@ -66,17 +67,7 @@ const CollapseFeedbacks = ({ setFeedbacksData, getFeedbacksMovies, deletable, ap
             {elements.length > 0 ?
                 <div className='d-flex flex-column'>
                      <Collapse accordion onChange={onChange} items={elements} />
-                    <Pagination
-                        defaultCurrent={paginatorConfig.pagination.defaultCurrent}
-                        defaultPageSize={paginatorConfig.pagination.defaultPageSize}
-                        total={elementsCount}
-                        showTotal={paginatorConfig.pagination.showTotal}
-                        showSizeChanger
-                        showQuickJumper
-                        className='mt-3 align-self-end'
-                        pageSizeOptions={paginatorConfig.pagination.pageSizeOptions}
-                        onChange={onPaginatorChange}
-                        locale={paginatorConfig.pagination.locale} />
+                     <AppPagination total={elementsCount} onChange={onPaginatorChange}/>
                 </div>
                 : !loading && <Empty />}
         </>

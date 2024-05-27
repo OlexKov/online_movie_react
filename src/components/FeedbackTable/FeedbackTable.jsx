@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { FeedbackCard } from '../FeedbackCard/FeedbackCard'
-import { Empty, Pagination, Spin, message } from 'antd'
+import { Empty, Spin, message } from 'antd'
 import { paginatorConfig } from '../../helpers/constants'
 import { movieService } from '../../services/MovieService'
 import { useDispatch, useSelector } from 'react-redux'
 import { setNotApprovedFeedbackCount } from '../store/feedbackSlice'
+import { AppPagination } from '../AppPagination/AppPagination'
 
 export const FeedbackTable = ({onFeedBackChange, dataloader,deletable,approvable}) => {
     const [loading, setLoading] = useState(false);
@@ -62,20 +63,8 @@ export const FeedbackTable = ({onFeedBackChange, dataloader,deletable,approvable
             { feedbacks.length > 0
                 ? <div className='d-flex flex-column'>
                     {feedbacks.map(x => <FeedbackCard {...x} onDelete={deletable ? onDelete : null} onApprove={approvable?onApprove:null} />)}
-                    <Pagination
-                        defaultCurrent={paginatorConfig.pagination.defaultCurrent}
-                        defaultPageSize={paginatorConfig.pagination.defaultPageSize}
-                        total={feedbackCount}
-                        showTotal={paginatorConfig.pagination.showTotal}
-                        showSizeChanger
-                        showQuickJumper
-                        className='mt-3 align-self-end'
-                        pageSizeOptions={paginatorConfig.pagination.pageSizeOptions}
-                        onChange={ onChange}
-                        locale={paginatorConfig.pagination.locale}
-                        pageSize={pagesize}
-                    />
-                </div>
+                    <AppPagination onChange={ onChange} total={feedbackCount}  pageSize={pagesize}/>
+                  </div>
                 : !loading && <Empty />}
                  
         </>
