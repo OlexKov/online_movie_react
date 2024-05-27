@@ -25,7 +25,7 @@ import { AdminFeedbacks } from './components/AdminFeedbacks/AdminFeedbacks';
 
 
 function App() {
-  const darkTheme = useSelector(store => store.userTheme.userTheme)
+  const darkTheme = useSelector(store => store.user.userTheme)
   const user = useSelector(state => state.user.data)
 
   return (

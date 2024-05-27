@@ -7,6 +7,7 @@ const userDataSlice = createSlice({
     name: 'data',
     initialState: {
         data: getDataFromToken(storageService.getAccessToken()),
+        userTheme: storageService.isDarkTheme()
        
     },
     reducers: {
@@ -16,7 +17,11 @@ const userDataSlice = createSlice({
         clearUserData: (state) => {
             state.data = null
         },
+        swithTheme: (state) => {
+            state.userTheme = !state.userTheme;
+            state.userTheme ? storageService.enableDarkTheme() : storageService.disableDarkTheme()
+        },
     }
 })
-export const { setUserData, clearUserData} = userDataSlice.actions
+export const { setUserData, clearUserData,swithTheme} = userDataSlice.actions
 export default userDataSlice.reducer

@@ -7,10 +7,10 @@ import logo from '../../logo.png';
 import { Button, Dropdown, Switch, Tooltip } from 'antd'
 import { useSelector } from 'react-redux'
 import { useDispatch } from "react-redux";
-import { clearUserData } from '../store/userDataSlice';
+import { clearUserData, swithTheme } from '../store/userDataSlice';
 import { accountService } from '../../services/AccountService';
 import { storageService } from '../../services/StorageService';
-import { swithTheme } from '../store/themeSlice';
+
 
 
 
