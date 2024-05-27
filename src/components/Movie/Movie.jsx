@@ -4,7 +4,7 @@ import { movieService } from '../../services/MovieService'
 import ReactPlayer from 'react-player'
 import '../Movie/Movie.css'
 import { Button, ConfigProvider, Divider, Form,  Rate, Result, Space,Tabs, Tag, message } from 'antd'
-import { CaretRightFilled, CommentOutlined, DollarOutlined, HeartFilled, MutedFilled, PicLeftOutlined, PictureOutlined, SettingOutlined, SoundFilled, TeamOutlined, YoutubeFilled } from '@ant-design/icons'
+import { CaretRightFilled, CommentOutlined, DollarOutlined, HeartFilled, HeartOutlined, MutedFilled, PicLeftOutlined, PictureOutlined, SettingOutlined, SoundFilled, TeamOutlined, YoutubeFilled } from '@ant-design/icons'
 import { stafService } from '../../services/StafService'
 import useToken from 'antd/es/theme/useToken'
 import { Carousel } from 'antd';
@@ -12,6 +12,7 @@ import { useSelector } from 'react-redux'
 import { dataService } from '../../services/DataService'
 import TextArea from 'antd/es/input/TextArea'
 import { FeedbackTable } from '../FeedbackTable/FeedbackTable'
+import { accountService } from '../../services/AccountService'
 
 
 export const Movie = () => {
@@ -28,6 +29,7 @@ export const Movie = () => {
     const [stafRoles, setStafRoles] = useState([])
     const [hasFeedback, setHasFeedback] = useState(true);
     const [userPremiumRate, setUserPremiumRate] = useState(0);
+    const [isFauvorite, setIsFauvorite] = useState(false);
 
 
     const user = useSelector(state => state.user.data);
@@ -208,7 +210,6 @@ export const Movie = () => {
         setStafRoles([...new Set(roles)].sort())
     }, [stafs]);
 
-
     useEffect(() => {
         (async () => {
             let result = await movieService.getMovie(id)
@@ -226,6 +227,9 @@ export const Movie = () => {
                     setUserPremiumRate(result.data.rate)
                 }
             }
+            result = await accountService.isMovieFavourite(id,user.id);
+            if (result.status === 200)
+                setIsFauvorite(result.data)
         })();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [id]);
@@ -246,9 +250,11 @@ export const Movie = () => {
             }
         }
     }
+
     const soundSwith = () => {
         setMouted(!mouted)
     }
+
     const playMovie = () => {
         setPlayUrl(movie.movieUrl)
         setIsPlaying(true)
@@ -265,8 +271,6 @@ export const Movie = () => {
         setIsPlaying(false)
         setMouted(true)
     }
-
-
 
     const onChange = async (value) => {
         switch (value) {
@@ -297,10 +301,16 @@ export const Movie = () => {
                         setHasFeedback(result.data)
                     }
                 }
-
                 break;
             default:
                 break;
+        }
+    }
+
+    const switchFauvorite = async ()=>{
+        const result  = await accountService.addRemoveFavourite(user.email,id);
+        if(result.status === 200){
+            setIsFauvorite(result.data)
         }
     }
 
@@ -321,15 +331,13 @@ export const Movie = () => {
                                     <Tag className=' fs-6 py-1 px-2' icon={<DollarOutlined />} color="yellow">{movie?.premiumName}</Tag>
                                     <Tag className=' fs-6 py-1 px-2' icon={<YoutubeFilled />} color="green">{movie?.qualityName}</Tag>
                                     <span className=' fw-bold'>{movie?.originalName}</span>
-
                                 </div>
                                 <h2>{movie?.name}</h2>
                                 <Space>
-                                    <Button type="primary" onClick={user?.isAdmin || movie?.premiumRate <= userPremiumRate ? playMovie : null} danger icon={<CaretRightFilled />} size='large'>
+                                    <Button type="primary" onClick={user?.isAdmin || movie?.premiumRate <= userPremiumRate ? playMovie :()=> navigate('/premium')} danger icon={<CaretRightFilled />} size='large'>
                                         {user?.isAdmin || movie?.premiumRate <= userPremiumRate ? "Дивитися" : `Придбати підписку "${movie?.premiumName}"`}</Button>
-                                    {user && !user?.isAdmin && <Button danger style={{ backgroundColor: 'transparent' }} icon={<HeartFilled />} size='large'>Додати в обране</Button>}
+                                    {user && !user?.isAdmin && <Button danger onClick={switchFauvorite} style={{ backgroundColor: 'transparent' }} icon={isFauvorite?<HeartFilled />:<HeartOutlined/>} size='large'>{isFauvorite ? "Видалити з обраногo":"Додати в обране"}</Button>}
                                 </Space>
-
                             </div>
                         </div>
                     </div>}

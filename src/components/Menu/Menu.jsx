@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { CommentOutlined,  HomeOutlined,  InfoCircleOutlined,  TableOutlined, UserOutlined } from '@ant-design/icons';
+import { CommentOutlined,  HeartOutlined,  HomeOutlined,  InfoCircleOutlined,  TableOutlined, UserOutlined } from '@ant-design/icons';
 import { Menu as AntMenu,} from 'antd';
 import { Link, useLocation } from 'react-router-dom';
 import '../Menu/Menu.css'
@@ -26,6 +26,13 @@ const items = [
         label:<Link  className='link' to="/staftable"><span>Актори</span></Link>,
         users: ['Admin']
     },
+    
+    {
+        key: "/favourite",
+        icon:<HeartOutlined/>,
+        label:<Link className='link' to="/favourite"><span>Обрані</span></Link>,
+        users: ['User']
+    },
     {
         key: "/about",
         icon:<InfoCircleOutlined/>,
@@ -38,6 +45,7 @@ const items = [
         label:<Link className='link' to="/feedbacks"><span>Відгуки користувачів</span></Link>,
         users: ['Admin']
     }
+
 ]
 
 export const Menu = () => {

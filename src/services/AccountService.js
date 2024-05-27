@@ -13,4 +13,7 @@ export const accountService = {
     refresh:(accessToken, refreshToken) => TryError(() => axios.post(accountsAPIUrl + '/refreshtokens', { accessToken, refreshToken },postBodyConfig)),
     fogot:(email, resetPasswordPage) => TryError(() => axios.post(accountsAPIUrl + '/fogot', { email,resetPasswordPage },postBodyConfig)),
     reset:(userEmail, token,password) => TryError(() => axios.post(accountsAPIUrl + '/resetpassword', { userEmail, token,password },postBodyConfig)),
+    addRemoveFavourite:(email,movieId) => TryError(() => axios.post(accountsAPIUrl + '/addremovefavourite', { email, movieId },postBodyConfig)),
+    isMovieFavourite: async (movieId,userId)=> TryError(() => axios.get(`${accountsAPIUrl}/ismoviefauvorite?movieId=${movieId}&userId=${userId}`)),
+    getFavourites: async (userEmail)=> TryError(() => axios.get(`${accountsAPIUrl}/getfavourites?email=${userEmail}`)),
 }

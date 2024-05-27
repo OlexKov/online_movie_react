@@ -69,10 +69,7 @@ export const Staf = () => {
                            {movies.map(x=>
                            <SmallMovieCard movie={x}/>)} 
                     </div>}
-
-
-
-            </div>
+        </div>
         </>
 
     )

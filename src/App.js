@@ -22,6 +22,7 @@ import { UserProtectedRoute } from './components/ProtectedRoutes/UserProtectedRo
 import { AdminProtectedRoute } from './components/ProtectedRoutes/AdminProtectedRoute';
 import { Staf } from './components/Staf/Staf';
 import { AdminFeedbacks } from './components/AdminFeedbacks/AdminFeedbacks';
+import { BuyPremium } from './components/BuyPremium/BuyPremium';
 
 
 function App() {
@@ -38,6 +39,9 @@ function App() {
           <Route path="login" element={<Login />} />
           <Route path="account" element={
             <AuthProtectedRoute user={user} children={<Account />}/>
+          } />
+          <Route path="premium" element={
+            <AuthProtectedRoute user={user} children={<BuyPremium />}/>
           } />
           <Route path="favourite" element={
             <UserProtectedRoute user={user} children={ <Favourite />}/>

@@ -13,9 +13,8 @@ export const SmallMovieCard = ({ movie }) => {
                         width={220}
                         src={movie.poster}
                         preview={false}
-
                     />
-                    <span className=' fs-5 fw-bold text-wrap'>{`${movie.name} (${movie.originalName})`}</span>
+                    <span className=' fs-6 fw-bold text-wrap m-2'>{`${movie.name} (${movie.originalName})`}</span>
                 </div>
             </Badge.Ribbon>
         </div>

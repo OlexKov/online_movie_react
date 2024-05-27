@@ -65,7 +65,7 @@ export const FeedbackTable = ({onFeedBackChange, dataloader,deletable,approvable
                     {feedbacks.map(x => <FeedbackCard {...x} onDelete={deletable ? onDelete : null} onApprove={approvable?onApprove:null} />)}
                     <AppPagination onChange={ onChange} total={feedbackCount}  pageSize={pagesize}/>
                   </div>
-                : !loading && <Empty />}
+                : !loading && <Empty description=" Відгукі відсутні"/>}
                  
         </>
     )

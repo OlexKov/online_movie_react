@@ -47,5 +47,7 @@ export const movieService = {
      getMoviesWithNotApprovedFeedbacks: (pageSize,pageIndex) => TryError(() => axios.get(movieApiUrl + `/getmovies/withnotapproved/${pageIndex}/${pageSize}`)),
 
      getNotApprovedFeedbacksCount: () => TryError(() => axios.get(movieApiUrl + `/get/notapproved/count`)),
+
+    
 }
 
