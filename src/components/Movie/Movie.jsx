@@ -40,7 +40,7 @@ export const Movie = () => {
                 <span>{movie?.countryName}</span>
             </div>
             <div className='d-flex gap-4 fs-5 fw-bold align-items-center'>
-                <Tag className='fs-5 fit-height' icon={<YoutubeFilled />} color="green">{movie?.qualityName}</Tag>
+                <Tag className='fs-5 p-2' icon={<YoutubeFilled />} color="green">{movie?.qualityName}</Tag>
                 <span>{movie?.duration}</span>
             </div>
             <p className='fs-6'>{movie?.description}</p>
@@ -87,10 +87,10 @@ export const Movie = () => {
                                 stafs.filter(x => x.movieRoles.includes(role)).map(staf =>
                                     <div className='staf-info-container'>
                                         <img className='staf-image' src={staf.imageName} alt='imageName' />
-                                        <div className='d-flex flex-column '>
-                                            {(user && (user?.isAdmin || user?.premiumId > 1)) ? <Link to={`/staf/${staf.id}`} className='fs-6 fw-medium'>{staf.name} {staf.surname}</Link>
-                                                : <span className='fs-6 fw-medium'>{staf.name} {staf.surname}</span>}
-                                            <span style={{ color: themeToken.colorTextDescription }}>{staf.countryName}</span>
+                                        <div className='staf-link'>
+                                            {(user && (user?.isAdmin || user?.premiumId > 1)) ? <Link style={{textDecoration:'none'}} to={`/staf/${staf.id}`} >{staf.name} {staf.surname}</Link>
+                                                : <span>{staf.name} {staf.surname}</span>}
+                                            <span style={{ color: themeToken.colorTextDescription, fontStyle:'normal' }}>{staf.countryName}</span>
                                         </div>
                                     </div>
                                 )
@@ -178,25 +178,25 @@ export const Movie = () => {
             label: 'Опис',
             key: 'description',
             children: description,
-            icon: <PicLeftOutlined />
+            icon: <PicLeftOutlined className=' fs-5'/>
         },
         {
             label: 'Персони та комaнди',
             key: 'stafs',
             children: movieStafs,
-            icon: <TeamOutlined />
+            icon: <TeamOutlined className=' fs-5'/>
         },
         {
             label: 'Скриншоти',
             key: 'screens',
             children: screenshots,
-            icon: <PictureOutlined />
+            icon: <PictureOutlined className=' fs-5'/>
         },
         {
             label: 'Відгуки',
             key: 'feedbacks',
             children: movieFeedbacks,
-            icon: <CommentOutlined />,
+            icon: <CommentOutlined className=' fs-5'/>,
         },
     ]
 
@@ -291,9 +291,6 @@ export const Movie = () => {
                 }
                 break;
             case 'feedbacks':
-                //if (feedbacks.length === 0) {
-                  //  setData(paginatorConfig.pagination.defaultPageSize, paginatorConfig.pagination.defaultCurrent)
-               // }
                 if (user) {
                     const result = await movieService.hasFeedback(id, user?.id);
                     if (result.status === 200) {
@@ -319,10 +316,10 @@ export const Movie = () => {
                         <div className='info-container'>
                             <img src={movie?.poster} alt='poster' />
                             <div className='info-content'>
-                                <Rate disabled allowHalf count={6} value={movie?.rating} />
+                                <Rate style={{fontSize:'25px'}} disabled allowHalf count={6} value={movie?.rating} />
                                 <div className=' d-flex gap-2 align-items-center'>
-                                    <Tag icon={<DollarOutlined />} color="yellow">{movie?.premiumName}</Tag>
-                                    <Tag icon={<YoutubeFilled />} color="green">{movie?.qualityName}</Tag>
+                                    <Tag className=' fs-6 py-1 px-2' icon={<DollarOutlined />} color="yellow">{movie?.premiumName}</Tag>
+                                    <Tag className=' fs-6 py-1 px-2' icon={<YoutubeFilled />} color="green">{movie?.qualityName}</Tag>
                                     <span className=' fw-bold'>{movie?.originalName}</span>
 
                                 </div>

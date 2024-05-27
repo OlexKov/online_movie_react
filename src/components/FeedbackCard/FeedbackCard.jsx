@@ -12,9 +12,9 @@ export const FeedbackCard = ({ id, name, surname, rating, text, date, onDelete, 
             className=' mt-3 text-start'
             title={
                 <div className='d-flex justify-content-between align-items-center'>
-                    <div className='d-flex flex-column gap-1'>
+                    <div className='d-flex  align-items-center gap-3'>
                         <span><UserOutlined className=' fs-5 text-success' /> {name} {surname}</span>
-                        <Rate disabled allowHalf count={6} value={rating} />
+                        <Rate style={{fontSize:'15px'}} disabled allowHalf count={6} value={rating} />
                     </div>
 
                     <div className='d-flex gap-3'>

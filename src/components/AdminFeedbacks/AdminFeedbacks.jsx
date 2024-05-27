@@ -1,4 +1,4 @@
-import { ArrowLeftOutlined, CommentOutlined } from '@ant-design/icons'
+import { ArrowLeftOutlined, CommentOutlined, WechatWorkOutlined } from '@ant-design/icons'
 import { Badge, Button, Divider, Tabs } from 'antd'
 import { movieService } from '../../services/MovieService'
 import CollapseFeedbacks from '../CollapseFeedbacks/CollapseFeedbacs'
@@ -14,7 +14,7 @@ export const AdminFeedbacks = () => {
             label: 'Всі відгуки',
             key: 'allfeedbacks',
             children: null,
-            icon: <CommentOutlined />
+            icon: <CommentOutlined  className=' fs-5'/>
         },
         {
             label: <Badge size='small' offset={[15, -5]} count={notApprovedFeedbacksCount > 0 ? notApprovedFeedbacksCount : 0} >
@@ -22,7 +22,7 @@ export const AdminFeedbacks = () => {
                    </Badge>,
             key: 'notapproved',
             children: null,
-            icon: <CommentOutlined />
+            icon: <WechatWorkOutlined className=' fs-5'/>
         },
     ];
     const dispatcher = useDispatch();
