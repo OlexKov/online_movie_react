@@ -30,8 +30,7 @@ export const getDataFromToken = (token) => {
                 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/dateofbirth'
                 ],
             isAdmin:data['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']?.includes('Admin') || false,
-            isUser:data['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']?.includes('User') || false,
-            premiumId:data['http://schemas.microsoft.com/ws/2008/06/identity/claims/userdata']
+            isUser:data['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']?.includes('User') || false
         }
     }
     return null

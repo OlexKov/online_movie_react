@@ -3,13 +3,12 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { movieService } from '../../services/MovieService'
 import ReactPlayer from 'react-player'
 import '../Movie/Movie.css'
-import { Button, ConfigProvider, Divider, Form,  Rate, Result, Space,Tabs, Tag, message } from 'antd'
+import { Button, ConfigProvider, Divider, Form, Rate, Result, Space, Tabs, Tag, message } from 'antd'
 import { CaretRightFilled, CommentOutlined, DollarOutlined, HeartFilled, HeartOutlined, MutedFilled, PicLeftOutlined, PictureOutlined, SettingOutlined, SoundFilled, TeamOutlined, YoutubeFilled } from '@ant-design/icons'
 import { stafService } from '../../services/StafService'
 import useToken from 'antd/es/theme/useToken'
 import { Carousel } from 'antd';
 import { useSelector } from 'react-redux'
-import { dataService } from '../../services/DataService'
 import TextArea from 'antd/es/input/TextArea'
 import { FeedbackTable } from '../FeedbackTable/FeedbackTable'
 import { accountService } from '../../services/AccountService'
@@ -90,9 +89,9 @@ export const Movie = () => {
                                     <div className='staf-info-container'>
                                         <img className='staf-image' src={staf.imageName} alt='imageName' />
                                         <div className='staf-link'>
-                                            {(user && (user?.isAdmin || user?.premiumId > 1)) ? <Link style={{textDecoration:'none'}} to={`/staf/${staf.id}`} >{staf.name} {staf.surname}</Link>
+                                            {(user && (user?.isAdmin || user?.premiumId > 1)) ? <Link style={{ textDecoration: 'none' }} to={`/staf/${staf.id}`} >{staf.name} {staf.surname}</Link>
                                                 : <span>{staf.name} {staf.surname}</span>}
-                                            <span style={{ color: themeToken.colorTextDescription, fontStyle:'normal' }}>{staf.countryName}</span>
+                                            <span style={{ color: themeToken.colorTextDescription, fontStyle: 'normal' }}>{staf.countryName}</span>
                                         </div>
                                     </div>
                                 )
@@ -103,14 +102,14 @@ export const Movie = () => {
             }
         </div>
     );
-    
 
-    const setData = async (pageIndex,pageSize) => {
+
+    const setData = async (pageIndex, pageSize) => {
         const result = await movieService.getMovieFeedbacks(id, pageIndex, pageSize);
         if (result.status === 200 && result.data?.elements?.length > 0) {
-            return {elements:result?.data?.elements,totalCount:result?.data?.totalCount}
+            return { elements: result?.data?.elements, totalCount: result?.data?.totalCount }
         }
-        return {elements:0,totalCount:0};
+        return { elements: 0, totalCount: 0 };
     }
 
     const sendFeedback = async (e) => {
@@ -171,7 +170,7 @@ export const Movie = () => {
                     </Form.Item>
                     <Button type="primary" htmlType="submit" className=' mt-3 align-self-end'>Відправити</Button>
                 </Form>}
-                <FeedbackTable deletable={user?.isAdmin} dataloader={setData}/>
+            <FeedbackTable deletable={user?.isAdmin} dataloader={setData} />
         </div>
     );
 
@@ -180,25 +179,25 @@ export const Movie = () => {
             label: 'Опис',
             key: 'description',
             children: description,
-            icon: <PicLeftOutlined className=' fs-5'/>
+            icon: <PicLeftOutlined className=' fs-5' />
         },
         {
             label: 'Персони та комaнди',
             key: 'stafs',
             children: movieStafs,
-            icon: <TeamOutlined className=' fs-5'/>
+            icon: <TeamOutlined className=' fs-5' />
         },
         {
             label: 'Скриншоти',
             key: 'screens',
             children: screenshots,
-            icon: <PictureOutlined className=' fs-5'/>
+            icon: <PictureOutlined className=' fs-5' />
         },
         {
             label: 'Відгуки',
             key: 'feedbacks',
             children: movieFeedbacks,
-            icon: <CommentOutlined className=' fs-5'/>,
+            icon: <CommentOutlined className=' fs-5' />,
         },
     ]
 
@@ -222,14 +221,15 @@ export const Movie = () => {
             if (result.status === 200)
                 setGenres(result.data)
             if (user && !user.isAdmin) {
-                result = await dataService.getPremium(user.premiumId);
+                result = await accountService.getPremium(user.email);
                 if (result.status === 200) {
                     setUserPremiumRate(result.data.rate)
                 }
+                result = await accountService.isMovieFavourite(id, user?.id);
+                if (result.status === 200)
+                    setIsFauvorite(result.data)
             }
-            result = await accountService.isMovieFavourite(id,user.id);
-            if (result.status === 200)
-                setIsFauvorite(result.data)
+
         })();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [id]);
@@ -307,9 +307,9 @@ export const Movie = () => {
         }
     }
 
-    const switchFauvorite = async ()=>{
-        const result  = await accountService.addRemoveFavourite(user.email,id);
-        if(result.status === 200){
+    const switchFauvorite = async () => {
+        const result = await accountService.addRemoveFavourite(user.email, id);
+        if (result.status === 200) {
             setIsFauvorite(result.data)
         }
     }
@@ -326,7 +326,7 @@ export const Movie = () => {
                         <div className='info-container'>
                             <img src={movie?.poster} alt='poster' />
                             <div className='info-content'>
-                                <Rate style={{fontSize:'25px'}} disabled allowHalf count={6} value={movie?.rating} />
+                                <Rate style={{ fontSize: '25px' }} disabled allowHalf count={6} value={movie?.rating} />
                                 <div className=' d-flex gap-2 align-items-center'>
                                     <Tag className=' fs-6 py-1 px-2' icon={<DollarOutlined />} color="yellow">{movie?.premiumName}</Tag>
                                     <Tag className=' fs-6 py-1 px-2' icon={<YoutubeFilled />} color="green">{movie?.qualityName}</Tag>
@@ -334,9 +334,9 @@ export const Movie = () => {
                                 </div>
                                 <h2>{movie?.name}</h2>
                                 <Space>
-                                    <Button type="primary" onClick={user?.isAdmin || movie?.premiumRate <= userPremiumRate ? playMovie :()=> navigate('/premium')} danger icon={<CaretRightFilled />} size='large'>
+                                    <Button type="primary" onClick={user?.isAdmin || movie?.premiumRate <= userPremiumRate ? playMovie : () => navigate('/premium')} danger icon={<CaretRightFilled />} size='large'>
                                         {user?.isAdmin || movie?.premiumRate <= userPremiumRate ? "Дивитися" : `Придбати підписку "${movie?.premiumName}"`}</Button>
-                                    {user && !user?.isAdmin && <Button danger onClick={switchFauvorite} style={{ backgroundColor: 'transparent' }} icon={isFauvorite?<HeartFilled />:<HeartOutlined/>} size='large'>{isFauvorite ? "Видалити з обраногo":"Додати в обране"}</Button>}
+                                    {user && !user?.isAdmin && <Button danger onClick={switchFauvorite} style={{ backgroundColor: 'transparent' }} icon={isFauvorite ? <HeartFilled /> : <HeartOutlined />} size='large'>{isFauvorite ? "Видалити з обраногo" : "Додати в обране"}</Button>}
                                 </Space>
                             </div>
                         </div>

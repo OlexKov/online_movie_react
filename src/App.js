@@ -41,7 +41,7 @@ function App() {
             <AuthProtectedRoute user={user} children={<Account />}/>
           } />
           <Route path="premium" element={
-            <AuthProtectedRoute user={user} children={<BuyPremium />}/>
+            <UserProtectedRoute user={user} children={<BuyPremium />}/>
           } />
           <Route path="favourite" element={
             <UserProtectedRoute user={user} children={ <Favourite />}/>

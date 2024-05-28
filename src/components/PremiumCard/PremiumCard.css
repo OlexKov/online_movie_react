@@ -1,0 +1,31 @@
+.premium-card-content{
+    display: flex;
+    flex-direction: column;
+    gap:5px;
+    font-size: 15px;
+    font-weight: bold;
+    width: 250px;
+    padding: 30px;
+}
+.premium-card-container:hover{
+    transform: scale(1.2);
+    cursor: pointer;
+    flex-shrink: 1;
+}
+
+.premium-card-container{
+    position: relative;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(124, 124, 124, 0.8);
+    transition: transform 0.3s ease-in-out;
+}
+
+.chooseButton{
+    position: absolute;
+    top:260px;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    /* left: 63px; */
+    width: 130px;
+}

@@ -29,6 +29,9 @@
     padding: 24px;
     margin-top: 20px;
     overflow-x: auto;
-    
+}
+
+main > div{
+    min-height: 80vh;
 }
 

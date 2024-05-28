@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { CommentOutlined,  HeartOutlined,  HomeOutlined,  InfoCircleOutlined,  TableOutlined, UserOutlined } from '@ant-design/icons';
+import { CommentOutlined,  DollarOutlined,  HeartOutlined,  HomeOutlined,  InfoCircleOutlined,  TableOutlined, UserOutlined } from '@ant-design/icons';
 import { Menu as AntMenu,} from 'antd';
 import { Link, useLocation } from 'react-router-dom';
 import '../Menu/Menu.css'
@@ -9,39 +9,47 @@ import { useSelector } from 'react-redux';
 const items = [
     {
         key: "/",
-        icon:<HomeOutlined />,
+        icon:<HomeOutlined className='fs-6' />,
         label:<Link className='link' to="/">Домашня сторінка</Link>,
         users: ['Guest','User','Admin']
     },
     
     {
         key: "/movietable",
-        icon:<TableOutlined />,
+        icon:<TableOutlined className='fs-6'/>,
         label:<Link  className='link' to="/movietable"><span>Фільми</span></Link>,
         users: ['Admin']
     },
     {
         key: "/staftable",
-        icon:<UserOutlined /> ,
+        icon:<UserOutlined className='fs-6'/> ,
         label:<Link  className='link' to="/staftable"><span>Актори</span></Link>,
         users: ['Admin']
     },
     
     {
         key: "/favourite",
-        icon:<HeartOutlined/>,
+        icon:<HeartOutlined className='fs-6'/>,
         label:<Link className='link' to="/favourite"><span>Обрані</span></Link>,
         users: ['User']
     },
+
+    {
+        key: "/premium",
+        icon:<DollarOutlined className='fs-6'/>,
+        label:<Link className='link' to="/premium"><span>Придбати підписку</span></Link>,
+        users: ['User']
+    },
+
     {
         key: "/about",
-        icon:<InfoCircleOutlined/>,
+        icon:<InfoCircleOutlined className='fs-6'/>,
         label:<Link className='link' to="/about"><span>Про нас</span></Link>,
         users: ['Guest','User']
     },
     {
         key: "/feedbacks",
-        icon:<CommentOutlined/>,
+        icon:<CommentOutlined className='fs-6'/>,
         label:<Link className='link' to="/feedbacks"><span>Відгуки користувачів</span></Link>,
         users: ['Admin']
     }
