@@ -3,11 +3,13 @@ import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { accountService } from '../../services/AccountService'
 import { ArrowLeftOutlined } from '@ant-design/icons'
+import { useSelector } from 'react-redux'
 
 export const Registration = () => {
+  const user = useSelector(state=>state.user.data);
   const navigate = useNavigate()
   const onFinish = async (values) => {
-    values.role = 'User'
+    values.role = user ? 'Admin':'User'
     values.premiumId = 1;
     const responce = await accountService.register(values);
     if (responce.status === 200) {
@@ -19,7 +21,7 @@ export const Registration = () => {
     <>
       <Button shape="circle" onClick={() => window.history.back()} type="primary" icon={<ArrowLeftOutlined className='fs-4' />} />
       <div className='w-75 mx-auto'>
-        <Divider className='fs-3  mb-5' orientation="left">Реєстрація</Divider>
+        <Divider className='fs-3  mb-5' orientation="left">Реєстрація {user ? '(Admin)':''}</Divider>
         <Form
           layout='vertical'
           style={{
@@ -162,11 +164,12 @@ export const Registration = () => {
          
           <div className='buttons-block'>
             <Button type="primary" htmlType="submit">
-              Зареэєструватися
+             {!user?'Зареэєструватися':'Зареєструвати'}
             </Button>
-            <Link to="/login">
+            {!user &&
+             <Link to="/login">
               <Button >Увійти</Button>
-            </Link>
+            </Link>}
           </div>
         </Form>
       </div>

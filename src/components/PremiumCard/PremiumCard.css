@@ -22,7 +22,7 @@
 
 .chooseButton{
     position: absolute;
-    top:260px;
+    top:235px;
     left: 50%;
     margin-right: -50%;
     transform: translate(-50%, -50%);

@@ -16,6 +16,7 @@ Button{
 }
 
 .user-view{
+   
     display: flex;
     gap:15px;
     align-items: center;

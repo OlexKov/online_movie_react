@@ -7,7 +7,7 @@ export const PremiumCard = ({id,name,current,price,onSelect}) => {
     <div className='premium-card-content text-center'>
      <h2>{name}</h2> 
      <hr/>
-     <div className=' rounded-5 bg-success border p-3 pb-5'>
+     <div className=' rounded-5 bg-success border p-3 pb-4'>
          <h3>{price} грн.</h3>
          <h5 style={{fontStyle:'italic'}}>30 днів</h5>
      </div>
@@ -19,7 +19,7 @@ export const PremiumCard = ({id,name,current,price,onSelect}) => {
   }
   return (
     <div className='premium-card-container'>
-           { current? <Badge.Ribbon style={{fontStyle:'italic'}} text={'Поточна підписка'} color="cyan-3">{cardContent}</Badge.Ribbon>
+           { current? <Badge.Ribbon style={{fontStyle:'italic'}} text={'Ваша підписка'} color="cyan-3">{cardContent}</Badge.Ribbon>
            : cardContent}
                
     </div>

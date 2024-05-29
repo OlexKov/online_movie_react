@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { dataService } from '../../services/DataService'
 import { PremiumCard } from '../PremiumCard/PremiumCard'
-import { Button, Divider, Spin, message, notification } from 'antd'
+import { Button, Divider, Spin, message } from 'antd'
 import { ArrowLeftOutlined, SmileOutlined } from '@ant-design/icons'
 import { accountService } from '../../services/AccountService'
 import axios from 'axios'
@@ -75,8 +75,8 @@ export const BuyPremium = () => {
                   <h5>При переході на підписку "{selectedPremium.name}" ваша поточна підписка "{userPremium.name}" буде онульована ! ! !"</h5>
                 </div>}
               <h3>Вартість підписки {selectedPremium.price}грн.</h3>
-              <h4>Заповніть реквізити для оплати та натисніть "Сплатити"</h4>
-              <h4>Приємного перегляду <SmileOutlined /></h4>
+              <h5 className=' text-primary'>Заповніть реквізити для оплати та натисніть "Сплатити"</h5>
+              <h5 className=' text-primary'>Приємного перегляду <SmileOutlined /></h5>
             </div>
             <CreditCardInfo onFinish={onFinish} className='mx-auto' />
           </div>}
