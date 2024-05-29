@@ -9,7 +9,7 @@ export const Home = () => {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(false);
   const [moviesCount, setMoviesCount] = useState(0);
-
+  
   useEffect(() => {
     (async () => { await setData(paginatorConfig.pagination.defaultPageSize, paginatorConfig.pagination.defaultCurrent) })();
   }, []);
@@ -29,7 +29,8 @@ export const Home = () => {
   }
 
   return (
-    <div className='d-flex flex-column gap-4'>
+    <>
+      <div className='d-flex flex-column gap-4'>
       <Spin spinning={loading} delay={300} size='large' fullscreen />
       {movies.length > 0 ?
         <>
@@ -49,5 +50,7 @@ export const Home = () => {
         </>
         : <Empty description='Фільми відсутні' />}
     </div>
+    </>
+    
   )
 }

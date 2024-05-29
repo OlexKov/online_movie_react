@@ -17,4 +17,5 @@ export const accountService = {
     isMovieFavourite: async (movieId,userId)=> TryError(() => axios.get(`${accountsAPIUrl}/ismoviefauvorite?movieId=${movieId}&userId=${userId}`)),
     getFavourites: async (userEmail)=> TryError(() => axios.get(`${accountsAPIUrl}/getfavourites?email=${userEmail}`)),
     getPremium: async (userEmail)=> TryError(() => axios.get(`${accountsAPIUrl}/getpremium?email=${userEmail}`)),
+    setUserPremium: async (userEmail,premiumId,days)=> TryError(() => axios.put(`${accountsAPIUrl}/setpremium?email=${userEmail}&premiumId=${premiumId}&days=${days}`)),
 }
