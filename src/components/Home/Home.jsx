@@ -106,7 +106,7 @@ export const Home = () => {
     filter.originalName = result.originalName || ''
     filter.countries = result.countries || []
     filter.qualities = result.qualities || []
-    filter.premiums = result.premiums || []
+    if(!freeMovie) filter.premiums = result.premiums || []
     filter.stafs = result.stafs || []
     filter.years = result.years?.split(/[.,/ -]/).filter(x => x !== '') || []
     filter.allGenres = result.allGenres || false
@@ -219,7 +219,7 @@ export const Home = () => {
                               placeholder="Оригінальна назва"
                               size='large'
                               style={{
-                                width: '60%',
+                                width: '50%',
                               }}
 
                             />
@@ -234,7 +234,7 @@ export const Home = () => {
                               mode="multiple"
                               maxTagCount={'responsive'}
                               placeholder="Оберіть жанри"
-                              style={{ width: '40%' }}
+                              style={{ width: '50%' }}
                               allowClear
                               options={genres}
                               filterOption={selectFilterOption} />
@@ -253,7 +253,7 @@ export const Home = () => {
                               mode="multiple"
                               maxTagCount={'responsive'}
                               placeholder="Оберіть якість відео"
-                              style={{ width: '33.33%' }}
+                              style={{ width: freeMovie ? '50%' : '33.33%' }}
                               allowClear
                               options={qualities}
                               filterOption={selectFilterOption} />
@@ -267,12 +267,13 @@ export const Home = () => {
                               mode="multiple"
                               maxTagCount={'responsive'}
                               placeholder="Оберіть країни"
-                              style={{ width: '33.33%' }}
+                              style={{ width: freeMovie ? '50%' : '33.33%' }}
                               allowClear
                               options={countries}
                               filterOption={selectFilterOption} />
                           </Form.Item>
-                          <Form.Item
+
+                          {!freeMovie && <Form.Item
                             noStyle
                             name='premiums'
                           >
@@ -285,7 +286,7 @@ export const Home = () => {
                               allowClear
                               options={premiums}
                               filterOption={selectFilterOption} />
-                          </Form.Item>
+                          </Form.Item>}
                         </Space.Compact>
 
                       </Form.Item>
