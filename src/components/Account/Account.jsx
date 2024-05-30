@@ -1,4 +1,4 @@
-import { ArrowLeftOutlined, EditOutlined, LockOutlined, UnlockOutlined, YoutubeOutlined } from '@ant-design/icons'
+import { ArrowLeftOutlined, EditOutlined, LockOutlined, YoutubeOutlined } from '@ant-design/icons'
 import { Button, DatePicker, Divider, Form, Input, Popconfirm, Space, Switch, Tag, message, } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -15,7 +15,7 @@ export const Account = () => {
   const [formDisable, setFormDisable] = useState(true)
   const dispatcher = useDispatch()
   const [form] = Form.useForm();
-
+  
   const editModeChange = (mode) => {
     setFormDisable(mode)
     if (mode)
@@ -39,7 +39,7 @@ export const Account = () => {
     form.setFieldsValue({
       birthdate:dayjs(user.dateOfBirth.split('.').reverse().join('-'), dateFormat), 
       oldPassword: null,
-      newPassword: null
+      password: null
     });
   }
   const isChange = (formResult,user) =>{
@@ -48,13 +48,12 @@ export const Account = () => {
           || formResult.email !== user.email
           || formResult.phoneNumber !== user.phoneNumber
           || new Date(formResult.birthdate).toLocaleDateString()!== user.dateOfBirth
-          || formResult.newPassword?.length !== 0
+          || formResult.password?.length !== 0
 
   }
   const onFinish = async(formResult) => { 
     if(isChange(formResult,user)){
       const formData = new FormData();
-     
       Object.keys(formResult).forEach((key)=>{
         if(key==='birthdate')
           formData.append(key,new Date(formResult[key]).toLocaleDateString())
@@ -197,11 +196,8 @@ export const Account = () => {
                 },
               ]}
             >
-
-              <Input variant="borderless" placeholder='Будьласка введіть пошту' />
-
-
-            </Form.Item>
+             <Input variant="borderless" placeholder='Будьласка введіть пошту' />
+           </Form.Item>
           </div>
           <hr />
 
@@ -212,13 +208,11 @@ export const Account = () => {
               rules={[
                 {
                   pattern: '^\\d{3}[-\\s]{1}\\d{3}[-\\s]{1}\\d{2}[-\\s]{0,1}\\d{2}$',
-                  message: "Невірно введений телефон!(xxx-xxx-xx-xx) (xxx xxx xx xx) (xxx xxx xxxx) (xxx-xxx-xxxx)",
+                  message: "Невірно введений телефон!",
                 },
               ]}
             >
-
               <Input variant="borderless" placeholder='Ваш телефон ' />
-
             </Form.Item>
           </div>
           <hr />
@@ -250,7 +244,7 @@ export const Account = () => {
               </Form.Item>
               <hr />
               <Form.Item
-                name="oldPassword"
+                name="password"
                 className='flex-fill'
                 dependencies={['newPassword']}
                 rules={[

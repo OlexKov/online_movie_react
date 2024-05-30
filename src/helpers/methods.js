@@ -1,33 +1,21 @@
 import { jwtDecode } from 'jwt-decode';
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import { dateFormat } from './constants';
-import dayjs from 'dayjs';
 export const getDataFromToken = (token) => {
     if (token) {
         const data = jwtDecode(token);
         return {
-            id: data[
-                'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'
-            ],
-            name: data[
-                'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'
-            ],
-            surname:
-                data[
-                'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname'
-                ],
-            email:
-                data[
-                'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'
-                ],
+            id: data['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'],
+            name: data['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'],
+            surname:data['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname'],
+            email:data['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'],
             exp: data['exp'],
             iss: data['iss'],
             roles:data['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'],
             dateOfBirth:data['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/dateofbirth'],
             isAdmin: data['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']?.includes('Admin') || false,
             isUser: data['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']?.includes('User') || false,
-            phoneNumber: data['http://schemas.microsoft.com/ws/2008/06/identity/claims/homephone'] || ''
+            phoneNumber: data['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/homephone'] || ''
         }
     }
     return null
