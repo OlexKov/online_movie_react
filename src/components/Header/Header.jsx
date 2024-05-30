@@ -39,7 +39,7 @@ export const Header = () => {
     }
     const items = [
         {
-            label: <Link to="">
+            label: <Link to="account">
                 <Button type="link">Мій акаунт</Button>
             </Link>,
             key: '0',
@@ -74,7 +74,7 @@ export const Header = () => {
                 {(!user && <Tooltip placement="bottom" title="Вхід / Реєстрація">
                     <Link to="login" style={{ textDecoration: 'none' }} className='d-flex gap-2'>
                         <LoginOutlined className="fs-4 fw-bold" />
-                        <span style={{ fontSize: 16 }}>Увійти/Зареєструватися</span>
+                        <span style={{ fontSize: 16 }}>Увійти</span>
                     </Link>
                 </Tooltip>) ||
                     <Dropdown

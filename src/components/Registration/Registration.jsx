@@ -1,4 +1,4 @@
-import { Button,  DatePicker, Divider, Form, Input, message } from 'antd'
+import { Button, DatePicker, Divider, Form, Input, message } from 'antd'
 import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { accountService } from '../../services/AccountService'
@@ -6,22 +6,22 @@ import { ArrowLeftOutlined } from '@ant-design/icons'
 import { useSelector } from 'react-redux'
 
 export const Registration = () => {
-  const user = useSelector(state=>state.user.data);
+  const user = useSelector(state => state.user.data);
   const navigate = useNavigate()
   const onFinish = async (values) => {
-    values.role = user ? 'Admin':'User'
+    values.role = user ? 'Admin' : 'User'
     values.premiumId = 1;
     const responce = await accountService.register(values);
     if (responce.status === 200) {
       message.success(`Юзер "${values.name} ${values.surname}" успішно зареєстрований`)
-        navigate('/')
+      navigate('/')
     }
   }
   return (
     <>
       <Button shape="circle" onClick={() => window.history.back()} type="primary" icon={<ArrowLeftOutlined className='fs-4' />} />
       <div className='w-75 mx-auto'>
-        <Divider className='fs-3  mb-5' orientation="left">Реєстрація {user ? '(Admin)':''}</Divider>
+        <Divider className='fs-3  mb-5' orientation="left">Реєстрація {user ? '(Admin)' : ''}</Divider>
         <Form
           layout='vertical'
           style={{
@@ -33,10 +33,10 @@ export const Registration = () => {
           onFinish={onFinish}
           className=' mx-auto'
         >
-          <Form.Item 
-          name="name" 
-          label="Ім'я"
-          hasFeedback
+          <Form.Item
+            name="name"
+            label="Ім'я"
+            hasFeedback
             rules={[
               {
                 pattern: '^[A-Z А-Я].*',
@@ -51,9 +51,9 @@ export const Registration = () => {
             <Input placeholder="Ваше ім'я" showCount minLength={3} maxLength={100} />
           </Form.Item>
           <Form.Item
-          name="surname"
-           label="Прізвище"
-           hasFeedback
+            name="surname"
+            label="Прізвище"
+            hasFeedback
             rules={[
               {
                 pattern: '^[A-Z А-Я].*',
@@ -68,20 +68,20 @@ export const Registration = () => {
             <Input placeholder="Ваше прізвище" showCount minLength={3} maxLength={100} />
           </Form.Item>
           <Form.Item
-                    name="birthdate"
-                    label="Дата народження"
-                    hasFeedback
-                    rules={[
-                      {
-                        required: true,
-                        message: 'Оберіть дату народження'
-                      },
-                    ]}
-                  >
-                    <DatePicker placeholder="Дата народження" className='w-100' disabledDate={d => !d || d.isAfter(new Date(Date.now()))} />
-                  </Form.Item>
+            name="birthdate"
+            label="Дата народження"
+            hasFeedback
+            rules={[
+              {
+                required: true,
+                message: 'Оберіть дату народження'
+              },
+            ]}
+          >
+            <DatePicker placeholder="Дата народження" className='w-100' disabledDate={d => !d || d.isAfter(new Date(Date.now()))} />
+          </Form.Item>
           <Form.Item
-          hasFeedback
+            hasFeedback
             label="Електронна пошта"
             name="email"
             rules={[
@@ -95,11 +95,11 @@ export const Registration = () => {
               },
             ]}
           >
-            <Input  placeholder='Будьласка введіть пошту'/>
+            <Input placeholder='Будьласка введіть пошту' />
           </Form.Item>
 
           <Form.Item
-         
+
             label="Телефон"
             name="phoneNumbe"
             rules={[
@@ -109,11 +109,11 @@ export const Registration = () => {
               },
             ]}
           >
-            <Input placeholder='Ваш тедефон '/>
+            <Input placeholder='Ваш тедефон ' />
           </Form.Item>
 
           <Form.Item
-          hasFeedback
+            hasFeedback
             label="Пароль"
             name="password"
             rules={[
@@ -133,7 +133,7 @@ export const Registration = () => {
                 max: 16,
                 message: 'Пароль має містити не більше 16 символів!',
               },
-              
+
             ]}
           >
             <Input.Password />
@@ -161,15 +161,15 @@ export const Registration = () => {
           >
             <Input.Password />
           </Form.Item>
-         
+
           <div className='buttons-block'>
             <Button type="primary" htmlType="submit">
-             {!user?'Зареэєструватися':'Зареєструвати'}
+              {!user ? 'Зареэєструватися' : 'Зареєструвати'}
             </Button>
             {!user &&
-             <Link to="/login">
-              <Button >Увійти</Button>
-            </Link>}
+              <Link to="/login">
+                <Button >Увійти</Button>
+              </Link>}
           </div>
         </Form>
       </div>

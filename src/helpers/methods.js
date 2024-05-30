@@ -1,6 +1,8 @@
 import { jwtDecode } from 'jwt-decode';
 import React from 'react';
 import { useLocation } from 'react-router-dom';
+import { dateFormat } from './constants';
+import dayjs from 'dayjs';
 export const getDataFromToken = (token) => {
     if (token) {
         const data = jwtDecode(token);
@@ -21,16 +23,11 @@ export const getDataFromToken = (token) => {
                 ],
             exp: data['exp'],
             iss: data['iss'],
-            roles:
-                data[
-                'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'
-                ],
-            dateOfBirth:
-                data[
-                'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/dateofbirth'
-                ],
-            isAdmin:data['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']?.includes('Admin') || false,
-            isUser:data['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']?.includes('User') || false
+            roles:data['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'],
+            dateOfBirth:data['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/dateofbirth'],
+            isAdmin: data['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']?.includes('Admin') || false,
+            isUser: data['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']?.includes('User') || false,
+            phoneNumber: data['http://schemas.microsoft.com/ws/2008/06/identity/claims/homephone'] || ''
         }
     }
     return null
@@ -49,6 +46,6 @@ export function useQuery() {
     return React.useMemo(() => new URLSearchParams(search), [search]);
 }
 
-export const uniqByKey = (array,key) => [...new Map(array.map(x=>[key(x),x])).values()]
+export const uniqByKey = (array, key) => [...new Map(array.map(x => [key(x), x])).values()]
 
 

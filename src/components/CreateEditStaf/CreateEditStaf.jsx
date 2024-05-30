@@ -4,7 +4,6 @@ import { Button, Col, DatePicker, Divider, Form, Input, Row, Select, Space, Imag
 import { useParams } from 'react-router-dom';
 import { ArrowLeftOutlined, UploadOutlined } from '@ant-design/icons';
 import { dataService } from '../../services/DataService';
-import { movieService } from '../../services/MovieService';
 import { stafService } from '../../services/StafService';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import dayjs from 'dayjs';

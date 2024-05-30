@@ -1,4 +1,3 @@
-import { theme } from 'antd';
 const accessKey = process.env.REACT_APP_ACCESS_KEY;
 const refreshKey = process.env.REACT_APP_REFRESH_KEY;
 
@@ -22,15 +21,13 @@ const clearLocalStorage = () =>{
     localStorage.removeItem(refreshKey);
 }
 
-const isSessionStorage =  () => sessionStorage.getItem(accessKey) !== null
-
-
 
 export const storageService = {
 
+    isSessionStorage: () => sessionStorage.getItem(accessKey) !== null,
 
     saveTokens: (accessToken, refreshToken) => {
-        if(isSessionStorage()){
+        if(storageService.isSessionStorage()){
             setSessionStorage(accessToken, refreshToken)
             clearLocalStorage();
         }

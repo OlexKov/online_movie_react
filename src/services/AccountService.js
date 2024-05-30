@@ -1,7 +1,7 @@
 
 import axios from "axios";
 import { TryError } from "../helpers/ErrorCatch";
-import { postBodyConfig } from "../helpers/constants";
+import { formPostConfig, postBodyConfig } from "../helpers/constants";
 
 const accountsAPIUrl = process.env.REACT_APP_ACCOUNT_API_URL;
 
@@ -18,4 +18,7 @@ export const accountService = {
     getFavourites: async (userEmail)=> TryError(() => axios.get(`${accountsAPIUrl}/getfavourites?email=${userEmail}`)),
     getPremium: async (userEmail)=> TryError(() => axios.get(`${accountsAPIUrl}/getpremium?email=${userEmail}`)),
     setUserPremium: async (userEmail,premiumId,days)=> TryError(() => axios.put(`${accountsAPIUrl}/setpremium?email=${userEmail}&premiumId=${premiumId}&days=${days}`)),
+    editUser:async (data)=> TryError(() => axios.put(`${accountsAPIUrl}/edit`,data,formPostConfig)),
+    deleteAccount:async (email)=> TryError(() => axios.delete(`${accountsAPIUrl}/delete?email=${email}`)),
+
 }
