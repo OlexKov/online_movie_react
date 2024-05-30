@@ -23,8 +23,10 @@ export const movieService = {
 
       getMoviesWithPagination: (pageSize,pageIndex) => TryError(() => axios.post(movieApiUrl + `/paginatefilter`,{findModel:null,pageSize,pageIndex})),
 
-      getMovieFeedbacks:(id,pageIndex,pageSize) => TryError(() => axios.get(`${movieApiUrl}/getfeedbacks/${id}/${pageIndex}/${pageSize}`)),
+      getFilteredMoviesWithPagination: (findModel,pageSize,pageIndex) => TryError(() => axios.post(movieApiUrl + `/paginatefilter`,{findModel,pageSize,pageIndex})),
 
+      getMovieFeedbacks:(id,pageIndex,pageSize) => TryError(() => axios.get(`${movieApiUrl}/getfeedbacks/${id}/${pageIndex}/${pageSize}`)),
+      
       hasFeedback: async (movieId,userId)=> TryError(() => axios.get(`${movieApiUrl}/hasfeedback?movieId=${movieId}&userId=${userId}`)),
 
       getNotApprovedMovieFeedbacks:(id,pageIndex,pageSize) => TryError(() => axios.get(`${movieApiUrl}/getfeedbacks/notapproved/${id}/${pageIndex}/${pageSize}`)),

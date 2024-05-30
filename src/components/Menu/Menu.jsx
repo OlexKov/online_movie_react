@@ -13,7 +13,12 @@ const items = [
         label:<Link className='link' to="/">Домашня сторінка</Link>,
         users: ['Guest','User','Admin']
     },
-    
+    {
+        key: "/true",
+        icon:<TableOutlined className='fs-6'/>,
+        label:<Link  className='link' to="/true"><span>Безкоштовні фільми</span></Link>,
+        users: ['Guest','User','Admin']
+    },
     {
         key: "/movietable",
         icon:<TableOutlined className='fs-6'/>,
