@@ -89,7 +89,7 @@ export const Movie = () => {
                                     <div className='staf-info-container'>
                                         <img className='staf-image' src={staf.imageName} alt='imageName' />
                                         <div className='staf-link'>
-                                            {(user && (user?.isAdmin || user?.premiumId > 1)) ? <Link style={{ textDecoration: 'none' }} to={`/staf/${staf.id}`} >{staf.name} {staf.surname}</Link>
+                                            {(user && (user?.isAdmin || userPremiumRate > 0)) ? <Link style={{ textDecoration: 'none' }} to={`/staf/${staf.id}`} >{staf.name} {staf.surname}</Link>
                                                 : <span>{staf.name} {staf.surname}</span>}
                                             <span style={{ color: themeToken.colorTextDescription, fontStyle: 'normal' }}>{staf.countryName}</span>
                                         </div>

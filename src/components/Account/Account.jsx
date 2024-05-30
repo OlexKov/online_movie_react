@@ -38,8 +38,8 @@ export const Account = () => {
     form.resetFields();
     form.setFieldsValue({
       birthdate:dayjs(user.dateOfBirth.split('.').reverse().join('-'), dateFormat), 
-      oldPassword: null,
-      password: null
+      oldPassword: '',
+      password: ''
     });
   }
   const isChange = (formResult,user) =>{
@@ -52,6 +52,7 @@ export const Account = () => {
 
   }
   const onFinish = async(formResult) => { 
+    console.log(formResult)
     if(isChange(formResult,user)){
       const formData = new FormData();
       Object.keys(formResult).forEach((key)=>{
