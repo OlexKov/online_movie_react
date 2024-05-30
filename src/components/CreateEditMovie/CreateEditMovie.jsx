@@ -9,7 +9,7 @@ import customParseFormat from 'dayjs/plugin/customParseFormat';
 import dayjs from 'dayjs';
 import defImage from '../../images/nophoto.jpg'
 import axios from 'axios';
-import { dateFormat, dateTimeFormat, timeFormat } from '../../helpers/constants';
+import { dateFormat, dateTimeFormat, selectFilterOption, timeFormat } from '../../helpers/constants';
 import { ComboBoxData } from '../../helpers/ComboBoxData';
 import { dummyRequest } from '../../helpers/methods';
 import useToken from 'antd/es/theme/useToken';
@@ -527,6 +527,7 @@ export const CreateEditMovie = () => {
                                             mode="multiple"
                                             maxTagCount={'responsive'}
                                             options={genres}
+                                            filterOption={selectFilterOption}
                                         />
                                     </Form.Item>
                                 </Col>

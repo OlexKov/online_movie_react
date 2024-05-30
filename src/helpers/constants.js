@@ -32,4 +32,8 @@ export const paginatorConfig = {
                 <span className=" fw-bold">{total}</span>
             </div>
     },
-}    
+} 
+
+export const selectFilterOption =(input, option) => option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0 
+    
+  

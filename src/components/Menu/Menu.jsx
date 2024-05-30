@@ -31,18 +31,18 @@ const items = [
         label:<Link  className='link' to="/staftable"><span>Актори</span></Link>,
         users: ['Admin']
     },
-    
-    {
-        key: "/favourite",
-        icon:<HeartOutlined className='fs-6'/>,
-        label:<Link className='link' to="/favourite"><span>Обрані</span></Link>,
-        users: ['User']
-    },
-
+  
     {
         key: "/premium",
         icon:<DollarOutlined className='fs-6'/>,
         label:<Link className='link' to="/premium"><span>Придбати підписку</span></Link>,
+        users: ['User']
+    },
+
+    {
+        key: "/favourite",
+        icon:<HeartOutlined className='fs-6'/>,
+        label:<Link className='link' to="/favourite"><span>Обрані</span></Link>,
         users: ['User']
     },
 
