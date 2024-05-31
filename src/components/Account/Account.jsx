@@ -25,8 +25,9 @@ export const Account = () => {
   useEffect(() => {
     (async()=>{
       const result = await accountService.getPremium(user.email)
-      if(result.status===200){
+      if(result.status === 200){
         setUserPremium(result.data)
+        
       }
     })()
     setFormValues()

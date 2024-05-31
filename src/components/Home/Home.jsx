@@ -103,14 +103,16 @@ export const Home = () => {
 
     filter.name = result.name || '';
     filter.genres = result.genre ? result.genre.length ? result.genre : [result.genre] : []
-    filter.originalName = result.originalName || ''
-    filter.countries = result.countries || []
-    filter.qualities = result.qualities || []
-    if(!freeMovie) filter.premiums = result.premiums || []
-    filter.stafs = result.stafs || []
-    filter.years = result.years?.split(/[.,/ -]/).filter(x => x !== '') || []
-    filter.allGenres = result.allGenres || false
-    filter.allStafs = result.allStafs || false
+    if (extendedFindFormOpen) {
+      filter.originalName = result.originalName || ''
+      filter.countries = result.countries || []
+      filter.qualities = result.qualities || []
+      if (!freeMovie) filter.premiums = result.premiums || []
+      filter.stafs = result.stafs || []
+      filter.years = result.years?.split(/[.,/ -]/).filter(x => x !== '') || []
+      filter.allGenres = result.allGenres || false
+      filter.allStafs = result.allStafs || false
+    }
     findForm.resetFields()
     console.log(filter)
     await setData(paginatorConfig.pagination.defaultPageSize, paginatorConfig.pagination.defaultCurrent)
@@ -183,29 +185,29 @@ export const Home = () => {
                     children: <>
                       <Form.Item>
                         <div className='d-flex justify-content-around fs-6 text-primary'>
-                        <Space size='large'>
-                          <span>Всі астори в одному фільмі</span>
-                          <Form.Item
-                            noStyle
-                            name='allStafs'>
-                                <Switch
-                                style={{ width: 60 }}
-                                checkedChildren={<CheckOutlined />}
-                                unCheckedChildren={<CloseOutlined />}
-                              />
-                           </Form.Item>
-                          </Space>
                           <Space size='large'>
-                              <span>Всі жанри в одному фільмі</span>
-                          <Form.Item
-                            noStyle
-                            name='allGenres'>
+                            <span>Всі астори в одному фільмі</span>
+                            <Form.Item
+                              noStyle
+                              name='allStafs'>
                               <Switch
                                 style={{ width: 60 }}
                                 checkedChildren={<CheckOutlined />}
                                 unCheckedChildren={<CloseOutlined />}
                               />
-                          </Form.Item>
+                            </Form.Item>
+                          </Space>
+                          <Space size='large'>
+                            <span>Всі жанри в одному фільмі</span>
+                            <Form.Item
+                              noStyle
+                              name='allGenres'>
+                              <Switch
+                                style={{ width: 60 }}
+                                checkedChildren={<CheckOutlined />}
+                                unCheckedChildren={<CloseOutlined />}
+                              />
+                            </Form.Item>
                           </Space>
                         </div>
                       </Form.Item>
