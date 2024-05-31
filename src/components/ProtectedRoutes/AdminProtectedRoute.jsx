@@ -6,11 +6,13 @@ export const AdminProtectedRoute = ({
     children,
   }) => {
     
-    if (!user?.isAdmin) {
-      if(user){
+    if(user){
+      if(!user.isAdmin){
         redirectPath = '/forbiden'
       }
-      return <Navigate to={redirectPath} replace />;
+      else{
+        return children;
+      } 
     }
-    return children;
+    return <Navigate to={redirectPath} replace />
   };

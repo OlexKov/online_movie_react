@@ -4,7 +4,7 @@ import { MovieCard } from '../MovieCard/MovieCard';
 import './Home.css'
 import { Button, Collapse, Empty, Form, Input, Pagination, Select, Space, Spin, Switch } from 'antd';
 import { paginatorConfig, selectFilterOption } from '../../helpers/constants';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { dataService } from '../../services/DataService';
 import { stafService } from '../../services/StafService';
@@ -44,7 +44,7 @@ export const Home = () => {
   const [premiums, setPremiums] = useState([]);
   const [qualities, setQualities] = useState([]);
   const [filter] = useState(new FilterModel())
-  const freeMovie = useParams().free || false
+  const freeMovie = useLocation().pathname === '/free'
   const [findForm] = Form.useForm()
   const [userPremiumRate, setUserPremiumRate] = useState(0);
   const [extendedFindFormOpen, setExtendedFindFormOpen] = useState(false);

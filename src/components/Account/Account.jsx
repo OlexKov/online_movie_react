@@ -54,7 +54,6 @@ export const Account = () => {
 
   }
   const onFinish = async(formResult) => { 
-    console.log(formResult)
     if(isChange(formResult,user)){
       const formData = new FormData();
       Object.keys(formResult).forEach((key)=>{
@@ -101,7 +100,7 @@ export const Account = () => {
           >
            <Button style={{width:'auto'}}  danger type="primary" >Видалити акаунт</Button>
           </Popconfirm>
-          <Switch style={{ width: 60 }} value={formDisable} onChange={editModeChange} checkedChildren={<EditOutlined className='fs-6'/>} unCheckedChildren={<LockOutlined className='fs-6' />} />
+          <Switch style={{ width: 60 }} value={formDisable} onChange={editModeChange} checkedChildren={<LockOutlined  className='fs-6'/>} unCheckedChildren={<EditOutlined className='fs-6' />} />
         </div>
 
         <Form

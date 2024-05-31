@@ -14,9 +14,9 @@ const items = [
         users: ['Guest','User','Admin']
     },
     {
-        key: "/true",
+        key: "/free",
         icon:<TableOutlined className='fs-6'/>,
-        label:<Link  className='link' to="/true"><span>Безкоштовні фільми</span></Link>,
+        label:<Link  className='link' to="/free"><span>Безкоштовні фільми</span></Link>,
         users: ['Guest','User','Admin']
     },
     {

@@ -5,11 +5,15 @@ export const UserProtectedRoute = ({
     redirectPath = '/login',
     children,
   }) => {
-    if (!user?.isUser) {
-      if(user){
+
+    if(user){
+      if(!user.isUser){
         redirectPath = '/forbiden'
       }
-      return <Navigate to={redirectPath} replace />;
+      else{
+        return children;
+      } 
     }
-    return children;
+    return <Navigate to={redirectPath} replace />
+    
   };
