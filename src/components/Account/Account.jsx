@@ -31,6 +31,7 @@ export const Account = () => {
       }
     })()
     setFormValues()
+    console.log(storageService.getAccessToken())
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user])
 
@@ -121,7 +122,10 @@ export const Account = () => {
               <hr />
               <div style={{marginBottom:25}} className='input-container'>
                 <span>Підписка</span>
-                <Tag className=' fs-6 py-1 px-2 mx-5 ' icon={<YoutubeOutlined />} color="green">{userPrtemium?.name}</Tag>
+                <div className='d-flex gap-3 mx-2 align-items-center'>
+                   <Tag className=' fs-6 py-1 px-2' icon={<YoutubeOutlined />} color="green">{userPrtemium?.name}</Tag>
+                   {userPrtemium?.id!==1 &&<span style={{fontSize:14,color:'green'}} >до {user?.premiumEndDay}</span>}
+                </div>
               </div>
             </>}
           <hr />
