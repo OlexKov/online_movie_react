@@ -20,14 +20,14 @@ const clearLocalStorage = () =>{
     localStorage.removeItem(accessKey);
     localStorage.removeItem(refreshKey);
 }
-
+const isSessionStorage = () => sessionStorage.getItem(accessKey) !== null;
 
 export const storageService = {
 
-    isSessionStorage: () => sessionStorage.getItem(accessKey) !== null,
+    
 
     saveTokens: (accessToken, refreshToken) => {
-        if(storageService.isSessionStorage()){
+        if(isSessionStorage()){
             setSessionStorage(accessToken, refreshToken)
             clearLocalStorage();
         }

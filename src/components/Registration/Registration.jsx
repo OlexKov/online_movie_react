@@ -1,17 +1,49 @@
-import { Button, DatePicker, Divider, Form, Input, message } from 'antd'
-import React from 'react'
+import { Button, DatePicker, Divider, Form, Input, Modal, message } from 'antd'
+import React, { useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { accountService } from '../../services/AccountService'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 import { useSelector } from 'react-redux'
+import { storageService } from '../../services/StorageService'
 
 export const Registration = () => {
   const user = useSelector(state => state.user.data);
+  const [open, setOpen] = useState(false);
+  const adminModel = useRef();
+  const [confirmLoading, setConfirmLoading] = useState(false);
+  const [password,setPassword] = useState();
+
+  const handleOk = async() => {
+    setConfirmLoading(true);
+    let result = await accountService.login(user.email, password)
+    if (result.status === 200) {
+      storageService.saveTokens(result.data.accessToken, result.data.refreshToken);
+      result = await accountService.adminRegister(adminModel.current)
+      if (result.status === 200) {
+        message.success(`Адміністратор "${adminModel.current?.name} ${adminModel.current?.surname}" успішно зареєстрований`)
+        navigate('/')
+      }
+    }
+    setConfirmLoading(false);
+    setOpen(false)
+    setPassword('');
+  };
+
+  const handleCancel = () => {
+    setOpen(false)
+    setConfirmLoading(false);
+    setPassword('');
+  }
+
+
   const navigate = useNavigate()
   const onFinish = async (values) => {
-    values.role = user ? 'Admin' : 'User'
-    values.premiumId = 1;
-    const responce = await accountService.register(values);
+    if (user) {
+      setOpen(true);
+      adminModel.current = values;
+      return;
+    }
+    const responce = await accountService.userRegister(values);
     if (responce.status === 200) {
       message.success(`Юзер "${values.name} ${values.surname}" успішно зареєстрований`)
       navigate('/')
@@ -19,6 +51,17 @@ export const Registration = () => {
   }
   return (
     <>
+      <Modal
+        title="Введіть пароль адміністратора"
+        open={open}
+        onOk={handleOk}
+        confirmLoading={confirmLoading}
+        onCancel={handleCancel}
+      >
+        <>
+          <Input.Password value={password} onChange={(e)=>setPassword(e.target.value)}/>
+        </>
+      </Modal>
       <Button shape="circle" onClick={() => window.history.back()} type="primary" icon={<ArrowLeftOutlined className='fs-4' />} />
       <div className='w-75 mx-auto'>
         <Divider className='fs-3  mb-5' orientation="left">Реєстрація {user ? '(Admin)' : ''}</Divider>

@@ -8,30 +8,28 @@ import dayjs from 'dayjs';
 import { accountService } from '../../services/AccountService'
 import { storageService } from '../../services/StorageService'
 import { clearUserData, setUserData } from '../store/userDataSlice'
+import { useNavigate } from 'react-router-dom'
 
 export const Account = () => {
   const user = useSelector(state => state.user.data)
-  const [userPrtemium,setUserPremium]  = useState(null)
+  const [userPrtemium, setUserPremium] = useState(null)
   const [formDisable, setFormDisable] = useState(true)
   const dispatcher = useDispatch()
   const [form] = Form.useForm();
-  
+  const navigator = useNavigate();
   const editModeChange = (mode) => {
     setFormDisable(mode)
     if (mode)
       setFormValues()
   }
-
   useEffect(() => {
-    (async()=>{
+    (async () => {
       const result = await accountService.getPremium(user.email)
-      if(result.status === 200){
+      if (result.status === 200) {
         setUserPremium(result.data)
-        
       }
     })()
     setFormValues()
-    console.log(storageService.getAccessToken())
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user])
 
@@ -39,50 +37,45 @@ export const Account = () => {
   const setFormValues = () => {
     form.resetFields();
     form.setFieldsValue({
-      birthdate:dayjs(user.dateOfBirth.split('.').reverse().join('-'), dateFormat), 
+      birthdate: dayjs(user.dateOfBirth.split('.').reverse().join('-'), dateFormat),
       oldPassword: '',
       password: ''
     });
   }
-  const isChange = (formResult,user) =>{
-    return  formResult.name !== user.name
-          || formResult.surname !== user.surname
-          || formResult.email !== user.email
-          || formResult.phoneNumber !== user.phoneNumber
-          || new Date(formResult.birthdate).toLocaleDateString()!== user.dateOfBirth
-          || formResult.password?.length !== 0
+  const isChange = (formResult, user) => {
+    return formResult.name !== user.name
+      || formResult.surname !== user.surname
+      || formResult.email !== user.email
+      || formResult.phoneNumber !== user.phoneNumber
+      || new Date(formResult.birthdate).toLocaleDateString() !== user.dateOfBirth
+      || formResult.password?.length !== 0
 
   }
-  const onFinish = async(formResult) => { 
-    if(isChange(formResult,user)){
+  const onFinish = async (formResult) => {
+    if (isChange(formResult, user)) {
       const formData = new FormData();
-      Object.keys(formResult).forEach((key)=>{
-        if(key==='birthdate')
-          formData.append(key,new Date(formResult[key]).toLocaleDateString())
-        formData.append(key,formResult[key])
+      Object.keys(formResult).forEach((key) => {
+        if (key === 'birthdate')
+          formData.append(key, new Date(formResult[key]).toLocaleDateString())
+        formData.append(key, formResult[key])
       })
-      formData.append('id',user.id);
+      formData.append('id', user.id);
       const result = await accountService.editUser(formData);
-      if(result.status === 200){
-        if(storageService.isSessionStorage()){
-           storageService.setTemporalyTokens(result.data,storageService.getRefreshToken())
-        }
-        else{
-          storageService.saveTokens(result.data,storageService.getRefreshToken());
-        }
-        dispatcher(setUserData({token:result.data}))
+      if (result.status === 200) {
+        storageService.saveTokens(result.data, storageService.getRefreshToken());
+        dispatcher(setUserData({ token: result.data }))
         setFormDisable(true)
         message.success('Дані користувача успішно змінені')
       }
     }
-   }
+  }
 
-   const deleteAccount = async()=>{
-       const result = await accountService.deleteAccount(user.email);
-       if(result.status === 200){
-          dispatcher(clearUserData())
-       }
-   }
+  const deleteAccount = async () => {
+    const result = await accountService.deleteAccount(user.email);
+    if (result.status === 200) {
+      dispatcher(clearUserData())
+    }
+  }
 
   return (
     <>
@@ -91,16 +84,16 @@ export const Account = () => {
 
         <Divider className='fs-3  mb-5' orientation="left">{user.name} {user.surname} {user.isAdmin ? '(Admin)' : ''}</Divider>
         <div style={{ maxWidth: 600 }} className='d-flex justify-content-between gap-3 mx-auto py-4'>
-        <Popconfirm
+          <Popconfirm
             title="Видалення акаута !!!"
             description={`Ви впевненні що бажаєте видалити свій акаунт ?`}
             onConfirm={deleteAccount}
             okText="Так"
             cancelText="Ні"
           >
-           <Button style={{width:'auto'}}  danger type="primary" >Видалити акаунт</Button>
+            <Button style={{ width: 'auto' }} danger type="primary" >Видалити акаунт</Button>
           </Popconfirm>
-          <Switch style={{ width: 60 }} value={formDisable} onChange={editModeChange} checkedChildren={<LockOutlined  className='fs-6'/>} unCheckedChildren={<EditOutlined className='fs-6' />} />
+          <Switch style={{ width: 60 }} value={formDisable} onChange={editModeChange} checkedChildren={<LockOutlined className='fs-6' />} unCheckedChildren={<EditOutlined className='fs-6' />} />
         </div>
 
         <Form
@@ -119,11 +112,11 @@ export const Account = () => {
           {!user.isAdmin &&
             <>
               <hr />
-              <div style={{marginBottom:25}} className='input-container'>
+              <div style={{ marginBottom: 25 }} className='input-container'>
                 <span>Підписка</span>
                 <div className='d-flex gap-3 mx-2 align-items-center'>
-                   <Tag className=' fs-6 py-1 px-2' icon={<YoutubeOutlined />} color="green">{userPrtemium?.name}</Tag>
-                   {userPrtemium?.id!==1 &&<span style={{fontSize:14,color:'green'}} >до {user?.premiumEndDay}</span>}
+                  <Tag style={{cursor:'pointer'}} onClick={()=>navigator('/premium')} className='fs-6 py-1 px-2' icon={<YoutubeOutlined />} color="green">{userPrtemium?.name}</Tag>
+                  {userPrtemium?.id !== 1 && <span style={{ fontSize: 14, color: 'green' }} >до {user?.premiumEndDay}</span>}
                 </div>
               </div>
             </>}
@@ -201,8 +194,8 @@ export const Account = () => {
                 },
               ]}
             >
-             <Input variant="borderless" placeholder='Будьласка введіть пошту' />
-           </Form.Item>
+              <Input variant="borderless" placeholder='Будьласка введіть пошту' />
+            </Form.Item>
           </div>
           <hr />
 

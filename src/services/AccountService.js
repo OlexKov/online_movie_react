@@ -9,7 +9,8 @@ export const accountService = {
 
     login: (email, password) => TryError(() => axios.post(accountsAPIUrl + '/login', { email, password },postBodyConfig)),
     logout: (token)=>TryError(() => axios.post(accountsAPIUrl + '/logout', {token},postBodyConfig)),
-    register:(user)=>TryError(() => axios.post(accountsAPIUrl + '/register', user,postBodyConfig)),
+    userRegister:(user)=>TryError(() => axios.post(accountsAPIUrl + '/user/register', user,postBodyConfig)),
+    adminRegister:(user)=>TryError(() => axios.post(accountsAPIUrl + '/admin/register', user,postBodyConfig)),
     refresh:(accessToken, refreshToken) => TryError(() => axios.post(accountsAPIUrl + '/refreshtokens', { accessToken, refreshToken },postBodyConfig)),
     fogot:(email, resetPasswordPage) => TryError(() => axios.post(accountsAPIUrl + '/fogot', { email,resetPasswordPage },postBodyConfig)),
     reset:(userEmail, token,password) => TryError(() => axios.post(accountsAPIUrl + '/resetpassword', { userEmail, token,password },postBodyConfig)),

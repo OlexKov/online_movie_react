@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { dataService } from '../../services/DataService'
 import { PremiumCard } from '../PremiumCard/PremiumCard'
 import { Button, Divider, Spin, message } from 'antd'
@@ -8,6 +8,8 @@ import { accountService } from '../../services/AccountService'
 import axios from 'axios'
 import { CreditCardInfo } from '../CreditCardInfo/CreditCard'
 import { useNavigate } from 'react-router-dom'
+import { storageService } from '../../services/StorageService'
+import { setUserData } from '../store/userDataSlice'
 
 
 
@@ -19,6 +21,7 @@ export const BuyPremium = () => {
   const [selectedPremium, setSelectedPremium] = useState(null);
   const [title, setTitle] = useState('Оберіть підписку');
   const [loading, setLoading] = useState(false)
+  const dispatcher = useDispatch()
   useEffect(() => {
     (async () => {
 
@@ -43,33 +46,34 @@ export const BuyPremium = () => {
       setSelectedPremium(prem)
     }
   }
-
-  const onFinish = async(formValue) => {
+  
+  const onFinish = async (formValue) => {
     setLoading(true);
-   
-     const result = await accountService.setUserPremium(user.email,selectedPremium.id,30);
-     if(result.status===200){
+    const result = await accountService.setUserPremium(user.email, selectedPremium.id, 30);
+    if (result.status === 200) {
+      storageService.saveTokens(result.data, storageService.getRefreshToken());
+      dispatcher(setUserData({ token: result.data }))
       await new Promise(r => setTimeout(r, 2000));
-      message.success(`Ваша підписка змінена з "${userPremium.name.toUpperCase()}" на "${selectedPremium.name.toUpperCase()}"`,3);
+      message.success(`Ваша підписка змінена з "${userPremium?.name.toUpperCase()}" на "${selectedPremium?.name.toUpperCase()}"`, 3);
       navigator('/')
-     }
-     setLoading(false);
+    }
+    setLoading(false);
   }
 
   return (
     <>
-      <Spin spinning={loading} delay={500} fullscreen size='large'/>
+      <Spin spinning={loading} delay={500} fullscreen size='large' />
       <Button shape="circle" onClick={() => { !selectedPremium ? window.history.back() : setSelectedPremium(null) }} type="primary" icon={<ArrowLeftOutlined className='fs-4' />} />
       <div className='w-75 mx-auto'>
         <Divider className='fs-3  mb-5' orientation="left">{title}</Divider>
         {!selectedPremium
           ? <div className='d-flex justify-content-center flex-wrap gap-5'>
-            {premiums.map(x => <PremiumCard current={x.id === userPremium.id} onSelect={onPremiumSelect} {...x} />)}
+            {premiums.map(x => <PremiumCard current={x.id === userPremium?.id} onSelect={onPremiumSelect} {...x} />)}
           </div>
           : <div className='d-flex flex-column gap-5 align-items-center'>
             <div className='d-flex flex-column gap-3 text-center border rounded-4 p-3'>
               <h4>Підписка "{selectedPremium.name}" дає змогу переглядати фільми рівня "{selectedPremium.name}"</h4>
-              {userPremium.id !==1 &&
+              {userPremium.id !== 1 &&
                 <div className='border rounded-3 bg-danger p-3'>
                   <h4>Увавага !!! </h4>
                   <h5>При переході на підписку "{selectedPremium.name}" ваша поточна підписка "{userPremium.name}" буде онульована ! ! !"</h5>
