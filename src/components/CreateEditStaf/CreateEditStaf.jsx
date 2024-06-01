@@ -127,7 +127,6 @@ export const CreateEditStaf = () => {
       reader.onerror = (error) => reject(error);
     });
 
-
   return (
     <>
       <Button shape="circle" onClick={() => window.history.back()} type="primary" icon={<ArrowLeftOutlined className='fs-4' />} />

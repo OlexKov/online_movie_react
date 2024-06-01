@@ -283,10 +283,6 @@ export const Movie = () => {
                 if (stafs.length === 0) {
                     const result = await movieService.getMovieStafs(id);
                     if (result.status === 200) {
-                        //   const tempStafs = await stafService.setMovieRoles(result.data, id);
-                        // tempStafs.forEach(x => {
-                        //    x.movieRoles = x.movieRoles.map(z => z.name);
-                        ///  })
                         setStafs(result.data)
                     }
                 }
