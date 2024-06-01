@@ -80,7 +80,7 @@ export const MovieTable = () => {
   const [movies, setMovies] = useState([]);
   const [total, setTotal] = useState(0);
   const [tableParams, setTableParams] = useState(paginatorConfig);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   useEffect(() => {
     (async () => { await setData(paginatorConfig.pagination.defaultPageSize,paginatorConfig.pagination.defaultCurrent) })();
@@ -116,12 +116,12 @@ export const MovieTable = () => {
 
   const setData = async (pageSize,pageIndex) => {
     setLoading(true)
-    const result = (await movieService.getMoviesWithPagination(pageSize,pageIndex)).data;
-    setLoading(false)
-    if (result?.elements){
-      setMovies(await movieService.setRating(result.elements));
-      setTotal(result.totalCount)
+    const result = await movieService.getMoviesWithPagination(pageSize,pageIndex);
+    if (result.status === 200){
+      setMovies(await movieService.setRating(result.data.elements));
+      setTotal(result.data.totalCount)
     }
+    setLoading(false)
   }
 
   return (

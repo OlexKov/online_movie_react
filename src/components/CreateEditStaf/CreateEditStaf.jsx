@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
-import { Button, Col, DatePicker, Divider, Form, Input, Row, Select, Space, Image, Upload, Checkbox, message } from 'antd';
+import { Button, Col, DatePicker, Divider, Form, Input, Row, Select, Space, Image, Upload, Checkbox, message, Skeleton } from 'antd';
 import { useParams } from 'react-router-dom';
 import { ArrowLeftOutlined, UploadOutlined } from '@ant-design/icons';
 import { dataService } from '../../services/DataService';
@@ -22,6 +22,7 @@ export const CreateEditStaf = () => {
   const [staf, setStaf] = useState([]);
   const [previewImage, setPreviewImage] = useState('');
   const [file, setFile] = useState()
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     if (file) {
@@ -42,6 +43,7 @@ export const CreateEditStaf = () => {
 
   useEffect(() => {
     (async () => {
+      setLoading(true)
       await axios.all(
         [
           dataService.getCountries(),
@@ -67,6 +69,7 @@ export const CreateEditStaf = () => {
           setFormValues(stf, form)
         }
       }
+      setLoading(false)
     })()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -144,19 +147,21 @@ export const CreateEditStaf = () => {
         <Form layout='vertical' form={form} name="control-hooks" onFinish={onFinish}
           className='mx-auto d-flex flex-column gap-2'>
           <div className="d-flex gap-5">
-            <Form.Item  name="imageFile"
+            <Form.Item name="imageFile"
               label="Фото"
             >
               <div style={{ width: 290 }}>
-                <Image
-                  style={{ objectFit: 'cover' }}
-                  width={290}
-                  height={430}
-                  fallback={staf.imageName || defImage}
-                  src={previewImage}
-                  preview={false}
-                  className=' rounded-3'
-                />
+                {loading ?
+                  <Skeleton.Image style={{ width: 290, height: 430 }} active={loading} />
+                  : <Image
+                    style={{ objectFit: 'cover' }}
+                    width={290}
+                    height={430}
+                    fallback={staf.imageName || defImage}
+                    src={previewImage}
+                    preview={false}
+                    className=' rounded-3'
+                  />}
                 <Upload
                   listType="text"
                   onChange={handleChange}
@@ -173,7 +178,7 @@ export const CreateEditStaf = () => {
               <Row gutter={15}>
                 <Col span={12}>
                   <Form.Item name="name" label="Ім'я"
-                  hasFeedback
+                    hasFeedback
                     rules={[
                       {
                         pattern: '^[A-Z А-Я].*',
@@ -185,12 +190,14 @@ export const CreateEditStaf = () => {
                       },
                     ]}
                   >
-                    <Input showCount minLength={3} maxLength={100} />
+                    {loading ?
+                      <Skeleton.Input active={loading} block />
+                      : <Input showCount minLength={3} maxLength={100} />}
                   </Form.Item>
                 </Col>
                 <Col span={12}>
                   <Form.Item name="surname" label="Прізвище"
-                  hasFeedback
+                    hasFeedback
                     rules={[
                       {
                         pattern: '^[A-Z А-Я].*',
@@ -202,14 +209,16 @@ export const CreateEditStaf = () => {
                       },
                     ]}
                   >
-                    <Input showCount minLength={3} maxLength={100} />
+                    {loading ?
+                      <Skeleton.Input active={loading} block />
+                      : <Input showCount minLength={3} maxLength={100} />}
                   </Form.Item>
                 </Col>
               </Row>
               <Row gutter={15}>
                 <Col span={12}>
                   <Form.Item
-                  hasFeedback
+                    hasFeedback
                     name="birthdate"
                     label="Дата народження"
                     rules={[
@@ -219,13 +228,15 @@ export const CreateEditStaf = () => {
                       },
                     ]}
                   >
-                    <DatePicker className='w-100' disabledDate={d => !d || d.isAfter(new Date(Date.now()))} />
+                    {loading ?
+                      <Skeleton.Input active={loading} block />
+                      : <DatePicker className='w-100' disabledDate={d => !d || d.isAfter(new Date(Date.now()))} />}
                   </Form.Item>
                 </Col>
 
                 <Col span={12}>
                   <Form.Item
-                  hasFeedback
+                    hasFeedback
                     name="countryId"
                     label="Країна"
                     rules={[
@@ -235,11 +246,13 @@ export const CreateEditStaf = () => {
                       },
                     ]}
                   >
-                    <Select
-                      placeholder="Оберіть країну де народився актор"
-                      allowClear
-                      options={countries}
-                    />
+                    {loading ?
+                      <Skeleton.Input active={loading} block />
+                      : <Select
+                        placeholder="Оберіть країну де народився актор"
+                        allowClear
+                        options={countries}
+                      />}
                   </Form.Item>
                 </Col>
 
@@ -247,7 +260,7 @@ export const CreateEditStaf = () => {
               <Row gutter={15}>
                 <Col span={24}>
                   <Form.Item
-                  hasFeedback
+                    hasFeedback
                     name="roles"
                     label="Ролі"
                     rules={[
@@ -257,20 +270,22 @@ export const CreateEditStaf = () => {
                       },
                     ]}
                   >
-                    <Select
-                      placeholder="Оберіть які ролі викопував актор"
-                      allowClear
-                      mode="multiple"
-                      maxTagCount={'responsive'}
-                      options={roles}
-                      filterOption={selectFilterOption}
-                    />
+                    {loading ?
+                      <Skeleton.Input active={loading} block />
+                      : <Select
+                        placeholder="Оберіть які ролі викопував актор"
+                        allowClear
+                        mode="multiple"
+                        maxTagCount={'responsive'}
+                        options={roles}
+                        filterOption={selectFilterOption}
+                      />}
                   </Form.Item>
                 </Col>
               </Row>
               <Col span={24}>
                 <Form.Item
-                hasFeedback
+                  hasFeedback
                   name="description"
                   label="Інформація"
                   rules={[
@@ -284,18 +299,22 @@ export const CreateEditStaf = () => {
                     },
                   ]}
                 >
-                  <Input.TextArea
-                    placeholder="Коротка інформація про актора"
-                    rows={7}
-                    showCount
-                    maxLength={3000}
-                  />
+                  {loading ?
+                    <Skeleton.Node style={{height:150}} className='w-100' active={loading} />
+                    : <Input.TextArea
+                      placeholder="Коротка інформація про актора"
+                      rows={7}
+                      showCount
+                      maxLength={3000}
+                    />}
                 </Form.Item>
               </Col>
               <Row>
                 <Col span={24}>
                   <Form.Item name='isoscar' hasFeedback valuePropName="checked">
-                    <Checkbox >Актор отримав оскар</Checkbox>
+                    {loading ?
+                      <Skeleton.Input size='small' active={loading} />
+                      : <Checkbox >Актор отримав оскар</Checkbox>}
                   </Form.Item>
                 </Col>
               </Row>

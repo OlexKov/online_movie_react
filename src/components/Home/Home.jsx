@@ -4,7 +4,7 @@ import { MovieCard } from '../MovieCard/MovieCard';
 import './Home.css'
 import { Button, Collapse, Empty, Form, Input, Pagination, Select, Space, Spin, Switch } from 'antd';
 import { paginatorConfig, selectFilterOption } from '../../helpers/constants';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { dataService } from '../../services/DataService';
 import { stafService } from '../../services/StafService';
@@ -36,7 +36,7 @@ class FilterModel {
 export const Home = () => {
   const user = useSelector(state => state.user.data);
   const [movies, setMovies] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [moviesCount, setMoviesCount] = useState(0);
   const [genres, setGenres] = useState([]);
   const [countries, setCountries] = useState([]);
@@ -51,7 +51,7 @@ export const Home = () => {
 
 
   useEffect(() => {
-
+    setLoading(true)
     findForm.resetFields()
     filter.clear();
     if (freeMovie) {
@@ -92,11 +92,11 @@ export const Home = () => {
   const setData = async (pageSize, pageIndex) => {
     setLoading(true);
     const result = await movieService.getFilteredMoviesWithPagination(filter, pageSize, pageIndex);
-    setLoading(false)
     if (result.status === 200) {
       setMovies(await movieService.setRating(result.data.elements));
       setMoviesCount(result.data.totalCount)
     }
+    setLoading(false)
   }
 
   const find = async (result) => {
@@ -353,7 +353,7 @@ export const Home = () => {
               locale={paginatorConfig.pagination.locale}
             />
           </>
-          : <Empty description='Фільми відсутні' />}
+          :  <Empty description='Фільми відсутні' />}
       </div>
     </>
 

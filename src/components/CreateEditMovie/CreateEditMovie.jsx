@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Col, DatePicker, Divider, Form, Input, Row, Select, Space, Image, Upload, TimePicker, message, Transfer, Table, Popover } from 'antd';
+import { Button, Col, DatePicker, Divider, Form, Input, Row, Select, Space, Image, Upload, TimePicker, message, Transfer, Table, Popover, Skeleton } from 'antd';
 import { useParams } from 'react-router-dom';
 import { ArrowLeftOutlined, DeleteFilled, PlusOutlined, UploadOutlined } from '@ant-design/icons';
 import { dataService } from '../../services/DataService';
@@ -31,6 +31,7 @@ export const CreateEditMovie = () => {
     const [posterFile, setPosterFile] = useState()
     const [screensFiles, setScreensFiles] = useState()
     const themeToken = useToken()[1]
+    const [loading, setLoading] = useState(true)
 
 
     useEffect(() => {
@@ -53,6 +54,7 @@ export const CreateEditMovie = () => {
 
     useEffect(() => {
         (async () => {
+            setLoading(true)
             await axios.all(
                 [
                     dataService.getCountries(),
@@ -93,6 +95,7 @@ export const CreateEditMovie = () => {
                     setFormValues(movie, form)
                 }
             }
+            setLoading(false)
         })()
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -130,12 +133,12 @@ export const CreateEditMovie = () => {
             .set('hour', newmovie.duration.get('hour'))
             .set('minute', newmovie.duration.get('minute'))
             .format(dateTimeFormat)
-        console.log(durationDate)    
+        console.log(durationDate)
         formData.append('dateDuration', durationDate)
-        movieStafs.map(x=>({stafId:x.stafId,movieRoles:x.movieRoles.length?[...x.movieRoles] : [x.movieRoles]}))
-                  .forEach(x => formData.append('stafs', JSON.stringify(x)))
+        movieStafs.map(x => ({ stafId: x.stafId, movieRoles: x.movieRoles.length ? [...x.movieRoles] : [x.movieRoles] }))
+            .forEach(x => formData.append('stafs', JSON.stringify(x)))
         Object.keys(newmovie).forEach(function (key) {
-            if (key !== 'date' && key !== 'duration' && key!=='stafs') {
+            if (key !== 'date' && key !== 'duration' && key !== 'stafs') {
                 if (key === 'genres')
                     newmovie[key].forEach(x => formData.append(key, x))
                 else if (key === 'screens') {
@@ -148,10 +151,10 @@ export const CreateEditMovie = () => {
                     })
                 }
                 else
-                   formData.append(key, newmovie[key]);
+                    formData.append(key, newmovie[key]);
             }
         });
-       
+
         if (newmovie.id === 0) {
             await movieService.createMovie(formData)
                 .then(response => {
@@ -256,8 +259,8 @@ export const CreateEditMovie = () => {
             dataIndex: 'imageName',
             key: 'imageName',
             render: (text) => <Popover placement="right" content={<img style={{ width: 120 }} src={text} alt='Staf' />}><img style={{ width: 30 }} src={text} alt='Staf' /></Popover>,
-            filters:roles.map(x=>({text:x.name,value:x.id})),
-            onFilter: (value, record) => record.roles.some(x=>x.id===value),
+            filters: roles.map(x => ({ text: x.name, value: x.id })),
+            onFilter: (value, record) => record.roles.some(x => x.id === value),
         },
         {
             title: "Ім'я",
@@ -279,9 +282,9 @@ export const CreateEditMovie = () => {
             dataIndex: 'imageName',
             render: (text) => <Popover placement="right" content={<img style={{ width: 120 }} src={text} alt='Staf' />}><img style={{ width: 30 }} src={text} alt='Staf' /></Popover>,
             width: '15%',
-            filters:roles.map(x=>({text:x.name,value:x.id})),
-            onFilter: (value, record) => record.roles.some(x=>x.id===value),
-            align:'center'
+            filters: roles.map(x => ({ text: x.name, value: x.id })),
+            onFilter: (value, record) => record.roles.some(x => x.id === value),
+            align: 'center'
         },
         {
             title: "Ім'я",
@@ -301,7 +304,7 @@ export const CreateEditMovie = () => {
                 defaultValue={movieStafs.find(x => x.stafId === record.id)?.movieRoles || stafs.find(x => x.id === record.id).roles[0].id}
                 options={data?.map(item => new ComboBoxData(item.id, item.name))}
                 onChange={(e) => onSelectedChange(e, record.id)}
-                
+
             />
         },
         {
@@ -312,13 +315,13 @@ export const CreateEditMovie = () => {
     ];
     const [targetKeys, setTargetKeys] = useState([]);
     const onChange = (nextTargetKeys) => {
-        const stafsId = nextTargetKeys.filter(x=>!movieStafs.map(z=>z.stafId).includes(x))
-        if(stafsId){
-            const newStafs = stafsId.map((id)=>{
+        const stafsId = nextTargetKeys.filter(x => !movieStafs.map(z => z.stafId).includes(x))
+        if (stafsId) {
+            const newStafs = stafsId.map((id) => {
                 const defaultRoleId = stafs.find(x => x.id === id)?.roles[0].id;
-                return {stafId:id,movieRoles:defaultRoleId}
+                return { stafId: id, movieRoles: defaultRoleId }
             })
-            setMovieStafs(movieStafs=>[...movieStafs,...newStafs])
+            setMovieStafs(movieStafs => [...movieStafs, ...newStafs])
         }
         setTargetKeys(nextTargetKeys);
     };
@@ -329,10 +332,10 @@ export const CreateEditMovie = () => {
     }
 
     const onSelectedChange = (e, stafId) => {
-       const stafIndex = movieStafs.indexOf(movieStafs.find(x=>x.stafId === stafId))
-       const tempMovieStafs = [...movieStafs];
-       tempMovieStafs[stafIndex].movieRoles = e.length > 0 ? e : stafs.find(x => x.id === stafId).roles[0].id;
-       setMovieStafs(tempMovieStafs)
+        const stafIndex = movieStafs.indexOf(movieStafs.find(x => x.stafId === stafId))
+        const tempMovieStafs = [...movieStafs];
+        tempMovieStafs[stafIndex].movieRoles = e.length > 0 ? e : stafs.find(x => x.id === stafId).roles[0].id;
+        setMovieStafs(tempMovieStafs)
     }
 
     const pagination = {
@@ -351,15 +354,17 @@ export const CreateEditMovie = () => {
                     <div className="d-flex gap-5">
                         <Form.Item name="posterFile" label="Постер" >
                             <div style={{ width: 290 }}>
-                                <Image
-                                    style={{ objectFit: 'cover' }}
-                                    width={290}
-                                    height={430}
-                                    fallback={movie.poster || defImage}
-                                    src={previewPoster}
-                                    preview={false}
-                                    className=' rounded-3'
-                                />
+                                {loading ?
+                                    <Skeleton.Image style={{ width: 290, height: 430 }} active={loading} />
+                                    : <Image
+                                        style={{ objectFit: 'cover' }}
+                                        width={290}
+                                        height={430}
+                                        fallback={movie.poster || defImage}
+                                        src={previewPoster}
+                                        preview={false}
+                                        className=' rounded-3'
+                                    />}
                                 <Upload
                                     listType="text"
                                     onChange={handleChange}
@@ -388,7 +393,9 @@ export const CreateEditMovie = () => {
                                             },
                                         ]}
                                     >
-                                        <Input showCount minLength={3} maxLength={100} />
+                                        {loading ?
+                                            <Skeleton.Input active={loading} block />
+                                            : <Input showCount minLength={3} maxLength={100} />}
                                     </Form.Item>
                                 </Col>
                                 <Col span={12}>
@@ -405,7 +412,9 @@ export const CreateEditMovie = () => {
                                             },
                                         ]}
                                     >
-                                        <Input showCount minLength={3} maxLength={100} />
+                                        {loading ?
+                                            <Skeleton.Input active={loading} block />
+                                            : <Input showCount minLength={3} maxLength={100} />}
                                     </Form.Item>
                                 </Col>
                             </Row>
@@ -422,7 +431,9 @@ export const CreateEditMovie = () => {
                                             },
                                         ]}
                                     >
-                                        <DatePicker className='w-100' disabledDate={d => !d || d.isAfter(new Date(Date.now()))} />
+                                        {loading ?
+                                            <Skeleton.Input active={loading} block />
+                                            : <DatePicker className='w-100' disabledDate={d => !d || d.isAfter(new Date(Date.now()))} />}
                                     </Form.Item>
                                 </Col>
 
@@ -438,11 +449,13 @@ export const CreateEditMovie = () => {
                                             },
                                         ]}
                                     >
-                                        <Select
-                                            placeholder="Оберіть країну"
-                                            allowClear
-                                            options={countries}
-                                        />
+                                        {loading ?
+                                            <Skeleton.Input active={loading} block />
+                                            : <Select
+                                                placeholder="Оберіть країну"
+                                                allowClear
+                                                options={countries}
+                                            />}
                                     </Form.Item>
                                 </Col>
 
@@ -462,7 +475,9 @@ export const CreateEditMovie = () => {
                                             },
                                         ]}
                                     >
-                                        <TimePicker className='w-100' />
+                                        {loading ?
+                                            <Skeleton.Input active={loading} block />
+                                            : <TimePicker className='w-100' />}
                                     </Form.Item>
                                 </Col>
 
@@ -478,11 +493,13 @@ export const CreateEditMovie = () => {
                                             },
                                         ]}
                                     >
-                                        <Select
-                                            placeholder="Оберіть якість відео"
-                                            allowClear
-                                            options={qualities}
-                                        />
+                                        {loading ?
+                                            <Skeleton.Input active={loading} block />
+                                            : <Select
+                                                placeholder="Оберіть якість відео"
+                                                allowClear
+                                                options={qualities}
+                                            />}
                                     </Form.Item>
                                 </Col>
                                 <Col span={8}>
@@ -497,11 +514,13 @@ export const CreateEditMovie = () => {
                                             },
                                         ]}
                                     >
-                                        <Select
-                                            placeholder="Оберіть преміум аккаунт"
-                                            allowClear
-                                            options={premiums}
-                                        />
+                                        {loading ?
+                                            <Skeleton.Input active={loading} block />
+                                            : <Select
+                                                placeholder="Оберіть преміум аккаунт"
+                                                allowClear
+                                                options={premiums}
+                                            />}
                                     </Form.Item>
                                 </Col>
 
@@ -521,14 +540,16 @@ export const CreateEditMovie = () => {
                                             },
                                         ]}
                                     >
-                                        <Select
-                                            placeholder="Оберіть жанри фільму"
-                                            allowClear
-                                            mode="multiple"
-                                            maxTagCount={'responsive'}
-                                            options={genres}
-                                            filterOption={selectFilterOption}
-                                        />
+                                        {loading ?
+                                            <Skeleton.Input active={loading} block />
+                                            : <Select
+                                                placeholder="Оберіть жанри фільму"
+                                                allowClear
+                                                mode="multiple"
+                                                maxTagCount={'responsive'}
+                                                options={genres}
+                                                filterOption={selectFilterOption}
+                                            />}
                                     </Form.Item>
                                 </Col>
                             </Row>
@@ -547,7 +568,9 @@ export const CreateEditMovie = () => {
                                             },
                                         ]}
                                     >
-                                        <Input />
+                                        {loading ?
+                                            <Skeleton.Input active={loading} block />
+                                            : <Input />}
                                     </Form.Item>
                                 </Col>
                             </Row>
@@ -566,7 +589,9 @@ export const CreateEditMovie = () => {
                                             },
                                         ]}
                                     >
-                                        <Input />
+                                        {loading ?
+                                            <Skeleton.Input active={loading} block />
+                                            : <Input />}
                                     </Form.Item>
                                 </Col>
                             </Row>
@@ -589,32 +614,34 @@ export const CreateEditMovie = () => {
                                     })
                                 ]}
                             >
-                                <TableTransfer
-                                    dataSource={stafs}
-                                    targetKeys={targetKeys}
-                                    showSearch
-                                    onChange={onChange}
-                                    oneWay
-                                    rowKey={(record) => record.id}
-                                    filterOption={(inputValue, item) =>
-                                        item.name.indexOf(inputValue) !== -1 || item.surname.indexOf(inputValue) !== -1
-                                    }
-                                    leftColumns={leftColumns}
-                                    rightColumns={rightColumns}
-                                    selectAllLabels={[
-                                        ({ selectedCount, totalCount }) => (
-                                          <div className='d-flex gap-3'>
-                                           <span> {selectedCount} із {totalCount}</span>
-                                            <span>Всі</span>
-                                          </div>
-                                        ), ({ selectedCount, totalCount }) => (
-                                            <div className='d-flex gap-3'>
-                                            <span>{totalCount}</span>
-                                             <span>Приймали участь у фільмі</span>
-                                           </div>
-                                        )
-                                      ]}
-                                />
+                                {loading ?
+                                     <Skeleton.Node style={{height:350}} className='w-100' active={loading} />
+                                     : <TableTransfer
+                                        dataSource={stafs}
+                                        targetKeys={targetKeys}
+                                        showSearch
+                                        onChange={onChange}
+                                        oneWay
+                                        rowKey={(record) => record.id}
+                                        filterOption={(inputValue, item) =>
+                                            item.name.indexOf(inputValue) !== -1 || item.surname.indexOf(inputValue) !== -1
+                                        }
+                                        leftColumns={leftColumns}
+                                        rightColumns={rightColumns}
+                                        selectAllLabels={[
+                                            ({ selectedCount, totalCount }) => (
+                                                <div className='d-flex gap-3'>
+                                                    <span> {selectedCount} із {totalCount}</span>
+                                                    <span>Всі</span>
+                                                </div>
+                                            ), ({ selectedCount, totalCount }) => (
+                                                <div className='d-flex gap-3'>
+                                                    <span>{totalCount}</span>
+                                                    <span>Приймали участь у фільмі</span>
+                                                </div>
+                                            )
+                                        ]}
+                                    />}
                             </Form.Item>
                         </Col>
                     </Row>
@@ -635,12 +662,14 @@ export const CreateEditMovie = () => {
                                     },
                                 ]}
                             >
-                                <Input.TextArea
-                                    placeholder="Коротка інформація про фільм"
-                                    rows={7}
-                                    showCount
-                                    maxLength={3000}
-                                />
+                                {loading ?
+                                     <Skeleton.Node style={{height:150}} className='w-100' active={loading} />
+                                     : <Input.TextArea
+                                        placeholder="Коротка інформація про фільм"
+                                        rows={7}
+                                        showCount
+                                        maxLength={3000}
+                                    />}
                             </Form.Item>
                         </Col>
                     </Row>
@@ -663,16 +692,18 @@ export const CreateEditMovie = () => {
                                     })
                                 ]}
                             >
-                                <Upload
-                                    listType="picture-card"
-                                    fileList={screensFiles}
-                                    maxCount={15}
-                                    onChange={handleChangeScreens}
-                                    multiple={true}
-                                    beforeUpload={() => false}
-                                >
-                                    {screensFiles?.length >= 15 ? null : uploadButton}
-                                </Upload>
+                                {loading ?
+                                    <Skeleton.Image active={loading} />
+                                    : <Upload
+                                        listType="picture-card"
+                                        fileList={screensFiles}
+                                        maxCount={15}
+                                        onChange={handleChangeScreens}
+                                        multiple={true}
+                                        beforeUpload={() => false}
+                                    >
+                                        {screensFiles?.length >= 15 ? null : uploadButton}
+                                    </Upload>}
                             </Form.Item>
                         </Col>
                     </Row>

@@ -75,7 +75,7 @@ export const StafTable = () => {
         }
     ];
     const [stafs, setStafs] = useState([]);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [total, setTotal] = useState(0);
    
     const [tableParams, setTableParams] = useState(paginatorConfig);
@@ -113,12 +113,12 @@ export const StafTable = () => {
 
     const setData = async (pageSize, pageIndex) => {
         setLoading(true)
-        const result = (await stafService.getStafsWithPagination(pageSize, pageIndex)).data;
-        setLoading(false)
-        if (result?.elements){
-            setStafs(result.elements);
-            setTotal(result.totalCount)
+        const result = await stafService.getStafsWithPagination(pageSize, pageIndex);
+        if (result.status === 200){
+            setStafs(result.data.elements);
+            setTotal(result.data.totalCount)
         }
+        setLoading(false)
     }
 
     const handleTableChange = async (pagination) => {
