@@ -353,7 +353,7 @@ export const Home = () => {
               locale={paginatorConfig.pagination.locale}
             />
           </>
-          :  <Empty description='Фільми відсутні' />}
+          : !loading &&   <Empty description='Фільми відсутні' />}
       </div>
     </>
 
