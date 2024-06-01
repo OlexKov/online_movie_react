@@ -3,9 +3,8 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { movieService } from '../../services/MovieService'
 import ReactPlayer from 'react-player'
 import '../Movie/Movie.css'
-import { Button, ConfigProvider, Divider, Form, Rate, Result, Space, Tabs, Tag, message } from 'antd'
+import { Button, ConfigProvider, Divider, Form, Rate, Result, Skeleton, Space, Tabs, Tag, message } from 'antd'
 import { CaretRightFilled, CommentOutlined, DollarOutlined, HeartFilled, HeartOutlined, MutedFilled, PicLeftOutlined, PictureOutlined, SettingOutlined, SoundFilled, TeamOutlined, YoutubeFilled } from '@ant-design/icons'
-import { stafService } from '../../services/StafService'
 import useToken from 'antd/es/theme/useToken'
 import { Carousel } from 'antd';
 import { useSelector } from 'react-redux'
@@ -32,6 +31,7 @@ export const Movie = () => {
     const [userPremiumRate, setUserPremiumRate] = useState(0);
     const [isFauvorite, setIsFauvorite] = useState(false);
     const [roles, setRoles] = useState([]);
+    const [loading,setLoading] = useState(false)
 
 
     const user = useSelector(state => state.user.data);
@@ -90,7 +90,9 @@ export const Movie = () => {
                             {
                                 stafs.filter(x => x.movieRoles.includes(roleId)).map(staf =>
                                     <div className='staf-info-container'>
-                                        <img className='staf-image' src={staf.imageName} alt='imageName' />
+                                        {loading 
+                                         ?<Skeleton.Avatar active={loading} block style={{height:60,width:60}}/>
+                                         :<img className='staf-image' src={staf.imageName} alt='imageName' />}
                                         <div className='staf-link'>
                                             {(user && (user?.isAdmin || userPremiumRate > 0)) ? <Link style={{ textDecoration: 'none' }} to={`/staf/${staf.id}`} >{staf.name} {staf.surname}</Link>
                                                 : <span>{staf.name} {staf.surname}</span>}
@@ -210,10 +212,10 @@ export const Movie = () => {
             roles.push(...staf.movieRoles)
         })
         setUniqeStafRoles([...new Set(roles)].sort())
+        setLoading(false)
     }, [stafs]);
 
     useEffect(() => {
-
         (async () => {
             await axios.all([
                 movieService.getMovie(id),
@@ -226,8 +228,6 @@ export const Movie = () => {
                 setPlayUrl(res[0].data.trailerUrl)
                 setRoles(res[2].data)
                 setGenres(res[3].data)
-
-
             }));
             if (user && !user.isAdmin) {
                 await axios.all([
@@ -284,6 +284,7 @@ export const Movie = () => {
         switch (value) {
             case 'stafs':
                 if (stafs.length === 0) {
+                    setLoading(true)
                     const result = await movieService.getMovieStafs(id);
                     if (result.status === 200) {
                         setStafs(result.data)

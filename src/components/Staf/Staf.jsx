@@ -1,5 +1,5 @@
 import { ArrowLeftOutlined, SettingOutlined } from '@ant-design/icons';
-import { Button, Divider } from 'antd';
+import { Button, Divider, Spin } from 'antd';
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
 import { stafService } from '../../services/StafService';
@@ -14,6 +14,7 @@ export const Staf = () => {
     const { stafId } = useParams();
     const [staf, setStaf] = useState(null);
     const [movies, setMovies] = useState(null);
+    const [loading,setLoading] = useState(true)
     const theme = useToken()[1];
     const user = useSelector(state=>state.user.data);
     const navigate  = useNavigate()
@@ -30,8 +31,8 @@ export const Staf = () => {
                     setStaf(res[0].data);
                     setMovies(res[2].data)
                 }));
+                setLoading(false)     
         })()
-
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
@@ -41,7 +42,8 @@ export const Staf = () => {
             <Button shape="circle" onClick={() => window.history.back()} type="primary" icon={<ArrowLeftOutlined className='fs-4' />} />
             <div className='w-75 mx-auto'>
                 <Divider className='about-staf-divider fs-3' orientation="left">{staf?.name} {staf?.surname}</Divider>
-                <div className='main-container' >
+                <Spin spinning={loading} delay={400} size='large' fullscreen />
+                {!loading &&  <div className='main-container' >
                     <div className='about-staf' style={{ background: theme.colorBgContainerDisabled }}>
                         <div className='d-flex flex-column gap-3'>
                             <div className='staf-info'>
@@ -62,7 +64,7 @@ export const Staf = () => {
                         {staf?.isOscar && <img src={oscar} alt='' />}
                     </div>
                     <div className='staf-image-container text-center' style={{ backgroundImage: `url(${staf?.imageName})` }} />
-                </div>
+                </div>}
                 <Divider className='about-staf-divider fs-3' orientation="left">Фільмографія</Divider>
                 {movies?.length > 0 &&
                     <div style={{ background: theme.colorBgContainerDisabled }} className='staf-movie-container'>
