@@ -12,6 +12,8 @@ import { useSelector } from 'react-redux'
 import TextArea from 'antd/es/input/TextArea'
 import { FeedbackTable } from '../FeedbackTable/FeedbackTable'
 import { accountService } from '../../services/AccountService'
+import { dataService } from '../../services/DataService'
+import axios from 'axios'
 
 
 export const Movie = () => {
@@ -25,10 +27,11 @@ export const Movie = () => {
     const [screens, setScreens] = useState([])
     const [stafs, setStafs] = useState([])
     const [genres, setGenres] = useState([])
-    const [stafRoles, setStafRoles] = useState([])
+    const [uniqeStafRoles, setUniqeStafRoles] = useState([])
     const [hasFeedback, setHasFeedback] = useState(true);
     const [userPremiumRate, setUserPremiumRate] = useState(0);
     const [isFauvorite, setIsFauvorite] = useState(false);
+    const [roles, setRoles] = useState([]);
 
 
     const user = useSelector(state => state.user.data);
@@ -80,12 +83,12 @@ export const Movie = () => {
     const movieStafs = (
         <div className='d-flex flex-column gap-4'>
             {
-                stafRoles.map(role =>
+                uniqeStafRoles.map(roleId =>
                     <>
-                        <Divider style={{ color: themeToken.colorTextDescription, fontSize: 13 }} orientation="left" >{role.toUpperCase()}И</Divider>
+                        <Divider style={{ color: themeToken.colorTextDescription, fontSize: 13 }} orientation="left" >{roles.find(x => x.id === roleId).name.toUpperCase()}И</Divider>
                         <div className='d-flex  flex-wrap  gap-5'>
                             {
-                                stafs.filter(x => x.movieRoles.includes(role)).map(staf =>
+                                stafs.filter(x => x.movieRoles.includes(roleId)).map(staf =>
                                     <div className='staf-info-container'>
                                         <img className='staf-image' src={staf.imageName} alt='imageName' />
                                         <div className='staf-link'>
@@ -206,30 +209,32 @@ export const Movie = () => {
         stafs.forEach(staf => {
             roles.push(...staf.movieRoles)
         })
-        setStafRoles([...new Set(roles)].sort())
+        setUniqeStafRoles([...new Set(roles)].sort())
     }, [stafs]);
+
+    const requests = [
+        movieService.getMovie(id),
+        movieService.getRating(id),
+        dataService.getRoles(),
+        movieService.getMovieGenres(id),
+        accountService.getPremium(user?.email),
+        accountService.isMovieFavourite(id, user?.id)
+    ]
 
     useEffect(() => {
         (async () => {
-            let result = await movieService.getMovie(id)
-            if (result.data) {
-                result.data.rating = (await movieService.getRating(result.data.id)).data
-                setMovie(result.data)
-                setPlayUrl(result.data.trailerUrl)
-            }
-            result = await movieService.getMovieGenres(id)
-            if (result.status === 200)
-                setGenres(result.data)
-            if (user && !user.isAdmin) {
-                result = await accountService.getPremium(user.email);
-                if (result.status === 200) {
-                    setUserPremiumRate(result.data.rate)
-                }
-                result = await accountService.isMovieFavourite(id, user?.id);
-                if (result.status === 200)
-                    setIsFauvorite(result.data)
-            }
-
+            await axios.all((user && !user.isAdmin)?requests : requests.slice(0,4) )
+                .then(axios.spread(async (...res) => {
+                    res[0].data.rating = res[1].data
+                    setMovie(res[0].data);
+                    setPlayUrl(res[0].data.trailerUrl)
+                    setRoles(res[2].data)
+                    setGenres(res[3].data)
+                    if (user && !user.isAdmin) {
+                        setUserPremiumRate(res[4].data.rate)
+                        setIsFauvorite(res[5].data)
+                    }
+                }));
         })();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [id]);
@@ -278,11 +283,11 @@ export const Movie = () => {
                 if (stafs.length === 0) {
                     const result = await movieService.getMovieStafs(id);
                     if (result.status === 200) {
-                        const tempStafs = await stafService.setMovieRoles(result.data, id);
-                        tempStafs.forEach(x => {
-                            x.movieRoles = x.movieRoles.map(z => z.name);
-                        })
-                        setStafs(tempStafs)
+                        //   const tempStafs = await stafService.setMovieRoles(result.data, id);
+                        // tempStafs.forEach(x => {
+                        //    x.movieRoles = x.movieRoles.map(z => z.name);
+                        ///  })
+                        setStafs(result.data)
                     }
                 }
                 break;

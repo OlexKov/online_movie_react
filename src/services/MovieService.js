@@ -31,13 +31,16 @@ export const movieService = {
 
       getNotApprovedMovieFeedbacks:(id,pageIndex,pageSize) => TryError(() => axios.get(`${movieApiUrl}/getfeedbacks/notapproved/${id}/${pageIndex}/${pageSize}`)),
 
+      getRatings: (movieIds) => TryError(() => axios.post(movieApiUrl + `/getratings`,movieIds)),
+
       setRating: async (data) => {
-            await axios.all(data.map(x => movieService.getRating(x.id)))
-                .then(axios.spread((...res) => {
-                    res.forEach((val, index) => {
-                        data[index].rating = val.data;
-                    })
-                }));
+            const result = await movieService.getRatings(data.map(x=>x.id));
+            console.log(result)
+            if(result.status === 200){
+                result.data.forEach(element => {
+                    data.find(x=>x.id === element.movieId).rating = element.rating;
+                });
+            }
             return data;
         },
      deleteFeedback:(feedbackId)=>TryError(() => axios.delete(`${movieApiUrl}/deletefeedback/${feedbackId}`)), 

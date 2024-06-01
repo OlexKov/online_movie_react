@@ -32,7 +32,6 @@ export const CreateEditStaf = () => {
         }
         setPreviewImage(file.url || file.preview);
       })()
-
     }
     else
       setPreviewImage(null);
@@ -54,19 +53,10 @@ export const CreateEditStaf = () => {
           setRoles(res[1].data?.map(item => new ComboBoxData(item.id, item.name)));
         }));
       if (id !== 'create') {
-        const stf = (await stafService.getStaf(id)).data
-        if (stf) {
-          await axios.all(
-            [
-              stafService.getStafMovies(id),
-              stafService.getStafRoles(id)
-            ])
-            .then(axios.spread((...res) => {
-              stf.movies = res[0].data;
-              stf.roles = res[1].data;
-            }));
-          setStaf(stf)
-          setFormValues(stf, form)
+        const result = await stafService.getStaf(id)
+        if (result.status === 200) {
+          setStaf(result.data)
+          setFormValues(result.data, form)
         }
       }
       setLoading(false)
@@ -80,7 +70,7 @@ export const CreateEditStaf = () => {
       surname: data.surname,
       countryId: data.countryId,
       birthdate: data.birthdate ? dayjs(data.birthdate, dateFormat) : null,
-      roles: data.roles?.map(x => x.id),
+      roles: data.roles,
       description: data.description,
       isoscar: data.isOscar
     });
@@ -141,7 +131,6 @@ export const CreateEditStaf = () => {
   return (
     <>
       <Button shape="circle" onClick={() => window.history.back()} type="primary" icon={<ArrowLeftOutlined className='fs-4' />} />
-
       <div className='w-75 mx-auto'>
         <Divider className='fs-3  mb-5 ' orientation="left">{id === 'create' ? 'Новий актор' : 'Редагування'}</Divider>
         <Form layout='vertical' form={form} name="control-hooks" onFinish={onFinish}

@@ -20,27 +20,6 @@ export const stafService = {
     updateStaf : (staf) => TryError(() => axios.put(stafApiUrl + '/update', staf,formPostConfig)),
 
     getStafsWithPagination: (pageSize,pageIndex) => TryError(() => axios.get(stafApiUrl + `/getstafpagination?pageSize=${pageSize}&pageIndex=${pageIndex}`)),
-
-    setRoles: async(stafs)=>{
-        await axios.all(stafs.map(x => stafService.getStafRoles(x.id)))
-                .then(axios.spread((...res) => {
-                    res.forEach((val, index) => {
-                        stafs[index].roles = val.data;
-                    })
-                }));
-            return stafs;
-    },
-   
-
-    setMovieRoles: async(stafs,movieId)=>{
-        await axios.all(stafs.map(x => stafService.getStafMovieRoles(x.id,movieId)))
-                .then(axios.spread((...res) => {
-                    res.forEach((val, index) => {
-                        stafs[index].movieRoles = val.data;
-                    })
-                }));
-            return stafs;
-    }
 }
 
 

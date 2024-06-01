@@ -32,8 +32,7 @@ export const CreateEditMovie = () => {
     const [screensFiles, setScreensFiles] = useState()
     const themeToken = useToken()[1]
     const [loading, setLoading] = useState(true)
-
-
+    
     useEffect(() => {
         if (posterFile) {
             (async () => {
@@ -66,7 +65,6 @@ export const CreateEditMovie = () => {
                 ])
                 .then(axios.spread(async (...res) => {
                     setCountries(res[0].data?.map(item => new ComboBoxData(item.id, item.name)));
-                    await stafService.setRoles(res[1].data);
                     setStafs(res[1].data);
                     setGenres(res[2].data?.map(item => new ComboBoxData(item.id, item.name)));
                     setPremiums(res[3].data?.map(item => new ComboBoxData(item.id, item.name)));
@@ -85,8 +83,7 @@ export const CreateEditMovie = () => {
                         .then(axios.spread(async (...res) => {
                             movie.genres = res[0].data;
                             movie.screenShots = res[1].data;
-                            await stafService.setMovieRoles(res[2].data, movie.id);
-                            const tempMovieStafs = res[2].data.map(x => ({ stafId: x.id, movieRoles: x.movieRoles.map(z => z.id) }));
+                            const tempMovieStafs = res[2].data.map(x => ({ stafId: x.id, movieRoles: x.movieRoles }));
                             movie.stafs = tempMovieStafs;
                             setMovieStafs(tempMovieStafs)
                             setTargetKeys(tempMovieStafs.map(x => x.stafId))
@@ -237,7 +234,6 @@ export const CreateEditMovie = () => {
                         columns={columns}
                         dataSource={filteredItems}
                         size="small"
-
                         onRow={({ key, disabled: itemDisabled }) => ({
                             onClick: () => {
                                 if (itemDisabled || direction !== 'left') {
@@ -260,7 +256,7 @@ export const CreateEditMovie = () => {
             key: 'imageName',
             render: (text) => <Popover placement="right" content={<img style={{ width: 120 }} src={text} alt='Staf' />}><img style={{ width: 30 }} src={text} alt='Staf' /></Popover>,
             filters: roles.map(x => ({ text: x.name, value: x.id })),
-            onFilter: (value, record) => record.roles.some(x => x.id === value),
+            onFilter: (value, record) => record.roles.some(x => x === value),
         },
         {
             title: "Ім'я",
@@ -283,7 +279,7 @@ export const CreateEditMovie = () => {
             render: (text) => <Popover placement="right" content={<img style={{ width: 120 }} src={text} alt='Staf' />}><img style={{ width: 30 }} src={text} alt='Staf' /></Popover>,
             width: '15%',
             filters: roles.map(x => ({ text: x.name, value: x.id })),
-            onFilter: (value, record) => record.roles.some(x => x.id === value),
+            onFilter: (value, record) => record.roles.some(x => x === value),
             align: 'center'
         },
         {
@@ -301,8 +297,8 @@ export const CreateEditMovie = () => {
                 placeholder="Оберіть ролі"
                 mode="multiple"
                 maxTagCount={'responsive'}
-                defaultValue={movieStafs.find(x => x.stafId === record.id)?.movieRoles || stafs.find(x => x.id === record.id).roles[0].id}
-                options={data?.map(item => new ComboBoxData(item.id, item.name))}
+                defaultValue={movieStafs.find(x => x.stafId === record.id)?.movieRoles || stafs.find(x => x.id === record.id).roles[0]}
+                options={data?.map(item => new ComboBoxData(item, roles.find(x=>x.id===item).name))}
                 onChange={(e) => onSelectedChange(e, record.id)}
 
             />
@@ -318,7 +314,7 @@ export const CreateEditMovie = () => {
         const stafsId = nextTargetKeys.filter(x => !movieStafs.map(z => z.stafId).includes(x))
         if (stafsId) {
             const newStafs = stafsId.map((id) => {
-                const defaultRoleId = stafs.find(x => x.id === id)?.roles[0].id;
+                const defaultRoleId = stafs.find(x => x.id === id)?.roles[0];
                 return { stafId: id, movieRoles: defaultRoleId }
             })
             setMovieStafs(movieStafs => [...movieStafs, ...newStafs])
@@ -334,7 +330,7 @@ export const CreateEditMovie = () => {
     const onSelectedChange = (e, stafId) => {
         const stafIndex = movieStafs.indexOf(movieStafs.find(x => x.stafId === stafId))
         const tempMovieStafs = [...movieStafs];
-        tempMovieStafs[stafIndex].movieRoles = e.length > 0 ? e : stafs.find(x => x.id === stafId).roles[0].id;
+        tempMovieStafs[stafIndex].movieRoles = e.length > 0 ? e : stafs.find(x => x.id === stafId).roles[0];
         setMovieStafs(tempMovieStafs)
     }
 
