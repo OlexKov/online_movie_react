@@ -212,29 +212,32 @@ export const Movie = () => {
         setUniqeStafRoles([...new Set(roles)].sort())
     }, [stafs]);
 
-    const requests = [
-        movieService.getMovie(id),
-        movieService.getRating(id),
-        dataService.getRoles(),
-        movieService.getMovieGenres(id),
-        accountService.getPremium(user?.email),
-        accountService.isMovieFavourite(id, user?.id)
-    ]
-
     useEffect(() => {
+
         (async () => {
-            await axios.all((user && !user.isAdmin)?requests : requests.slice(0,4) )
-                .then(axios.spread(async (...res) => {
-                    res[0].data.rating = res[1].data
-                    setMovie(res[0].data);
-                    setPlayUrl(res[0].data.trailerUrl)
-                    setRoles(res[2].data)
-                    setGenres(res[3].data)
-                    if (user && !user.isAdmin) {
-                        setUserPremiumRate(res[4].data.rate)
-                        setIsFauvorite(res[5].data)
-                    }
+            await axios.all([
+                movieService.getMovie(id),
+                movieService.getRating(id),
+                dataService.getRoles(),
+                movieService.getMovieGenres(id)
+            ]).then(axios.spread(async (...res) => {
+                res[0].data.rating = res[1].data
+                setMovie(res[0].data);
+                setPlayUrl(res[0].data.trailerUrl)
+                setRoles(res[2].data)
+                setGenres(res[3].data)
+
+
+            }));
+            if (user && !user.isAdmin) {
+                await axios.all([
+                    accountService.getPremium(user?.email),
+                    accountService.isMovieFavourite(id, user?.id)
+                ]).then(axios.spread(async (...res) => {
+                    setUserPremiumRate(res[0].data.rate)
+                    setIsFauvorite(res[1].data)
                 }));
+            }
         })();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [id]);

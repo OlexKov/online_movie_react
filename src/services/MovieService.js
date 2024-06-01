@@ -35,7 +35,6 @@ export const movieService = {
 
       setRating: async (data) => {
             const result = await movieService.getRatings(data.map(x=>x.id));
-            console.log(result)
             if(result.status === 200){
                 result.data.forEach(element => {
                     data.find(x=>x.id === element.movieId).rating = element.rating;
