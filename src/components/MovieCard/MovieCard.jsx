@@ -5,8 +5,9 @@ import useToken from 'antd/es/theme/useToken'
 import { Link } from 'react-router-dom'
 
 
-export const MovieCard = ({ movie }) => {
+export const MovieCard = ({ movie ,loading}) => {
   const themeToken = useToken()[1]
+ 
   return (
      <div style={{
        backgroundColor:themeToken.colorFillContent,
@@ -24,7 +25,7 @@ export const MovieCard = ({ movie }) => {
           width={250}
           src={movie.poster}
           preview={false}
-          
+          loading={loading}
         />
         </div>
         </Badge.Ribbon>

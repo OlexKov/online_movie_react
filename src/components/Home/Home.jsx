@@ -339,7 +339,7 @@ export const Home = () => {
         </div>
         {movies.length > 0 ?
           <>
-            {movies?.map(x => <MovieCard className='movie-card' key={x.id} movie={x} />)}
+            {movies?.map(x => <MovieCard className='movie-card' loading={loading} key={x.id} movie={x} />)}
             <Pagination
               defaultCurrent={paginatorConfig.pagination.defaultCurrent}
               defaultPageSize={paginatorConfig.pagination.defaultPageSize}
