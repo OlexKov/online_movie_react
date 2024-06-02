@@ -118,7 +118,7 @@ export const Account = () => {
                 <span>Підписка</span>
                 <div className='d-flex gap-3 mx-2 align-items-center'>
                   <Tag style={{cursor:'pointer'}} onClick={()=>navigator('/premium')} className='fs-6 py-1 px-2' icon={<YoutubeOutlined />} color="green">{userPrtemium?.name}</Tag>
-                  {userPrtemium?.id !== 1 && <span style={{ fontSize: 14, color: 'green' }} >до {new Date(user?.premiumEndDay).toLocaleDateString()}</span>}
+                  {userPrtemium?.id !== 1 && <span style={{ fontSize: 14, color: 'green' }} >до {new Date(user?.premiumEndDay).toLocaleString()}</span>}
                 </div>
               </div>
             </>}
