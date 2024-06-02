@@ -109,7 +109,7 @@ export const Home = () => {
       filter.qualities = result.qualities || []
       if (!freeMovie) filter.premiums = result.premiums || []
       filter.stafs = result.stafs || []
-      filter.years = result.years?.split(/[.,/ -]/).filter(x => x !== '') || []
+      filter.years = result.years?.split(/[.,/ -]/).filter(x => x !== '' && !isNaN(Number(x))) || []
       filter.allGenres = result.allGenres || false
       filter.allStafs = result.allStafs || false
     }
