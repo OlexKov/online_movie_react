@@ -16,7 +16,7 @@ export const getDataFromToken = (token) => {
             isAdmin: data['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']?.includes('Admin') || false,
             isUser: data['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']?.includes('User') || false,
             phoneNumber: data['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/homephone'] || '',
-            premiumEndDay: data['http://schemas.microsoft.com/ws/2008/06/identity/claims/userdata']
+            premiumEndDay: new Date(data['http://schemas.microsoft.com/ws/2008/06/identity/claims/userdata']).toISOString()
         }
     }
     return null
