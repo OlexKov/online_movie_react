@@ -87,7 +87,8 @@ export const CreateEditStaf = () => {
     Object.keys(newstaf).forEach(function (key) {
       if (key === 'roles')
         newstaf[key]?.forEach(x => formData.append(key, x))
-      formData.append(key, newstaf[key]);
+      else
+        formData.append(key, newstaf[key]);
     });
 
     if (newstaf.id === 0) {
