@@ -8,7 +8,7 @@ import { SmallMovieCard } from '../SmallMovieCard/SmallMovieCard'
 
 export const Favourite = () => {
   const [movies, setMovies] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const userEmail = useSelector(state => state.user.data).email;
   useEffect(() => {
     (async () => {

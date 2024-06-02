@@ -7,7 +7,7 @@ import { AppPagination } from '../AppPagination/AppPagination'
 const CollapseFeedbacks = ({ setFeedbacksData, getFeedbacksMovies, deletable, approvable, hideEmpty }) => {
     const [elements, setElements] = useState([])
     const [elementsCount, setElementsCount] = useState(0)
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         (async () => {
