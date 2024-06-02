@@ -30,6 +30,7 @@ export const Account = () => {
       }
     })()
     setFormValues()
+    console.log(user)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user])
 
@@ -56,8 +57,9 @@ export const Account = () => {
       const formData = new FormData();
       Object.keys(formResult).forEach((key) => {
         if (key === 'birthdate')
-          formData.append(key, new Date(formResult[key]).toLocaleDateString())
-        formData.append(key, formResult[key])
+          formData.append(key, new Date(formResult[key]).toISOString())
+        else
+          formData.append(key, formResult[key])
       })
       formData.append('id', user.id);
       const result = await accountService.editUser(formData);

@@ -38,6 +38,7 @@ export const Registration = () => {
 
   const navigate = useNavigate()
   const onFinish = async (values) => {
+    values.birthdate = new Date(values.birthdate).toISOString()
     if (user) {
       setOpen(true);
       adminModel.current = values;
