@@ -82,7 +82,7 @@ export const CreateEditStaf = () => {
     let newstaf = form.getFieldsValue();
     newstaf.id = staf.id || 0
     newstaf.isoscar = newstaf.isoscar ? true : false
-    newstaf.birthdate = new Date(Date.parse(newstaf.birthdate)).toLocaleDateString()
+    newstaf.birthdate = new Date(Date.parse(newstaf.birthdate)).toISOString()
     let formData = new FormData();
     Object.keys(newstaf).forEach(function (key) {
       if (key === 'roles')
